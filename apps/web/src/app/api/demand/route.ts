@@ -6,35 +6,33 @@ const prisma = new PrismaClient();
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
+    const productId = searchParams.get("productId");
     const page = parseInt(searchParams.get("page") ?? "1");
-    const limit = Math.min(parseInt(searchParams.get("limit") ?? "200"), 500);
-    const category = searchParams.get("category");
+    const limit = Math.min(parseInt(searchParams.get("limit") ?? "100"), 500);
     const skip = (page - 1) * limit;
 
-    const where = category ? { category } : {};
+    const where = productId ? { productId } : {};
 
-    const [products, total] = await Promise.all([
-      prisma.product.findMany({
+    const [data, total] = await Promise.all([
+      prisma.demand.findMany({
         where,
-        orderBy: { id: "asc" },
+        orderBy: { date: "desc" },
         skip,
         take: limit,
-        include: {
-          supplier: { select: { name: true, region: true, reliability: true } },
-        },
+        include: { product: { select: { name: true, category: true } } },
       }),
-      prisma.product.count({ where }),
+      prisma.demand.count({ where }),
     ]);
 
     return NextResponse.json({
       success: true,
-      data: products,
+      data,
       pagination: { page, limit, total, pages: Math.ceil(total / limit) },
     });
   } catch (error) {
-    console.error("Products API error:", error);
+    console.error("Demand API error:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch products" },
+      { success: false, error: "Failed to fetch demand data" },
       { status: 500 }
     );
   }
