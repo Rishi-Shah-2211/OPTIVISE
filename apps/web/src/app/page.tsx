@@ -2,8 +2,12 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { RefreshCw, Sparkles, ChevronRight, TrendingUp, Package, Clock, Database, Check, Loader2 } from "lucide-react";
-import { useState as useStateImport } from "react";
+import { useState as useStateImport, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, Cell, PieChart, Pie,
+} from "recharts";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { InsightCard } from "@/components/dashboard/InsightCard";
@@ -279,8 +283,213 @@ function CopilotTeaser() {
   );
 }
 
+const glassTooltip: React.CSSProperties = {
+  background: "rgba(255,255,255,0.95)",
+  backdropFilter: "blur(12px)",
+  border: "1px solid rgba(0,0,0,0.08)",
+  borderRadius: 12,
+  boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+  fontSize: 12,
+};
+
+const REGION_COLORS = ["#0284c7", "#059669", "#d97706", "#7c3aed", "#e11d48", "#0ea5e9", "#10b981", "#f59e0b"];
+
+function CategoryChart({ data }: { data: { name: string; inventory: number; demand: number }[] }) {
+  if (data.length === 0) return null;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.25, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+      style={{ ...glass, borderRadius: 22, padding: "22px 22px 16px" }}
+    >
+      <div style={{ marginBottom: 18 }}>
+        <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: "#111827", margin: 0 }}>
+          Category Performance
+        </p>
+        <p style={{ fontSize: 11, color: "#9CA3AF", marginTop: 3 }}>
+          Inventory vs demand across product categories
+        </p>
+      </div>
+      <div style={{ height: 260 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 5 }} barCategoryGap="20%">
+            <defs>
+              <linearGradient id="gInv" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#059669" stopOpacity={0.85} />
+                <stop offset="100%" stopColor="#059669" stopOpacity={0.25} />
+              </linearGradient>
+              <linearGradient id="gDem" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#0284c7" stopOpacity={0.85} />
+                <stop offset="100%" stopColor="#0284c7" stopOpacity={0.25} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false} />
+            <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
+            <Tooltip contentStyle={glassTooltip} cursor={{ fill: "rgba(0,0,0,0.03)" }} />
+            <Bar dataKey="inventory" name="Stock" fill="url(#gInv)" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="demand" name="Demand" fill="url(#gDem)" radius={[8, 8, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 8 }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "#6B7280" }}>
+          <span style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(180deg, #059669, rgba(5,150,105,0.3))" }} /> Stock
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "#6B7280" }}>
+          <span style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(180deg, #0284c7, rgba(2,132,199,0.3))" }} /> Demand
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+
+function DemandPressureChart({ data }: { data: { name: string; pressure: number; fill: string }[] }) {
+  if (data.length === 0) return null;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.35, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+      style={{ ...glass, borderRadius: 22, padding: "22px 22px 16px" }}
+    >
+      <div style={{ marginBottom: 18 }}>
+        <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: "#111827", margin: 0 }}>
+          Demand Pressure Index
+        </p>
+        <p style={{ fontSize: 11, color: "#9CA3AF", marginTop: 3 }}>
+          Products under highest demand-to-stock pressure
+        </p>
+      </div>
+      <div style={{ height: 260 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} layout="vertical" margin={{ top: 0, right: 16, left: 4, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" horizontal={false} />
+            <XAxis type="number" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false}
+              domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+            <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: "#6B7280" }} axisLine={false} tickLine={false} width={90} />
+            <Tooltip contentStyle={glassTooltip} formatter={(v: number) => [`${v}%`, "Pressure"]} cursor={{ fill: "rgba(0,0,0,0.02)" }} />
+            <Bar dataKey="pressure" radius={[0, 8, 8, 0]} barSize={18}>
+              {data.map((entry, index) => (
+                <Cell key={index} fill={entry.fill} fillOpacity={0.85} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div style={{ display: "flex", gap: 14, justifyContent: "center", marginTop: 8 }}>
+        {[{ c: "#e11d48", l: "Critical >80%" }, { c: "#d97706", l: "Watch >50%" }, { c: "#059669", l: "Healthy" }].map(({ c, l }) => (
+          <span key={l} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#6B7280" }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: c }} /> {l}
+          </span>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+function RegionDonutChart({ data }: { data: { name: string; value: number; avgReliability: number; fill: string }[] }) {
+  if (data.length === 0) return null;
+  const total = data.reduce((s, d) => s + d.value, 0);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.45, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+      style={{ ...glass, borderRadius: 22, padding: "22px 22px 16px", display: "flex", flexDirection: "column" }}
+    >
+      <div style={{ marginBottom: 12 }}>
+        <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: "#111827", margin: 0 }}>
+          Supplier Geography
+        </p>
+        <p style={{ fontSize: 11, color: "#9CA3AF", marginTop: 3 }}>
+          Supply chain distribution by region
+        </p>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative", flex: 1, minHeight: 180 }}>
+        <PieChart width={190} height={190}>
+          <Pie data={data} cx={95} cy={95} innerRadius={52} outerRadius={82}
+            paddingAngle={3} dataKey="value" strokeWidth={0}>
+            {data.map((entry, i) => <Cell key={i} fill={entry.fill} fillOpacity={0.85} />)}
+          </Pie>
+          <Tooltip contentStyle={glassTooltip}
+            formatter={(v: number, _: string, props: { payload: { name: string; avgReliability: number } }) =>
+              [`${v} products · ${props.payload.avgReliability}% reliable`, props.payload.name]} />
+        </PieChart>
+        <div style={{
+          position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+          textAlign: "center", pointerEvents: "none",
+        }}>
+          <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 700, color: "#111827", margin: 0 }}>{total}</p>
+          <p style={{ fontSize: 10, color: "#9CA3AF", margin: 0 }}>products</p>
+        </div>
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 12px", justifyContent: "center", marginTop: 6 }}>
+        {data.map((d, i) => (
+          <span key={i} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#6B7280" }}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: d.fill, flexShrink: 0 }} />
+            {d.name}
+          </span>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function DashboardPage() {
   const { products, insights, metricCards, isLoading, isRefreshing, lastUpdated, isError, errorMessage, refetch } = useDashboardData();
+
+  const categoryData = useMemo(() => {
+    const map = new Map<string, { inventory: number; demand: number }>();
+    products.forEach(p => {
+      const cat = p.category || "General";
+      const cur = map.get(cat) || { inventory: 0, demand: 0 };
+      cur.inventory += p.inventory;
+      cur.demand += p.demand;
+      map.set(cat, cur);
+    });
+    return Array.from(map.entries())
+      .map(([name, v]) => ({ name, inventory: v.inventory, demand: v.demand }))
+      .sort((a, b) => (b.inventory + b.demand) - (a.inventory + a.demand))
+      .slice(0, 8);
+  }, [products]);
+
+  const demandPressureData = useMemo(() => {
+    return [...products]
+      .filter(p => p.inventory > 0)
+      .map(p => {
+        const prs = parseFloat(((p.demand / p.inventory) * 100).toFixed(1));
+        return {
+          name: p.name.length > 18 ? p.name.slice(0, 18) + "…" : p.name,
+          pressure: Math.min(prs, 100),
+          fill: prs > 80 ? "#e11d48" : prs > 50 ? "#d97706" : "#059669",
+        };
+      })
+      .sort((a, b) => b.pressure - a.pressure)
+      .slice(0, 8);
+  }, [products]);
+
+  const regionData = useMemo(() => {
+    const map = new Map<string, { count: number; reliability: number[] }>();
+    products.forEach(p => {
+      const region = p.supplier?.region || "Unknown";
+      const cur = map.get(region) || { count: 0, reliability: [] };
+      cur.count += 1;
+      if (p.supplier?.reliability != null) cur.reliability.push(p.supplier.reliability);
+      map.set(region, cur);
+    });
+    return Array.from(map.entries())
+      .map(([name, v], i) => ({
+        name,
+        value: v.count,
+        avgReliability: v.reliability.length > 0
+          ? parseFloat((v.reliability.reduce((a, b) => a + b, 0) / v.reliability.length * 100).toFixed(1))
+          : 0,
+        fill: REGION_COLORS[i % REGION_COLORS.length],
+      }))
+      .sort((a, b) => b.value - a.value);
+  }, [products]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -305,6 +514,21 @@ export default function DashboardPage() {
                     : metricCards.map((card, idx) => <MetricCard key={card.id} config={card} index={idx} />)}
                 </div>
               </section>
+
+              {/* Analytics — asymmetric premium layout */}
+              {!isLoading && products.length > 0 && (
+                <section style={{ marginBottom: 28 }}>
+                  <SectionHeader
+                    title="Analytics"
+                    subtitle="Live performance breakdown across categories, products & supply regions"
+                  />
+                  <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 16, marginBottom: 16 }}>
+                    <CategoryChart data={categoryData} />
+                    <RegionDonutChart data={regionData} />
+                  </div>
+                  <DemandPressureChart data={demandPressureData} />
+                </section>
+              )}
 
               {/* Bottom grid */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: 20 }}>

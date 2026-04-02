@@ -19,23 +19,38 @@ const ACCENTS: Record<AccentColor, AccentTokens> = {
   violet:  { border: "rgba(124,58,237,0.20)",  glowRgb: "124,58,237",  text: "#7c3aed", iconBg: "rgba(124,58,237,0.09)", badge: "rgba(124,58,237,0.09)", bgTint: "rgba(124,58,237,0.03)" },
 };
 
+function fmtValue(v: number, unit: string): string {
+  if (unit === "%" || unit === "days") return v.toFixed(1);
+  if (v >= 1000) return `${(v / 1000).toFixed(1)}k`;
+  return Math.round(v).toLocaleString();
+}
+
 function AnimatedValue({ value, unit }: { value: number; unit: string }) {
   const ref = useRef<HTMLSpanElement>(null);
+  const prevRef = useRef<number>(value);
+
   useEffect(() => {
     if (!ref.current) return;
-    const ctrl = animate(0, value, {
+    const from = prevRef.current;
+    prevRef.current = value;
+
+    if (from === value) {
+      ref.current.textContent = fmtValue(value, unit);
+      return;
+    }
+
+    const ctrl = animate(from, value, {
       duration: 1.4,
       ease: [0.25, 0.46, 0.45, 0.94],
       onUpdate(latest) {
         if (!ref.current) return;
-        if (unit === "%" || unit === "days") ref.current.textContent = latest.toFixed(1);
-        else if (latest >= 1000) ref.current.textContent = `${(latest / 1000).toFixed(1)}k`;
-        else ref.current.textContent = Math.round(latest).toLocaleString();
+        ref.current.textContent = fmtValue(latest, unit);
       },
     });
     return ctrl.stop;
   }, [value, unit]);
-  return <span ref={ref}>0</span>;
+
+  return <span ref={ref}>{fmtValue(value, unit)}</span>;
 }
 
 function TrendBadge({ trend, accent }: { trend: "up" | "down" | "neutral"; accent: AccentColor }) {
