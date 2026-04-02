@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Send, Sparkles, User, Bot,
   Package, TrendingDown, AlertTriangle, Clock, RotateCcw,
+  Target, Globe,
 } from "lucide-react";
 
 type Role = "user" | "assistant";
@@ -19,11 +20,80 @@ const glass: React.CSSProperties = {
 };
 
 const SUGGESTED = [
-  { Icon: AlertTriangle, text: "Which SKUs are at risk of stockout this week?",     color: "#e11d48" },
-  { Icon: Package,       text: "Show me the top overstocked products right now",     color: "#d97706" },
-  { Icon: TrendingDown,  text: "How can I reduce inventory holding costs by 20%?",  color: "#7c3aed" },
-  { Icon: Clock,         text: "Which suppliers have the longest lead times?",       color: "#059669" },
+  { Icon: AlertTriangle, text: "Which SKUs are at risk of stockout this week?",            color: "#e11d48" },
+  { Icon: Package,       text: "Show me the top overstocked products right now",            color: "#d97706" },
+  { Icon: TrendingDown,  text: "How can I reduce inventory holding costs by 20%?",         color: "#7c3aed" },
+  { Icon: Clock,         text: "Which suppliers have the longest lead times?",              color: "#059669" },
+  { Icon: Target,        text: "What's the optimal reorder quantity for critical items?",   color: "#0284c7" },
+  { Icon: Globe,         text: "Compare supplier reliability across regions",               color: "#d97706" },
 ];
+
+const FOLLOW_UP_MAP: { keywords: string[]; chips: string[] }[] = [
+  { keywords: ["stockout", "risk", "out of stock", "deplete"],
+    chips: ["Which suppliers can expedite delivery?", "Show reorder recommendations", "What's the financial impact?"] },
+  { keywords: ["overstock", "excess", "surplus", "too much"],
+    chips: ["How can I liquidate excess inventory?", "Which items have declining demand?", "Show holding cost breakdown"] },
+  { keywords: ["lead time", "delivery", "shipping", "transit"],
+    chips: ["Compare lead times by region", "Which suppliers are fastest?", "How can I reduce lead times?"] },
+  { keywords: ["cost", "saving", "reduce", "holding", "expense"],
+    chips: ["Show top cost drivers", "What's the ROI of faster turnover?", "Compare warehouse efficiency"] },
+  { keywords: ["supplier", "reliability", "region", "source"],
+    chips: ["Rank suppliers by on-time rate", "Show regional risk exposure", "Which suppliers need review?"] },
+  { keywords: ["reorder", "quantity", "optimal", "order"],
+    chips: ["Show safety stock levels", "What are current reorder points?", "Suggest order schedule"] },
+];
+
+function getFollowUps(content: string): string[] {
+  const lower = content.toLowerCase();
+  for (const entry of FOLLOW_UP_MAP) {
+    if (entry.keywords.some(kw => lower.includes(kw))) return entry.chips;
+  }
+  return ["What should I prioritize this week?", "Show me the biggest risks", "Summarize key metrics"];
+}
+
+function FollowUpChips({ content, onChipClick }: { content: string; onChipClick: (text: string) => void }) {
+  const chips = getFollowUps(content);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3, duration: 0.25 }}
+      style={{ display: "flex", gap: 6, flexWrap: "wrap", marginLeft: 38, marginTop: 8 }}
+    >
+      {chips.map((chip, i) => (
+        <motion.button
+          key={i}
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.35 + i * 0.06 }}
+          onClick={() => onChipClick(chip)}
+          style={{
+            padding: "5px 13px", borderRadius: 999, fontSize: 11, fontWeight: 500,
+            background: "rgba(2,132,199,0.06)", border: "1px solid rgba(2,132,199,0.18)",
+            color: "#0284c7", cursor: "pointer", transition: "all 0.15s ease",
+            whiteSpace: "nowrap",
+          }}
+          onMouseEnter={(e) => {
+            const el = e.currentTarget as HTMLButtonElement;
+            el.style.background = "rgba(2,132,199,0.13)";
+            el.style.borderColor = "rgba(2,132,199,0.32)";
+            el.style.transform = "translateY(-1px)";
+            el.style.boxShadow = "0 2px 8px rgba(2,132,199,0.12)";
+          }}
+          onMouseLeave={(e) => {
+            const el = e.currentTarget as HTMLButtonElement;
+            el.style.background = "rgba(2,132,199,0.06)";
+            el.style.borderColor = "rgba(2,132,199,0.18)";
+            el.style.transform = "translateY(0)";
+            el.style.boxShadow = "none";
+          }}
+        >
+          {chip}
+        </motion.button>
+      ))}
+    </motion.div>
+  );
+}
 
 function TypingIndicator() {
   return (
@@ -216,7 +286,14 @@ export default function CopilotPage() {
         ) : (
           <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 }}>
             <AnimatePresence>
-              {messages.map(msg => <MessageBubble key={msg.id} message={msg} />)}
+              {messages.map((msg, idx) => (
+                <div key={msg.id}>
+                  <MessageBubble message={msg} />
+                  {msg.role === "assistant" && idx === messages.length - 1 && !isLoading && (
+                    <FollowUpChips content={msg.content} onChipClick={send} />
+                  )}
+                </div>
+              ))}
               {isLoading && <TypingIndicator key="typing" />}
             </AnimatePresence>
           </div>

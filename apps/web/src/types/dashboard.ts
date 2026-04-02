@@ -10,6 +10,11 @@ export interface Product {
   leadTime: number;
   reorderPoint?: number;
   supplierId?: string;
+  supplier?: {
+    name: string;
+    region: string;
+    reliability: number;
+  };
   createdAt: string;
 }
 
