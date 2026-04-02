@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { RefreshCw, Sparkles, ChevronRight, TrendingUp, Package, Clock } from "lucide-react";
+import { RefreshCw, Sparkles, ChevronRight, TrendingUp, Package, Clock, Database, Check, Loader2 } from "lucide-react";
+import { useState as useStateImport } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { MetricCard } from "@/components/dashboard/MetricCard";
@@ -17,6 +18,71 @@ const glass = {
   border: "1px solid rgba(255,255,255,0.9)",
   boxShadow: "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.95)",
 } as React.CSSProperties;
+
+function LoadRealDataButton({ onComplete }: { onComplete: () => void }) {
+  const [state, setState] = useStateImport<"idle" | "loading" | "success" | "error">("idle");
+  const [summary, setSummary] = useStateImport<string>("");
+
+  const handleLoad = async () => {
+    setState("loading");
+    try {
+      const res = await fetch("/api/load-real-data", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        setState("success");
+        setSummary(`${data.summary.products} products, ${data.summary.suppliers} suppliers loaded`);
+        onComplete();
+        setTimeout(() => setState("idle"), 4000);
+      } else {
+        setState("error");
+        setSummary(data.error || "Failed");
+        setTimeout(() => setState("idle"), 3000);
+      }
+    } catch {
+      setState("error");
+      setSummary("Network error");
+      setTimeout(() => setState("idle"), 3000);
+    }
+  };
+
+  return (
+    <motion.button
+      onClick={handleLoad}
+      disabled={state === "loading"}
+      whileHover={state === "idle" ? { scale: 1.02 } : {}}
+      whileTap={state === "idle" ? { scale: 0.97 } : {}}
+      style={{
+        display: "flex", alignItems: "center", gap: 7, padding: "6px 14px",
+        borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: state === "loading" ? "wait" : "pointer",
+        background: state === "success"
+          ? "rgba(5,150,105,0.1)"
+          : state === "error"
+            ? "rgba(225,29,72,0.1)"
+            : "linear-gradient(135deg, rgba(5,150,105,0.12), rgba(14,165,233,0.10))",
+        border: state === "success"
+          ? "1px solid rgba(5,150,105,0.3)"
+          : state === "error"
+            ? "1px solid rgba(225,29,72,0.3)"
+            : "1px solid rgba(5,150,105,0.3)",
+        color: state === "success" ? "#059669" : state === "error" ? "#e11d48" : "#059669",
+        transition: "all 0.2s ease",
+        boxShadow: "0 1px 4px rgba(5,150,105,0.1)",
+        opacity: state === "loading" ? 0.7 : 1,
+      }}
+    >
+      {state === "loading" ? (
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}>
+          <Loader2 size={13} strokeWidth={2} />
+        </motion.div>
+      ) : state === "success" ? (
+        <Check size={13} strokeWidth={2.5} />
+      ) : (
+        <Database size={13} strokeWidth={2} />
+      )}
+      {state === "loading" ? "Loading Dataset..." : state === "success" ? summary : state === "error" ? summary : "Load Real Market Dataset"}
+    </motion.button>
+  );
+}
 
 function DashboardHeader({ isLoading, isRefreshing, lastUpdated, onRefetch }: {
   isLoading: boolean; isRefreshing: boolean; lastUpdated: Date | null; onRefetch: () => void;
@@ -54,6 +120,7 @@ function DashboardHeader({ isLoading, isRefreshing, lastUpdated, onRefetch }: {
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <LoadRealDataButton onComplete={onRefetch} />
         <button
           onClick={onRefetch}
           disabled={spinning}

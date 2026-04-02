@@ -3,9 +3,13 @@
 export interface Product {
   id: string;
   name: string;
+  category?: string;
+  price?: number;
   inventory: number;
   demand: number;
   leadTime: number;
+  reorderPoint?: number;
+  supplierId?: string;
   createdAt: string;
 }
 
