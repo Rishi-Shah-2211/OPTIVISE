@@ -6,6 +6,7 @@ import {
   enrichProduct,
   generateDemandHistory,
   generateInventoryHistory,
+  seededRandom,
 } from "@/lib/data/enrichment";
 
 const prisma = new PrismaClient();
@@ -40,7 +41,8 @@ function parseCsv(raw: string): CsvRow[] {
 
 export async function POST() {
   const startTime = Date.now();
-  console.log("[LoadRealData] Starting ingestion...");
+  const runtimeSeed = startTime; // unique per click — makes every load produce different data
+  console.log(`[LoadRealData] Starting ingestion (seed: ${runtimeSeed})...`);
 
   try {
     // 1. Read CSV
@@ -63,6 +65,15 @@ export async function POST() {
       );
     }
 
+    // Perturb base values so each load produces unique data
+    const masterRand = seededRandom(runtimeSeed);
+    const perturbedRows = rows.map((row) => ({
+      ...row,
+      stock: Math.max(10, Math.round(row.stock * (0.4 + masterRand() * 1.2))),
+      monthly_demand: Math.max(5, Math.round(row.monthly_demand * (0.5 + masterRand() * 1.0))),
+      price: parseFloat((row.price * (0.85 + masterRand() * 0.3)).toFixed(2)),
+    }));
+
     console.log(`[LoadRealData] Parsed ${rows.length} products from CSV`);
 
     // 2. Clear existing data (in correct FK order)
@@ -79,8 +90,8 @@ export async function POST() {
     const supplierMap = new Map<string, string>(); // name -> id
     const supplierSet = new Set<string>();
 
-    for (let i = 0; i < rows.length; i++) {
-      const enriched = enrichProduct(i, rows[i].monthly_demand);
+    for (let i = 0; i < perturbedRows.length; i++) {
+      const enriched = enrichProduct(i, perturbedRows[i].monthly_demand, runtimeSeed);
       supplierSet.add(JSON.stringify(enriched.supplier));
     }
 
@@ -97,19 +108,19 @@ export async function POST() {
     const BATCH_SIZE = 10;
     const productIds: string[] = [];
 
-    for (let batch = 0; batch < rows.length; batch += BATCH_SIZE) {
-      const slice = rows.slice(batch, batch + BATCH_SIZE);
+    for (let batch = 0; batch < perturbedRows.length; batch += BATCH_SIZE) {
+      const slice = perturbedRows.slice(batch, batch + BATCH_SIZE);
 
       const created = await Promise.all(
         slice.map((row, localIdx) => {
           const globalIdx = batch + localIdx;
-          const enriched = enrichProduct(globalIdx, row.monthly_demand);
+          const enriched = enrichProduct(globalIdx, row.monthly_demand, runtimeSeed);
           const supplierId = supplierMap.get(enriched.supplier.name);
 
           return prisma.product.create({
             data: {
-              name: row.name,
-              category: row.category,
+              name: rows[globalIdx].name,       // original name from CSV
+              category: rows[globalIdx].category, // original category
               price: row.price,
               inventory: row.stock,
               demand: row.monthly_demand,
@@ -127,8 +138,8 @@ export async function POST() {
 
     // 5. Generate ALL demand history in one bulk insert
     const allDemandData: { productId: string; date: Date; demandQty: number }[] = [];
-    for (let i = 0; i < rows.length; i++) {
-      const history = generateDemandHistory(rows[i].monthly_demand, i);
+    for (let i = 0; i < perturbedRows.length; i++) {
+      const history = generateDemandHistory(perturbedRows[i].monthly_demand, i, 90, runtimeSeed);
       for (const pt of history) {
         allDemandData.push({ productId: productIds[i], date: pt.date, demandQty: pt.demandQty });
       }
@@ -142,9 +153,9 @@ export async function POST() {
 
     // 6. Generate ALL inventory snapshots in one bulk insert
     const allInvData: { productId: string; stockLevel: number; warehouseId: string; updatedAt: Date }[] = [];
-    for (let i = 0; i < rows.length; i++) {
-      const weeklyDemand = Math.round(rows[i].monthly_demand / 4);
-      const snapshots = generateInventoryHistory(rows[i].stock, weeklyDemand, i);
+    for (let i = 0; i < perturbedRows.length; i++) {
+      const weeklyDemand = Math.round(perturbedRows[i].monthly_demand / 4);
+      const snapshots = generateInventoryHistory(perturbedRows[i].stock, weeklyDemand, i, runtimeSeed);
       for (const s of snapshots) {
         allInvData.push({ productId: productIds[i], stockLevel: s.stockLevel, warehouseId: s.warehouseId, updatedAt: s.updatedAt });
       }

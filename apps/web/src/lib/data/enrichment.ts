@@ -28,7 +28,7 @@ const LEAD_TIME_RANGES: Record<string, [number, number]> = {
   "Southeast Asia":   [15, 30],
 };
 
-function seededRandom(seed: number): () => number {
+export function seededRandom(seed: number): () => number {
   let s = seed;
   return () => {
     s = (s * 1103515245 + 12345) & 0x7fffffff;
@@ -59,11 +59,13 @@ export interface DemandPoint {
 export function enrichProduct(
   productIndex: number,
   currentDemand: number,
+  runtimeSeed?: number,
 ): EnrichedProduct {
-  const rand = seededRandom(productIndex * 7919);
+  const rand = seededRandom(productIndex * 7919 + (runtimeSeed ?? 0));
 
-  // Pick supplier deterministically based on index
-  const supplier = SUPPLIER_POOL[productIndex % SUPPLIER_POOL.length];
+  // Pick supplier — rotate assignment when runtimeSeed is present
+  const supplierOffset = runtimeSeed ? Math.abs(runtimeSeed % SUPPLIER_POOL.length) : 0;
+  const supplier = SUPPLIER_POOL[(productIndex + supplierOffset) % SUPPLIER_POOL.length];
 
   // Lead time from supplier's region range
   const [minLT, maxLT] = LEAD_TIME_RANGES[supplier.region] ?? [5, 20];
@@ -84,8 +86,9 @@ export function generateDemandHistory(
   baseDemand: number,
   productIndex: number,
   days: number = 90,
+  runtimeSeed?: number,
 ): DemandPoint[] {
-  const rand = seededRandom(productIndex * 3571);
+  const rand = seededRandom(productIndex * 3571 + (runtimeSeed ?? 0));
   const points: DemandPoint[] = [];
   const now = new Date();
 
@@ -113,8 +116,9 @@ export function generateInventoryHistory(
   currentStock: number,
   weeklyDemandAvg: number,
   productIndex: number,
+  runtimeSeed?: number,
 ): { stockLevel: number; warehouseId: string; updatedAt: Date }[] {
-  const rand = seededRandom(productIndex * 2237);
+  const rand = seededRandom(productIndex * 2237 + (runtimeSeed ?? 0));
   const snapshots: { stockLevel: number; warehouseId: string; updatedAt: Date }[] = [];
   const warehouses = ["WH-001", "WH-002", "WH-003"];
   const now = new Date();

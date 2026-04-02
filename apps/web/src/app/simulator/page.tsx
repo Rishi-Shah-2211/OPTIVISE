@@ -7,6 +7,7 @@ import {
   FlaskConical, Search, Play,
   AlertTriangle, CheckCircle2, TrendingDown,
   DollarSign, Gauge, Lightbulb, BarChart2,
+  Minus, Plus,
 } from "lucide-react";
 import type { Product } from "@/types/dashboard";
 
@@ -128,16 +129,43 @@ const RISK_STYLES = {
   low:      { color: "#059669", bg: "rgba(5,150,105,0.07)", border: "rgba(5,150,105,0.15)", label: "Low Risk"      },
 };
 
-function SliderControl({ label, value, onChange, min, max, color, format }: {
+function StepButton({ direction, color, onClick }: {
+  direction: "minus" | "plus"; color: string; onClick: () => void;
+}) {
+  const Icon = direction === "minus" ? Minus : Plus;
+  return (
+    <motion.button
+      onClick={onClick}
+      whileHover={{ scale: 1.12, boxShadow: `0 4px 14px ${color}30` }}
+      whileTap={{ scale: 0.88 }}
+      style={{
+        width: 28, height: 28, borderRadius: 9,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        background: `${color}12`, border: `1px solid ${color}30`,
+        color, cursor: "pointer", transition: "all 0.15s ease",
+        flexShrink: 0,
+      }}
+    >
+      <Icon size={13} strokeWidth={2.5} />
+    </motion.button>
+  );
+}
+
+function SliderControl({ label, value, onChange, min, max, color, format, step = 1 }: {
   label: string; value: number; onChange: (v: number) => void;
-  min: number; max: number; color: string; format?: (v: number) => string;
+  min: number; max: number; color: string; format?: (v: number) => string; step?: number;
 }) {
   const pct = ((value - min) / (max - min)) * 100;
+  const clamp = (v: number) => Math.max(min, Math.min(max, v));
   return (
     <div style={{ ...glass, borderRadius: 16, padding: "16px 18px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
         <span style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>{label}</span>
-        <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 700, color }}>{format ? format(value) : value.toLocaleString()}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <StepButton direction="minus" color={color} onClick={() => onChange(clamp(value - step))} />
+          <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 700, color, minWidth: 48, textAlign: "center" }}>{format ? format(value) : value.toLocaleString()}</span>
+          <StepButton direction="plus" color={color} onClick={() => onChange(clamp(value + step))} />
+        </div>
       </div>
       <input
         type="range" min={min} max={max} value={value}
