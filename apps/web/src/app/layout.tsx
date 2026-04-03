@@ -14,6 +14,7 @@ import {
   Activity,
 } from "lucide-react";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 const NAV_ITEMS = [
   { href: "/",          label: "Dashboard",  Icon: LayoutDashboard },
@@ -169,6 +170,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </QueryProvider>
         </MotionConfig>
+        <Analytics />
       </body>
     </html>
   );
