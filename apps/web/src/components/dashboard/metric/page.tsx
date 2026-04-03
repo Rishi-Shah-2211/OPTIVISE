@@ -223,10 +223,10 @@ export default function MetricDetailPage() {
       <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
         {isLoading ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 160 }}>
-            <div style={{ width: 32, height: 32, borderRadius: "50%", border: `3px solid rgba(${cfg.rgb},0.2)`, borderTopColor: cfg.color, animation: "spin 0.8s linear infinite" }} />
+            <div style={{ width: 32, height: 32, borderRadius: "50%", border: `3px solid rgba(${cfg.rgb},0.2)`, borderTopColor: cfg.color, animation: "spin 0.4s linear infinite" }} />
           </div>
         ) : (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15 }}>
             <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 24 }}>{cfg.subtitle}</p>
 
             {/* Stat cards */}
@@ -299,7 +299,7 @@ export default function MetricDetailPage() {
                         key={i}
                         initial={{ opacity: 0, x: 10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.08 + i * 0.07 }}
+                        transition={{ delay: 0.04 + i * 0.035 }}
                         style={{ padding: 12, borderRadius: 14, background: ps.bg, border: `1px solid ${ps.border}` }}
                       >
                         <div style={{ display: "flex", gap: 10 }}>

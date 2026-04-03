@@ -4,11 +4,11 @@ import { useMemo } from "react";
 import type { AccentColor } from "@/types/dashboard";
 
 const ACCENTS: Record<AccentColor, { stroke: string }> = {
-  cyan:    { stroke: "#0284c7" },
-  amber:   { stroke: "#d97706" },
-  rose:    { stroke: "#e11d48" },
-  emerald: { stroke: "#059669" },
-  violet:  { stroke: "#7c3aed" },
+  cyan:    { stroke: "#0ea5e9" },
+  amber:   { stroke: "#f59e0b" },
+  rose:    { stroke: "#f43f5e" },
+  emerald: { stroke: "#10b981" },
+  violet:  { stroke: "#8b5cf6" },
 };
 
 export function Sparkline({ data, accent, width = 100, height = 36 }: { data: number[]; accent: AccentColor; width?: number; height?: number }) {
@@ -41,7 +41,7 @@ export function Sparkline({ data, accent, width = 100, height = 36 }: { data: nu
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none" aria-hidden="true">
       <defs>
         <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor={stroke} stopOpacity="0.18" />
+          <stop offset="0%"   stopColor={stroke} stopOpacity="0.42" />
           <stop offset="100%" stopColor={stroke} stopOpacity="0"    />
         </linearGradient>
       </defs>

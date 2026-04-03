@@ -12,24 +12,25 @@ import {
   Tooltip, ResponsiveContainer, Cell, PieChart, Pie,
 } from "recharts";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { tooltipStyle, gridProps, animationProps, chartPerspectiveHover } from "@/components/charts/chartTheme";
 import type { Product, Insight } from "@/types/dashboard";
 
 const ICONS: Record<string, React.ElementType> = { Package, Boxes, Clock, BrainCircuit, ShieldAlert, TrendingUp };
 
 const ACCENT_MAP: Record<string, { color: string; rgb: string; light: string; gradient: string }> = {
-  cyan:    { color: "#0284c7", rgb: "2,132,199",   light: "rgba(2,132,199,0.08)",   gradient: "linear-gradient(135deg, #0ea5e9, #0284c7)" },
-  emerald: { color: "#059669", rgb: "5,150,105",   light: "rgba(5,150,105,0.08)",   gradient: "linear-gradient(135deg, #10b981, #059669)" },
-  amber:   { color: "#d97706", rgb: "217,119,6",   light: "rgba(217,119,6,0.08)",   gradient: "linear-gradient(135deg, #f59e0b, #d97706)" },
-  violet:  { color: "#7c3aed", rgb: "124,58,237",  light: "rgba(124,58,237,0.08)",  gradient: "linear-gradient(135deg, #8b5cf6, #7c3aed)" },
-  rose:    { color: "#e11d48", rgb: "225,29,72",    light: "rgba(225,29,72,0.08)",   gradient: "linear-gradient(135deg, #f43f5e, #e11d48)" },
+  cyan:    { color: "#0ea5e9", rgb: "14,165,233",   light: "rgba(14,165,233,0.10)",   gradient: "linear-gradient(135deg, #0ea5e9, #0284c7)" },
+  emerald: { color: "#10b981", rgb: "16,185,129",   light: "rgba(16,185,129,0.10)",   gradient: "linear-gradient(135deg, #10b981, #059669)" },
+  amber:   { color: "#f59e0b", rgb: "245,158,11",   light: "rgba(245,158,11,0.10)",   gradient: "linear-gradient(135deg, #f59e0b, #d97706)" },
+  violet:  { color: "#8b5cf6", rgb: "139,92,246",    light: "rgba(139,92,246,0.10)",   gradient: "linear-gradient(135deg, #8b5cf6, #7c3aed)" },
+  rose:    { color: "#f43f5e", rgb: "244,63,94",     light: "rgba(244,63,94,0.10)",    gradient: "linear-gradient(135deg, #f43f5e, #e11d48)" },
 };
 
 const glass: React.CSSProperties = {
-  background: "rgba(255,255,255,0.78)",
+  background: "rgba(255,255,255,0.09)",
   backdropFilter: "blur(20px) saturate(180%)",
   WebkitBackdropFilter: "blur(20px) saturate(180%)",
-  border: "1px solid rgba(255,255,255,0.92)",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.95)",
+  border: "1px solid rgba(255,255,255,0.12)",
+  boxShadow: "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.05)",
 };
 
 interface MetricConfig {
@@ -304,7 +305,7 @@ function StatCard({ label, value, accent, icon: IconEl }: { label: string; value
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.2 }}
       style={{ ...glass, borderRadius: 18, padding: 20, position: "relative", overflow: "hidden" }}
     >
       <div style={{ position: "absolute", top: -10, right: -10, width: 50, height: 50, borderRadius: "50%", background: `radial-gradient(circle, rgba(${accent.rgb},0.15) 0%, transparent 70%)`, pointerEvents: "none" }} />
@@ -312,9 +313,9 @@ function StatCard({ label, value, accent, icon: IconEl }: { label: string; value
         <div style={{ width: 32, height: 32, borderRadius: 10, background: accent.light, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <IconEl size={15} style={{ color: accent.color }} strokeWidth={2} />
         </div>
-        <span style={{ fontSize: 11, color: "#6B7280", fontWeight: 500 }}>{label}</span>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", fontWeight: 500 }}>{label}</span>
       </div>
-      <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, fontWeight: 700, color: "#111827", margin: 0 }}>{value}</p>
+      <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{value}</p>
     </motion.div>
   );
 }
@@ -331,8 +332,8 @@ export default function MetricDetailPage() {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 16 }}>
         <ShieldAlert size={40} style={{ color: "#e11d48" }} />
-        <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 700, color: "#111827" }}>Metric not found</h2>
-        <p style={{ fontSize: 13, color: "#6B7280" }}>The metric "{id}" does not exist.</p>
+        <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 700, color: "#f1f5f9" }}>Metric not found</h2>
+        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)" }}>The metric "{id}" does not exist.</p>
         <button onClick={() => router.push("/")} style={{ padding: "8px 20px", borderRadius: 12, background: "linear-gradient(135deg, #0ea5e9, #8b5cf6)", color: "#fff", border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
           Back to Dashboard
         </button>
@@ -363,8 +364,8 @@ export default function MetricDetailPage() {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          style={{ width: 32, height: 32, borderRadius: "50%", border: "3px solid rgba(0,0,0,0.08)", borderTopColor: accent.color }}
+          transition={{ duration: 0.5, repeat: Infinity, ease: "linear" }}
+          style={{ width: 32, height: 32, borderRadius: "50%", border: "3px solid rgba(255,255,255,0.12)", borderTopColor: accent.color }}
         />
       </div>
     );
@@ -376,8 +377,8 @@ export default function MetricDetailPage() {
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 32px", height: 60,
-        background: "rgba(255,255,255,0.7)", backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(0,0,0,0.06)",
+        background: "rgba(26,31,46,0.85)", backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.12)",
         flexShrink: 0,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -386,12 +387,12 @@ export default function MetricDetailPage() {
             whileTap={{ scale: 0.95 }}
             onClick={() => router.push("/")}
             style={{
-              width: 32, height: 32, borderRadius: 10, border: "1px solid rgba(0,0,0,0.10)",
-              background: "rgba(255,255,255,0.9)", display: "flex", alignItems: "center", justifyContent: "center",
+              width: 32, height: 32, borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(255,255,255,0.10)", display: "flex", alignItems: "center", justifyContent: "center",
               cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
             }}
           >
-            <ArrowLeft size={14} strokeWidth={2} style={{ color: "#374151" }} />
+            <ArrowLeft size={14} strokeWidth={2} style={{ color: "#f1f5f9" }} />
           </motion.button>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
@@ -402,8 +403,8 @@ export default function MetricDetailPage() {
               <Icon size={15} style={{ color: accent.color }} strokeWidth={2} />
             </div>
             <div>
-              <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#111827", margin: 0 }}>{config.title}</h1>
-              <p style={{ fontSize: 11, color: "#6B7280", margin: 0 }}>Detailed analytics & breakdown</p>
+              <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{config.title}</h1>
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", margin: 0 }}>Detailed analytics & breakdown</p>
             </div>
           </div>
         </div>
@@ -411,22 +412,22 @@ export default function MetricDetailPage() {
 
       {/* Content */}
       <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15 }}>
 
           {/* Hero value + description */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
             <motion.div
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.2 }}
               style={{
                 ...glass, borderRadius: 22, padding: 28, position: "relative", overflow: "hidden",
               }}
             >
               <div style={{ position: "absolute", top: -20, right: -20, width: 80, height: 80, borderRadius: "50%", background: `radial-gradient(circle, rgba(${accent.rgb},0.18) 0%, transparent 70%)`, pointerEvents: "none" }} />
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#9CA3AF", marginBottom: 8 }}>Current Value</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 8 }}>Current Value</p>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
-                <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 48, fontWeight: 800, color: "#111827", lineHeight: 1 }}>{displayValue}</span>
+                <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 48, fontWeight: 800, color: "#f1f5f9", lineHeight: 1 }}>{displayValue}</span>
                 <span style={{ fontSize: 16, fontWeight: 600, color: accent.color, marginBottom: 6 }}>{config.unit}</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 12 }}>
@@ -437,18 +438,18 @@ export default function MetricDetailPage() {
                   <TrendIcon size={12} style={{ color: accent.color }} strokeWidth={2.5} />
                   <span style={{ fontSize: 11, fontWeight: 600, color: accent.color }}>Live</span>
                 </div>
-                <span style={{ fontSize: 11, color: "#9CA3AF" }}>Computed from {products.length} products & {insights.length} insights</span>
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)" }}>Computed from {products.length} products & {insights.length} insights</span>
               </div>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
+              transition={{ duration: 0.2, delay: 0.05 }}
               style={{ ...glass, borderRadius: 22, padding: 28 }}
             >
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#9CA3AF", marginBottom: 12 }}>About This Metric</p>
-              <p style={{ fontSize: 13, lineHeight: 1.7, color: "#374151" }}>{config.description}</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 12 }}>About This Metric</p>
+              <p style={{ fontSize: 13, lineHeight: 1.7, color: "rgba(255,255,255,0.65)" }}>{config.description}</p>
             </motion.div>
           </div>
 
@@ -458,37 +459,38 @@ export default function MetricDetailPage() {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.15 }}
-              style={{ ...glass, borderRadius: 22, padding: 24 }}
+              className="shimmer-card chart-depth"
+              style={{ ...glass, borderRadius: 22, padding: 24, perspective: "1000px" }}
+              {...chartPerspectiveHover}
             >
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#9CA3AF", marginBottom: 16 }}>Distribution</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 16 }}>Distribution</p>
               <div style={{ height: 260 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   {config.id === "ai-confidence" ? (
                     <AreaChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                       <defs>
                         <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={accent.color} stopOpacity={0.2} />
+                          <stop offset="0%" stopColor={accent.color} stopOpacity={0.45} />
                           <stop offset="100%" stopColor={accent.color} stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
-                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
+                      <CartesianGrid {...gridProps} />
+                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: "rgba(255,255,255,0.48)" }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 11, fill: "rgba(255,255,255,0.48)" }} axisLine={false} tickLine={false} />
                       <Tooltip
-                        contentStyle={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(12px)", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 12, boxShadow: "0 4px 16px rgba(0,0,0,0.08)", fontSize: 12 }}
+                        contentStyle={{ ...tooltipStyle }}
                       />
-                      <Area type="monotone" dataKey="value" stroke={accent.color} strokeWidth={2} fill="url(#areaGrad)" />
+                      <Area type="monotone" dataKey="value" stroke={accent.color} strokeWidth={2} fill="url(#areaGrad)" {...animationProps} />
                     </AreaChart>
                   ) : (
                     <BarChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
-                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
+                      <CartesianGrid {...gridProps} />
+                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: "rgba(255,255,255,0.48)" }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 11, fill: "rgba(255,255,255,0.48)" }} axisLine={false} tickLine={false} />
                       <Tooltip
-                        contentStyle={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(12px)", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 12, boxShadow: "0 4px 16px rgba(0,0,0,0.08)", fontSize: 12 }}
+                        contentStyle={{ ...tooltipStyle }}
                       />
-                      <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                      <Bar dataKey="value" radius={[6, 6, 0, 0]} {...animationProps}>
                         {chartData.map((entry, index) => (
                           <Cell key={index} fill={entry.fill || accent.color} fillOpacity={0.8} />
                         ))}
@@ -503,22 +505,22 @@ export default function MetricDetailPage() {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
+              transition={{ duration: 0.2, delay: 0.1 }}
               style={{ ...glass, borderRadius: 22, padding: 24 }}
             >
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#9CA3AF", marginBottom: 16 }}>Breakdown</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 16 }}>Breakdown</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {breakdown.map((item, i) => (
                   <div key={i}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                      <span style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>{item.label}</span>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>{item.label}</span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: item.color }}>{item.value}</span>
                     </div>
-                    <div style={{ height: 6, borderRadius: 999, background: "rgba(0,0,0,0.06)", overflow: "hidden" }}>
+                    <div style={{ height: 6, borderRadius: 999, background: "rgba(255,255,255,0.10)", overflow: "hidden" }}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.min(item.pct, 100)}%` }}
-                        transition={{ duration: 0.8, delay: 0.3 + i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                        transition={{ duration: 0.4, delay: 0.15 + i * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
                         style={{ height: "100%", borderRadius: 999, background: item.color }}
                       />
                     </div>
@@ -537,6 +539,7 @@ export default function MetricDetailPage() {
                       paddingAngle={3}
                       dataKey="value"
                       strokeWidth={0}
+                      {...animationProps}
                     >
                       {breakdown.map((b, i) => (
                         <Cell key={i} fill={b.color} fillOpacity={0.8} />
@@ -552,10 +555,10 @@ export default function MetricDetailPage() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.25 }}
+            transition={{ duration: 0.2, delay: 0.125 }}
             style={{ ...glass, borderRadius: 22, padding: 24 }}
           >
-            <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#9CA3AF", marginBottom: 16 }}>Business Insights</p>
+            <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 16 }}>Business Insights</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {metricInsights.map((item, i) => {
                 const IIcon = item.icon;
@@ -567,7 +570,7 @@ export default function MetricDetailPage() {
                     key={i}
                     initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.35 + i * 0.08 }}
+                    transition={{ delay: 0.175 + i * 0.04 }}
                     style={{
                       display: "flex", alignItems: "flex-start", gap: 12,
                       padding: "14px 16px", borderRadius: 14,
@@ -575,7 +578,7 @@ export default function MetricDetailPage() {
                     }}
                   >
                     <IIcon size={16} style={{ color: iconColor, flexShrink: 0, marginTop: 1 }} strokeWidth={2} />
-                    <p style={{ fontSize: 13, lineHeight: 1.6, color: "#374151", margin: 0 }}>{item.text}</p>
+                    <p style={{ fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,0.7)", margin: 0 }}>{item.text}</p>
                   </motion.div>
                 );
               })}
