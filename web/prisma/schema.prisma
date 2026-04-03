@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id           String   @id @default(uuid())
+  name         String
+  category     String   @default("General")
+  price        Float    @default(0)
+  inventory    Int
+  demand       Int
+  leadTime     Int
+  reorderPoint Int      @default(0)
+  supplierId   String?
+  supplier     Supplier? @relation(fields: [supplierId], references: [id])
+  createdAt    DateTime  @default(now())
+
+  demandHistory    Demand[]
+  inventoryLevels  InventoryRecord[]
+}
+
+model Supplier {
+  id          String    @id @default(uuid())
+  name        String
+  region      String    @default("Unknown")
+  reliability Float     @default(0.9)
+  createdAt   DateTime  @default(now())
+  products    Product[]
+}
+
+model Demand {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  date      DateTime
+  demandQty Int
+  createdAt DateTime @default(now())
+
+  @@index([productId, date])
+}
+
+model InventoryRecord {
+  id          String   @id @default(uuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  stockLevel  Int
+  warehouseId String   @default("WH-001")
+  updatedAt   DateTime @default(now())
+
+  @@index([productId])
+}
+
+model Insight {
+  id         String   @id @default(uuid())
+  type       String
+  message    String
+  impact     Float
+  confidence Float
+  createdAt  DateTime @default(now())
+}
