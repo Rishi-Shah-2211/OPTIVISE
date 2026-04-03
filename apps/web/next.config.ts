@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-   
-    typedRoutes: false, // 🔥 disable buggy feature
-  }
-
+  typedRoutes: false,
+};
 
 export default nextConfig;
