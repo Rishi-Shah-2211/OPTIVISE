@@ -39,3 +39,11 @@ pnpm-debug.log*
 .claude/
 
 .vercel
+
+# AI assistant configs
+.claude/
+.claude-mem/
+.cursor/
+.cursorrules
+CLAUDE.md
+AGENTS.md
