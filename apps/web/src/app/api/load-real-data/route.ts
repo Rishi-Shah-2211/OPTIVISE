@@ -8,6 +8,7 @@ import {
   generateInventoryHistory,
   seededRandom,
 } from "@/lib/data/enrichment";
+import { getUserId } from "@/lib/auth";
 
 const prisma = new PrismaClient();
 
@@ -45,6 +46,11 @@ export async function POST() {
   console.log(`[LoadRealData] Starting ingestion (seed: ${runtimeSeed})...`);
 
   try {
+    const userId = await getUserId();
+    if (!userId) {
+      return NextResponse.json({ success: false, error: "Please log in first" }, { status: 401 });
+    }
+
     // 1. Read CSV
     const csvPath = join(process.cwd(), "data", "retail-dataset.csv");
     let csvContent: string;
@@ -78,11 +84,9 @@ export async function POST() {
 
     // 2. Clear existing data (in correct FK order)
     await prisma.$transaction([
-      prisma.demand.deleteMany(),
-      prisma.inventoryRecord.deleteMany(),
-      prisma.insight.deleteMany(),
-      prisma.product.deleteMany(),
-      prisma.supplier.deleteMany(),
+      prisma.insight.deleteMany({ where: { userId } }),
+      prisma.product.deleteMany({ where: { userId } }), // cascades demand + inventory
+      prisma.supplier.deleteMany({ where: { userId } }),
     ]);
     console.log("[LoadRealData] Cleared existing data");
 
@@ -98,7 +102,7 @@ export async function POST() {
     for (const raw of supplierSet) {
       const s = JSON.parse(raw);
       const created = await prisma.supplier.create({
-        data: { name: s.name, region: s.region, reliability: s.reliability },
+        data: { name: s.name, region: s.region, reliability: s.reliability, userId },
       });
       supplierMap.set(s.name, created.id);
     }
@@ -127,6 +131,7 @@ export async function POST() {
               leadTime: enriched.leadTime,
               reorderPoint: enriched.reorderPoint,
               supplierId: supplierId ?? null,
+              userId,
             },
           });
         })
@@ -164,7 +169,7 @@ export async function POST() {
     console.log(`[LoadRealData] Generated ${allInvData.length} inventory records`);
 
     // 7. Generate insights from the real data
-    const products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({ where: { userId } });
     const insightData: { type: string; message: string; impact: number; confidence: number }[] = [];
 
     for (const p of products) {
@@ -204,7 +209,7 @@ export async function POST() {
     }
 
     if (insightData.length > 0) {
-      await prisma.insight.createMany({ data: insightData });
+      await prisma.insight.createMany({ data: insightData.map((i) => ({ ...i, userId })) });
     }
     console.log(`[LoadRealData] Generated ${insightData.length} insights`);
 

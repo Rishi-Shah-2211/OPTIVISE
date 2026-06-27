@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { getUserId } from "@/lib/auth";
 
 const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    // First check if we have persisted insights
+    const userId = await getUserId();
+    if (!userId) {
+      return NextResponse.json({ success: true, data: [] });
+    }
+
+    // First check if we have persisted insights for this shop
     const persistedInsights = await prisma.insight.findMany({
+      where: { userId },
       orderBy: { createdAt: "desc" },
       take: 50,
     });
@@ -15,8 +22,9 @@ export async function GET() {
       return NextResponse.json({ success: true, data: persistedInsights });
     }
 
-    // Fallback: generate on-the-fly from product data
+    // Fallback: generate on-the-fly from this shop's product data
     const products = await prisma.product.findMany({
+      where: { userId },
       include: { supplier: { select: { name: true, reliability: true } } },
     });
     const insights: { type: string; message: string; impact: number; confidence: number }[] = [];

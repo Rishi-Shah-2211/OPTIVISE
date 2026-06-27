@@ -7,6 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String
+  shopName     String     @default("My Shop")
+  ownerName    String     @default("Shop Owner")
+  createdAt    DateTime   @default(now())
+
+  products  Product[]
+  suppliers Supplier[]
+}
+
 model Product {
   id           String   @id @default(uuid())
   name         String
@@ -18,10 +30,14 @@ model Product {
   reorderPoint Int      @default(0)
   supplierId   String?
   supplier     Supplier? @relation(fields: [supplierId], references: [id])
+  userId       String?
+  user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt    DateTime  @default(now())
 
   demandHistory    Demand[]
   inventoryLevels  InventoryRecord[]
+
+  @@index([userId])
 }
 
 model Supplier {
@@ -29,8 +45,12 @@ model Supplier {
   name        String
   region      String    @default("Unknown")
   reliability Float     @default(0.9)
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   products    Product[]
+
+  @@index([userId])
 }
 
 model Demand {
@@ -61,5 +81,8 @@ model Insight {
   message    String
   impact     Float
   confidence Float
+  userId     String?
   createdAt  DateTime @default(now())
+
+  @@index([userId])
 }

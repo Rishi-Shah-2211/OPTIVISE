@@ -1,17 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { getUserId } from "@/lib/auth";
 
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   try {
+    const userId = await getUserId();
+    if (!userId) {
+      return NextResponse.json({ success: true, data: [], pagination: { page: 1, limit: 0, total: 0, pages: 0 } });
+    }
+
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") ?? "1");
     const limit = Math.min(parseInt(searchParams.get("limit") ?? "200"), 500);
     const category = searchParams.get("category");
     const skip = (page - 1) * limit;
 
-    const where = category ? { category } : {};
+    const where = category ? { userId, category } : { userId };
 
     const [products, total] = await Promise.all([
       prisma.product.findMany({

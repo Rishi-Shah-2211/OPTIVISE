@@ -13,6 +13,7 @@ import {
   Settings,
   Zap,
   Activity,
+  LogOut,
 } from "lucide-react";
 import { QueryProvider } from "@/providers/QueryProvider";
 
@@ -120,6 +121,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <MotionConfig reducedMotion="user">
           <QueryProvider>
+            {pathname === "/login" ? (
+            <div className="relative z-10 min-h-dvh">{children}</div>
+            ) : (
             <div className="relative z-10 flex h-dvh min-h-dvh overflow-hidden">
               <aside className="flex h-full w-[220px] shrink-0 flex-col border-r border-white/12 bg-[rgba(26,31,46,0.85)] shadow-[2px_0_16px_rgba(0,0,0,0.22)] backdrop-blur-2xl backdrop-saturate-180">
                 <div className="flex h-[60px] shrink-0 items-center gap-2.5 border-b border-white/12 px-5">
@@ -170,6 +174,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     </span>
                     <span className="text-[10px] text-white/48">Everything is working</span>
                   </div>
+                  <button
+                    onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); window.location.href = "/login"; }}
+                    className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-[10px] border border-rose-500/22 bg-rose-500/10 py-2 text-[12px] font-semibold text-rose-400 transition hover:bg-rose-500/18"
+                  >
+                    <LogOut size={13} strokeWidth={2} /> Log Out
+                  </button>
                 </div>
               </aside>
 
@@ -177,6 +187,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {children}
               </main>
             </div>
+            )}
           </QueryProvider>
         </MotionConfig>
       </body>

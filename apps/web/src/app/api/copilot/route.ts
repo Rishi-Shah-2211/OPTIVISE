@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { getUserId } from "@/lib/auth";
 
 const prisma = new PrismaClient();
 
@@ -35,9 +36,10 @@ Quick guide:
 
 interface ChatMessage { role: "user" | "assistant"; content: string; }
 
-async function getDataContext(): Promise<string> {
+async function getDataContext(userId: string): Promise<string> {
   try {
     const products = await prisma.product.findMany({
+      where: { userId },
       orderBy: { id: "asc" },
       include: {
         supplier: { select: { name: true, region: true, reliability: true } },
@@ -108,12 +110,12 @@ async function getDataContext(): Promise<string> {
     const recentDemand = await prisma.demand.groupBy({
       by: ["productId"],
       _sum: { demandQty: true },
-      where: { date: { gte: sevenDaysAgo } },
+      where: { date: { gte: sevenDaysAgo }, product: { userId } },
     });
     const prevDemand = await prisma.demand.groupBy({
       by: ["productId"],
       _sum: { demandQty: true },
-      where: { date: { gte: fourteenDaysAgo, lt: sevenDaysAgo } },
+      where: { date: { gte: fourteenDaysAgo, lt: sevenDaysAgo }, product: { userId } },
     });
 
     const recentMap = new Map(recentDemand.map(d => [d.productId, d._sum.demandQty ?? 0]));
@@ -141,6 +143,7 @@ async function getDataContext(): Promise<string> {
 
     // Supplier summary
     const suppliers = await prisma.supplier.findMany({
+      where: { userId },
       include: { _count: { select: { products: true } } },
     });
     if (suppliers.length > 0) {
@@ -227,7 +230,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ reply });
     }
 
-    const dataContext = await getDataContext();
+    const userId = await getUserId();
+    const dataContext = await getDataContext(userId ?? "");
     const systemPrompt = buildSystemPrompt(dataContext);
 
     const reply = await callGroq(messages, apiKey, systemPrompt);
