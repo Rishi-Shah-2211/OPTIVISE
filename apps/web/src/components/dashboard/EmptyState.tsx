@@ -7,11 +7,11 @@ export function EmptyState({ title = "Nothing here yet", description = "Once you
   return (
     <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.15 }}
       style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", textAlign: "center" }}>
-      <div style={{ width: 48, height: 48, borderRadius: 16, background: "rgba(14,165,233,0.10)", border: "1px solid rgba(14,165,233,0.18)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
-        <DatabaseZap size={20} style={{ color: "#0ea5e9" }} strokeWidth={1.5} />
+      <div style={{ width: 48, height: 48, borderRadius: 16, background: "rgba(31,122,92,0.10)", border: "1px solid rgba(31,122,92,0.18)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+        <DatabaseZap size={20} style={{ color: "#1f7a5c" }} strokeWidth={1.5} />
       </div>
-      <h3 style={{ fontSize: 14, fontWeight: 600, color: "#f1f5f9", marginBottom: 6 }}>{title}</h3>
-      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.48)", maxWidth: 220, lineHeight: 1.6 }}>{description}</p>
+      <h3 style={{ fontSize: 14, fontWeight: 600, color: "#1b1d1b", marginBottom: 6 }}>{title}</h3>
+      <p style={{ fontSize: 12, color: "rgba(50,64,54,0.48)", maxWidth: 220, lineHeight: 1.6 }}>{description}</p>
     </motion.div>
   );
 }
@@ -20,21 +20,21 @@ export function ErrorState({ message, onRetry }: { message: string | null; onRet
   return (
     <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.15 }}
       style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "60px 24px", textAlign: "center" }}>
-      <div style={{ width: 48, height: 48, borderRadius: 16, background: "rgba(244,63,94,0.10)", border: "1px solid rgba(244,63,94,0.18)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
-        <WifiOff size={20} style={{ color: "#f43f5e" }} strokeWidth={1.5} />
+      <div style={{ width: 48, height: 48, borderRadius: 16, background: "rgba(192,73,47,0.10)", border: "1px solid rgba(192,73,47,0.18)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+        <WifiOff size={20} style={{ color: "#c0492f" }} strokeWidth={1.5} />
       </div>
-      <h3 style={{ fontSize: 14, fontWeight: 600, color: "#f1f5f9", marginBottom: 5 }}>Could not load</h3>
-      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.48)", maxWidth: 260, lineHeight: 1.6, marginBottom: 16 }}>
+      <h3 style={{ fontSize: 14, fontWeight: 600, color: "#1b1d1b", marginBottom: 5 }}>Could not load</h3>
+      <p style={{ fontSize: 12, color: "rgba(50,64,54,0.48)", maxWidth: 260, lineHeight: 1.6, marginBottom: 16 }}>
         {message ?? "Something went wrong. Please try again."}
       </p>
       <button onClick={onRetry} style={{
         display: "flex", alignItems: "center", gap: 6, padding: "8px 16px",
         borderRadius: 10, fontSize: 12, fontWeight: 500, cursor: "pointer",
-        background: "rgba(244,63,94,0.10)", border: "1px solid rgba(244,63,94,0.20)", color: "#f43f5e",
+        background: "rgba(192,73,47,0.10)", border: "1px solid rgba(192,73,47,0.20)", color: "#c0492f",
         transition: "background 0.15s ease",
       }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(244,63,94,0.18)"; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(244,63,94,0.10)"; }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(192,73,47,0.18)"; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(192,73,47,0.10)"; }}
       >
         <RefreshCw size={13} strokeWidth={2} />
         Retry

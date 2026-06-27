@@ -44,7 +44,7 @@ export function Copilot() {
       {/* 🔥 Floating Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 left-6 bg-white text-black px-4 py-2 rounded-xl shadow-lg"
+        className="fixed bottom-6 left-6 bg-[#fffaf1] text-black px-4 py-2 rounded-xl shadow-lg"
       >
         Copilot
       </button>
@@ -62,8 +62,8 @@ export function Copilot() {
                 key={i}
                 className={`p-2 rounded-lg text-sm ${
                   m.role === "user"
-                    ? "bg-white text-black ml-auto"
-                    : "bg-zinc-800 text-white"
+                    ? "bg-[#fffaf1] text-black ml-auto"
+                    : "bg-zinc-800 text-[#1b1d1b]"
                 }`}
               >
                 {m.content}
@@ -80,7 +80,7 @@ export function Copilot() {
             />
             <button
               onClick={sendMessage}
-              className="px-3 bg-white text-black rounded-lg"
+              className="px-3 bg-[#fffaf1] text-black rounded-lg"
             >
               Send
             </button>

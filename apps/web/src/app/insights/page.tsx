@@ -10,11 +10,11 @@ import {
 import type { Insight } from "@/types/dashboard";
 
 const glass: React.CSSProperties = {
-  background: "rgba(255,255,255,0.09)",
+  background: "rgba(255,250,241,0.82)",
   backdropFilter: "blur(20px) saturate(180%)",
   WebkitBackdropFilter: "blur(20px) saturate(180%)",
-  border: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.05)",
+  border: "1px solid rgba(62,70,54,0.14)",
+  boxShadow: "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,250,241,0.45)",
 };
 
 async function fetchInsights(): Promise<Insight[]> {
@@ -38,9 +38,9 @@ function getSeverity(impact: number): FilterTab {
 type SStyle = { color: string; bg: string; border: string; Icon: React.ElementType; label: string };
 
 function getStyle(impact: number): SStyle {
-  if (impact > 80) return { color: "#f43f5e", bg: "rgba(244,63,94,0.10)",  border: "rgba(244,63,94,0.18)",  Icon: AlertTriangle, label: "Urgent"       };
-  if (impact > 60) return { color: "#f59e0b", bg: "rgba(245,158,11,0.10)",  border: "rgba(245,158,11,0.18)",  Icon: Zap,           label: "Important"    };
-  return               { color: "#0ea5e9", bg: "rgba(14,165,233,0.08)",   border: "rgba(14,165,233,0.15)",  Icon: Info,          label: "Good to Know" };
+  if (impact > 80) return { color: "#c0492f", bg: "rgba(192,73,47,0.10)",  border: "rgba(192,73,47,0.18)",  Icon: AlertTriangle, label: "Urgent"       };
+  if (impact > 60) return { color: "#c86a33", bg: "rgba(200,106,51,0.10)",  border: "rgba(200,106,51,0.18)",  Icon: Zap,           label: "Important"    };
+  return               { color: "#1f7a5c", bg: "rgba(31,122,92,0.08)",   border: "rgba(31,122,92,0.15)",  Icon: Info,          label: "Good to Know" };
 }
 
 function normalize(c: number) { return c <= 1 ? c * 100 : c; }
@@ -75,12 +75,12 @@ function InsightRow({ insight, index }: { insight: Insight; index: number }) {
       className="card-lift shimmer-card"
       onMouseEnter={(e) => {
         const el = e.currentTarget as HTMLDivElement;
-        el.style.boxShadow = `0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05)`;
+        el.style.boxShadow = `0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,250,241,0.45)`;
         el.style.transform = "translateY(-2px)";
       }}
       onMouseLeave={(e) => {
         const el = e.currentTarget as HTMLDivElement;
-        el.style.boxShadow = "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.05)";
+        el.style.boxShadow = "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,250,241,0.45)";
         el.style.transform = "translateY(0)";
       }}
     >
@@ -104,23 +104,23 @@ function InsightRow({ insight, index }: { insight: Insight; index: number }) {
             }}>
               {s.label}
             </span>
-            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)", textTransform: "capitalize" }}>
+            <span style={{ fontSize: 11, color: "rgba(50,64,54,0.48)", textTransform: "capitalize" }}>
               {({ stockout: "running low", overstock: "too much stock", reorder: "order soon", lead_time: "slow delivery" } as Record<string, string>)[insight.type] ?? insight.type?.replace(/_/g, " ")}
             </span>
-            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)", marginLeft: "auto" }}>{safeAgo(insight.createdAt)}</span>
+            <span style={{ fontSize: 11, color: "rgba(50,64,54,0.48)", marginLeft: "auto" }}>{safeAgo(insight.createdAt)}</span>
           </div>
 
-          <p style={{ fontSize: 14, fontWeight: 500, color: "#f1f5f9", lineHeight: 1.5, marginBottom: 14 }}>
+          <p style={{ fontSize: 14, fontWeight: 500, color: "#1b1d1b", lineHeight: 1.5, marginBottom: 14 }}>
             {insight.message}
           </p>
 
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
             <div style={{ flex: 1, maxWidth: 220 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.48)" }}>How Sure</span>
+                <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(50,64,54,0.48)" }}>How Sure</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: s.color }}>{Math.round(conf)}%</span>
               </div>
-              <div style={{ height: 5, borderRadius: 999, background: "rgba(255,255,255,0.10)", overflow: "hidden" }}>
+              <div style={{ height: 5, borderRadius: 999, background: "rgba(255,250,241,0.55)", overflow: "hidden" }}>
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${conf}%` }}
@@ -133,7 +133,7 @@ function InsightRow({ insight, index }: { insight: Insight; index: number }) {
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <TrendingDown size={14} style={{ color: s.color }} strokeWidth={2} />
               <span style={{ fontSize: 14, fontWeight: 700, color: s.color }}>{Math.round(insight.impact)}</span>
-              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)" }}>how big</span>
+              <span style={{ fontSize: 11, color: "rgba(50,64,54,0.48)" }}>how big</span>
             </div>
           </div>
         </div>
@@ -180,10 +180,10 @@ export default function InsightsPage() {
   }), [insights]);
 
   const TABS: { key: FilterTab; label: string; color: string }[] = [
-    { key: "all",      label: "All",          color: "#f1f5f9" },
-    { key: "critical", label: "Urgent",       color: "#f43f5e" },
-    { key: "high",     label: "Important",    color: "#f59e0b" },
-    { key: "advisory", label: "Good to Know", color: "#0ea5e9" },
+    { key: "all",      label: "All",          color: "#1b1d1b" },
+    { key: "critical", label: "Urgent",       color: "#c0492f" },
+    { key: "high",     label: "Important",    color: "#c86a33" },
+    { key: "advisory", label: "Good to Know", color: "#1f7a5c" },
   ];
 
   const SORT_OPTIONS: { key: SortKey; label: string }[] = [
@@ -199,14 +199,14 @@ export default function InsightsPage() {
       {/* Header */}
       <div style={{
         padding: "20px 32px", flexShrink: 0,
-        background: "rgba(26,31,46,0.85)", backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.12)",
+        background: "rgba(255,250,241,0.82)", backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(62,70,54,0.14)",
         position: "sticky", top: 0, zIndex: 10,
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
           <div>
-            <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 22, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>Smart Tips</h1>
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)", marginTop: 4 }}>
+            <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 22, fontWeight: 700, color: "#1b1d1b", margin: 0 }}>Smart Tips</h1>
+            <p style={{ fontSize: 13, color: "rgba(50,64,54,0.60)", marginTop: 4 }}>
               {insights.length} helpful tips for your shop
             </p>
           </div>
@@ -225,7 +225,7 @@ export default function InsightsPage() {
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           {/* Search */}
           <div style={{ position: "relative", flex: 1, maxWidth: 300 }}>
-            <Search size={13} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "rgba(255,255,255,0.48)" }} />
+            <Search size={13} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "rgba(50,64,54,0.48)" }} />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -237,7 +237,7 @@ export default function InsightsPage() {
           {/* Filter tabs */}
           <div style={{
             display: "flex", gap: 4, padding: 4, borderRadius: 12,
-            background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(255,250,241,0.7)", border: "1px solid rgba(62,70,54,0.14)",
             boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
           }}>
             {TABS.map(tab => (
@@ -249,8 +249,8 @@ export default function InsightsPage() {
                   padding: "6px 10px", borderRadius: 9,
                   fontSize: 12, fontWeight: 500,
                   border: "none", cursor: "pointer",
-                  background: filter === tab.key ? "rgba(255,255,255,0.12)" : "transparent",
-                  color: filter === tab.key ? tab.color : "rgba(255,255,255,0.58)",
+                  background: filter === tab.key ? "rgba(62,70,54,0.14)" : "transparent",
+                  color: filter === tab.key ? tab.color : "rgba(50,64,54,0.58)",
                   boxShadow: filter === tab.key ? "0 1px 6px rgba(0,0,0,0.2)" : "none",
                   transition: "all 0.15s ease",
                 }}
@@ -258,8 +258,8 @@ export default function InsightsPage() {
                 {tab.label}
                 <span style={{
                   fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999,
-                  background: filter === tab.key ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.10)",
-                  color: filter === tab.key ? tab.color : "rgba(255,255,255,0.42)",
+                  background: filter === tab.key ? "rgba(62,70,54,0.14)" : "rgba(255,250,241,0.55)",
+                  color: filter === tab.key ? tab.color : "rgba(50,64,54,0.42)",
                 }}>
                   {counts[tab.key]}
                 </span>
@@ -274,8 +274,8 @@ export default function InsightsPage() {
               style={{
                 display: "flex", alignItems: "center", gap: 6, padding: "8px 12px",
                 borderRadius: 12, fontSize: 12, fontWeight: 500,
-                background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.12)",
-                color: "#f1f5f9", cursor: "pointer",
+                background: "rgba(255,250,241,0.55)", border: "1px solid rgba(62,70,54,0.14)",
+                color: "#1b1d1b", cursor: "pointer",
                 boxShadow: "0 1px 4px rgba(0,0,0,0.04)", whiteSpace: "nowrap",
               }}
             >
@@ -292,7 +292,7 @@ export default function InsightsPage() {
                   transition={{ duration: 0.06 }}
                   style={{
                     position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 50,
-                    background: "rgba(30,35,50,0.95)", border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,250,241,0.96)", border: "1px solid rgba(62,70,54,0.14)",
                     borderRadius: 14, overflow: "hidden", minWidth: 160,
                     boxShadow: "0 8px 32px rgba(0,0,0,0.30)",
                   }}
@@ -304,12 +304,12 @@ export default function InsightsPage() {
                       style={{
                         display: "block", width: "100%", padding: "10px 14px",
                         fontSize: 13, fontWeight: 500, textAlign: "left",
-                        background: sort === opt.key ? "rgba(14,165,233,0.10)" : "transparent",
-                        color: sort === opt.key ? "#0ea5e9" : "#f1f5f9",
+                        background: sort === opt.key ? "rgba(31,122,92,0.10)" : "transparent",
+                        color: sort === opt.key ? "#1f7a5c" : "#1b1d1b",
                         border: "none", cursor: "pointer",
                         transition: "background 0.12s ease",
                       }}
-                      onMouseEnter={(e) => { if (sort !== opt.key) (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.10)"; }}
+                      onMouseEnter={(e) => { if (sort !== opt.key) (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,250,241,0.55)"; }}
                       onMouseLeave={(e) => { if (sort !== opt.key) (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
                     >
                       {opt.label}
@@ -332,23 +332,23 @@ export default function InsightsPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {Array.from({ length: 5 }, (_, i) => (
               <motion.div key={i} animate={{ opacity: [0.5, 0.9, 0.5] }} transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.05 }}
-                style={{ height: 110, borderRadius: 18, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", boxShadow: "0 2px 12px rgba(0,0,0,0.10)" }} />
+                style={{ height: 110, borderRadius: 18, background: "rgba(255,250,241,0.7)", border: "1px solid rgba(62,70,54,0.14)", boxShadow: "0 2px 12px rgba(0,0,0,0.10)" }} />
             ))}
           </div>
         ) : isError ? (
           <div style={{ textAlign: "center", padding: 60 }}>
-            <p style={{ color: "#f43f5e", marginBottom: 12 }}>Could not load tips.</p>
-            <button onClick={() => refetch()} style={{ color: "#0ea5e9", cursor: "pointer", background: "none", border: "none", fontSize: 13 }}>Retry</button>
+            <p style={{ color: "#c0492f", marginBottom: 12 }}>Could not load tips.</p>
+            <button onClick={() => refetch()} style={{ color: "#1f7a5c", cursor: "pointer", background: "none", border: "none", fontSize: 13 }}>Retry</button>
           </div>
         ) : filtered.length === 0 ? (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 60, gap: 10 }}>
-            <Filter size={28} style={{ color: "rgba(255,255,255,0.2)" }} strokeWidth={1.5} />
-            <p style={{ color: "rgba(255,255,255,0.60)", fontSize: 14 }}>
+            <Filter size={28} style={{ color: "rgba(50,64,54,0.2)" }} strokeWidth={1.5} />
+            <p style={{ color: "rgba(50,64,54,0.60)", fontSize: 14 }}>
               {search.trim() ? `No tips match "${search}"` : "No tips here right now"}
             </p>
             {(search.trim() || filter !== "all") && (
               <button onClick={() => { setSearch(""); setFilter("all"); }}
-                style={{ color: "#0ea5e9", cursor: "pointer", background: "none", border: "none", fontSize: 12 }}>
+                style={{ color: "#1f7a5c", cursor: "pointer", background: "none", border: "none", fontSize: 12 }}>
                 Clear filters
               </button>
             )}

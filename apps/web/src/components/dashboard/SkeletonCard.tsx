@@ -8,7 +8,7 @@ function Shimmer({ className, style }: { className?: string; style?: React.CSSPr
       className={className}
       style={{
         borderRadius: 8,
-        background: "linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.04) 100%)",
+        background: "linear-gradient(90deg, rgba(62,70,54,0.08) 0%, rgba(255,250,241,0.55) 50%, rgba(62,70,54,0.08) 100%)",
         backgroundSize: "400px 100%",
         animation: "shimmer-light 1.6s ease-in-out infinite",
         ...style,
@@ -23,9 +23,9 @@ export function SkeletonMetricCard({ index }: { index: number }) {
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.025 }}
       style={{
         borderRadius: 20, padding: 20, display: "flex", flexDirection: "column", gap: 14,
-        background: "rgba(255,255,255,0.08)",
+        background: "rgba(255,250,241,0.7)",
         backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-        border: "1px solid rgba(255,255,255,0.12)",
+        border: "1px solid rgba(62,70,54,0.14)",
         boxShadow: "0 4px 20px rgba(0,0,0,0.22)",
       }}
     >

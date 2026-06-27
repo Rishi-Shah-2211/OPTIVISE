@@ -15,11 +15,11 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 import type { Product, Insight } from "@/types/dashboard";
 
 const glass: React.CSSProperties = {
-  background: "rgba(255,255,255,0.75)",
+  background: "rgba(50,64,54,0.75)",
   backdropFilter: "blur(20px) saturate(180%)",
   WebkitBackdropFilter: "blur(20px) saturate(180%)",
-  border: "1px solid rgba(255,255,255,0.9)",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.95)",
+  border: "1px solid rgba(50,64,54,0.9)",
+  boxShadow: "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04), inset 0 1px 0 rgba(50,64,54,0.95)",
 };
 
 type AccentColor = "cyan" | "emerald" | "amber" | "violet" | "rose";
@@ -34,12 +34,12 @@ type MetricConfig = {
 };
 
 const CONFIGS: Record<string, MetricConfig> = {
-  "total-skus":      { title: "Total SKUs",       subtitle: "Product catalog health and coverage", Icon: Package,     color: "#0284c7", accent: "cyan",    rgb: "2,132,199"   },
-  inventory:         { title: "Total Inventory",   subtitle: "Stock levels across all warehouses",  Icon: Boxes,       color: "#059669", accent: "emerald", rgb: "5,150,105"   },
-  "lead-time":       { title: "Avg Lead Time",     subtitle: "Supplier delivery performance",       Icon: Clock,       color: "#d97706", accent: "amber",   rgb: "217,119,6"   },
-  "ai-confidence":   { title: "AI Confidence",     subtitle: "Model certainty across insights",      Icon: BrainCircuit,color: "#7c3aed", accent: "violet",  rgb: "124,58,237"  },
-  "critical-alerts": { title: "Critical Alerts",   subtitle: "High-impact supply chain signals",    Icon: ShieldAlert, color: "#e11d48", accent: "rose",    rgb: "225,29,72"   },
-  "demand-pressure": { title: "Demand Pressure",   subtitle: "Real-time demand vs inventory load",  Icon: TrendingUp,  color: "#d97706", accent: "amber",   rgb: "217,119,6"   },
+  "total-skus":      { title: "Total SKUs",       subtitle: "Product catalog health and coverage", Icon: Package,     color: "#154f3d", accent: "cyan",    rgb: "2,132,199"   },
+  inventory:         { title: "Total Inventory",   subtitle: "Stock levels across all warehouses",  Icon: Boxes,       color: "#154f3d", accent: "emerald", rgb: "5,150,105"   },
+  "lead-time":       { title: "Avg Lead Time",     subtitle: "Supplier delivery performance",       Icon: Clock,       color: "#a8551f", accent: "amber",   rgb: "217,119,6"   },
+  "ai-confidence":   { title: "AI Confidence",     subtitle: "Model certainty across insights",      Icon: BrainCircuit,color: "#a8551f", accent: "violet",  rgb: "124,58,237"  },
+  "critical-alerts": { title: "Critical Alerts",   subtitle: "High-impact supply chain signals",    Icon: ShieldAlert, color: "#a83a26", accent: "rose",    rgb: "225,29,72"   },
+  "demand-pressure": { title: "Demand Pressure",   subtitle: "Real-time demand vs inventory load",  Icon: TrendingUp,  color: "#a8551f", accent: "amber",   rgb: "217,119,6"   },
 };
 
 const ACTIONS: Record<string, { Icon: React.ElementType; action: string; priority: "high" | "medium" | "low" }[]> = {
@@ -150,7 +150,7 @@ export default function MetricDetailPage() {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 12 }}>
         <p style={{ color: "#6B7280", fontSize: 14 }}>Metric not found.</p>
-        <button onClick={() => router.push("/")} style={{ color: "#0284c7", cursor: "pointer", background: "none", border: "none", fontSize: 13 }}>
+        <button onClick={() => router.push("/")} style={{ color: "#154f3d", cursor: "pointer", background: "none", border: "none", fontSize: 13 }}>
           ← Back to Dashboard
         </button>
       </div>
@@ -167,9 +167,9 @@ export default function MetricDetailPage() {
   }));
 
   const priorityStyle = (p: "high" | "medium" | "low") => ({
-    high:   { color: "#e11d48", bg: "rgba(225,29,72,0.07)",   border: "rgba(225,29,72,0.15)"   },
-    medium: { color: "#d97706", bg: "rgba(217,119,6,0.07)",   border: "rgba(217,119,6,0.15)"   },
-    low:    { color: "#059669", bg: "rgba(5,150,105,0.07)",   border: "rgba(5,150,105,0.12)"   },
+    high:   { color: "#a83a26", bg: "rgba(168,58,38,0.07)",   border: "rgba(168,58,38,0.15)"   },
+    medium: { color: "#a8551f", bg: "rgba(168,85,31,0.07)",   border: "rgba(168,85,31,0.15)"   },
+    low:    { color: "#154f3d", bg: "rgba(21,79,61,0.07)",   border: "rgba(21,79,61,0.12)"   },
   }[p]);
 
   return (
@@ -178,7 +178,7 @@ export default function MetricDetailPage() {
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 32px", height: 60,
-        background: "rgba(255,255,255,0.7)", backdropFilter: "blur(20px)",
+        background: "rgba(50,64,54,0.7)", backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(0,0,0,0.06)",
         flexShrink: 0, position: "sticky", top: 0, zIndex: 10,
       }}>
@@ -188,7 +188,7 @@ export default function MetricDetailPage() {
             style={{
               display: "flex", alignItems: "center", gap: 6, padding: "5px 12px",
               borderRadius: 10, fontSize: 12, fontWeight: 500,
-              background: "rgba(255,255,255,0.9)", border: "1px solid rgba(0,0,0,0.10)",
+              background: "rgba(50,64,54,0.9)", border: "1px solid rgba(0,0,0,0.10)",
               color: "#374151", cursor: "pointer",
               boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
             }}
@@ -201,7 +201,7 @@ export default function MetricDetailPage() {
             <div style={{ width: 28, height: 28, borderRadius: 10, background: `rgba(${cfg.rgb},0.10)`, border: `1px solid rgba(${cfg.rgb},0.2)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Icon size={14} style={{ color: cfg.color }} strokeWidth={2} />
             </div>
-            <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#111827" }}>{cfg.title}</span>
+            <span style={{ fontFamily: "var(--font-fraunces), serif", fontSize: 15, fontWeight: 700, color: "#111827" }}>{cfg.title}</span>
           </div>
         </div>
         <button
@@ -209,8 +209,8 @@ export default function MetricDetailPage() {
           style={{
             display: "flex", alignItems: "center", gap: 6, padding: "6px 14px",
             borderRadius: 10, fontSize: 12, fontWeight: 600,
-            background: "linear-gradient(135deg, rgba(14,165,233,0.12), rgba(139,92,246,0.10))",
-            border: "1px solid rgba(14,165,233,0.25)", color: "#0284c7",
+            background: "linear-gradient(135deg, rgba(31,122,92,0.12), rgba(200,106,51,0.10))",
+            border: "1px solid rgba(31,122,92,0.25)", color: "#154f3d",
             cursor: "pointer", transition: "all 0.15s ease",
           }}
         >
@@ -237,8 +237,8 @@ export default function MetricDetailPage() {
                 { label: stats.thirdLabel,  value: stats.thirdVal,    color: "#6B7280" },
               ].map((s, i) => (
                 <div key={i} style={{ ...glass, borderRadius: 16, padding: "16px 20px" }}>
-                  <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#9CA3AF", marginBottom: 8 }}>{s.label}</p>
-                  <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 700, color: s.color }}>{s.value}</p>
+                  <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#7a8473", marginBottom: 8 }}>{s.label}</p>
+                  <p style={{ fontFamily: "var(--font-fraunces), serif", fontSize: 22, fontWeight: 700, color: s.color }}>{s.value}</p>
                 </div>
               ))}
             </div>
@@ -247,7 +247,7 @@ export default function MetricDetailPage() {
               {/* Charts */}
               <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 <div style={{ ...glass, borderRadius: 20, padding: 24 }}>
-                  <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 20 }}>12-Month Trend</p>
+                  <p style={{ fontFamily: "var(--font-fraunces), serif", fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 20 }}>12-Month Trend</p>
                   <ResponsiveContainer width="100%" height={180}>
                     <AreaChart data={trendData}>
                       <defs>
@@ -257,8 +257,8 @@ export default function MetricDetailPage() {
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
-                      <XAxis dataKey="month" tick={{ fill: "#9CA3AF", fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fill: "#9CA3AF", fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <XAxis dataKey="month" tick={{ fill: "#7a8473", fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fill: "#7a8473", fontSize: 11 }} axisLine={false} tickLine={false} />
                       <Tooltip content={<ChartTooltip color={cfg.color} />} />
                       <Area type="monotone" dataKey="value" stroke={cfg.color} strokeWidth={2} fill={`url(#g-${metricId})`} />
                     </AreaChart>
@@ -267,12 +267,12 @@ export default function MetricDetailPage() {
 
                 {stats.chart.length > 0 && (
                   <div style={{ ...glass, borderRadius: 20, padding: 24 }}>
-                    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 20 }}>{stats.chartLabel}</p>
+                    <p style={{ fontFamily: "var(--font-fraunces), serif", fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 20 }}>{stats.chartLabel}</p>
                     <ResponsiveContainer width="100%" height={180}>
                       <BarChart data={stats.chart}>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
-                        <XAxis dataKey="name" tick={{ fill: "#9CA3AF", fontSize: 10 }} axisLine={false} tickLine={false} />
-                        <YAxis tick={{ fill: "#9CA3AF", fontSize: 10 }} axisLine={false} tickLine={false} />
+                        <XAxis dataKey="name" tick={{ fill: "#7a8473", fontSize: 10 }} axisLine={false} tickLine={false} />
+                        <YAxis tick={{ fill: "#7a8473", fontSize: 10 }} axisLine={false} tickLine={false} />
                         <Tooltip content={<ChartTooltip color={cfg.color} />} />
                         <Bar dataKey="value" fill={`rgba(${cfg.rgb},0.15)`} stroke={cfg.color} strokeWidth={1.5} radius={[6, 6, 0, 0]} />
                       </BarChart>
@@ -284,8 +284,8 @@ export default function MetricDetailPage() {
               {/* Actions */}
               <div style={{ ...glass, borderRadius: 20, padding: 20, alignSelf: "start" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-                  <Sparkles size={14} style={{ color: "#0284c7" }} strokeWidth={1.8} />
-                  <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 13, fontWeight: 700, color: "#111827" }}>
+                  <Sparkles size={14} style={{ color: "#154f3d" }} strokeWidth={1.8} />
+                  <p style={{ fontFamily: "var(--font-fraunces), serif", fontSize: 13, fontWeight: 700, color: "#111827" }}>
                     AI Suggested Actions
                   </p>
                 </div>
@@ -323,12 +323,12 @@ export default function MetricDetailPage() {
                   style={{
                     width: "100%", marginTop: 14, padding: "10px 0",
                     borderRadius: 14, fontSize: 12, fontWeight: 600,
-                    background: "linear-gradient(135deg, rgba(14,165,233,0.1), rgba(139,92,246,0.08))",
-                    border: "1px solid rgba(14,165,233,0.25)", color: "#0284c7",
+                    background: "linear-gradient(135deg, rgba(31,122,92,0.1), rgba(200,106,51,0.08))",
+                    border: "1px solid rgba(31,122,92,0.25)", color: "#154f3d",
                     cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                     transition: "all 0.15s ease",
                   }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 16px rgba(14,165,233,0.15)"; }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 16px rgba(31,122,92,0.15)"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "none"; }}
                 >
                   <Sparkles size={12} strokeWidth={2} />

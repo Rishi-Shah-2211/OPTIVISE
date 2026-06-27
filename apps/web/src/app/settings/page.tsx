@@ -10,11 +10,11 @@ import {
 } from "lucide-react";
 
 const glass: React.CSSProperties = {
-  background: "rgba(255,255,255,0.09)",
+  background: "rgba(255,250,241,0.82)",
   backdropFilter: "blur(20px) saturate(180%)",
   WebkitBackdropFilter: "blur(20px) saturate(180%)",
-  border: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 4px 16px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.05)",
+  border: "1px solid rgba(62,70,54,0.14)",
+  boxShadow: "0 4px 16px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,250,241,0.45)",
 };
 
 const STORAGE_KEY = "optivise_settings_v2";
@@ -54,15 +54,15 @@ const TABS: { key: Tab; label: string; Icon: React.ElementType }[] = [
 ];
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.42)", marginBottom: 12 }}>{children}</p>;
+  return <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(50,64,54,0.42)", marginBottom: 12 }}>{children}</p>;
 }
 
 function FieldRow({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "14px 0", borderBottom: "1px solid rgba(255,255,255,0.09)" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "14px 0", borderBottom: "1px solid rgba(255,250,241,0.82)" }}>
       <div>
-        <p style={{ fontSize: 13, fontWeight: 500, color: "#f1f5f9" }}>{label}</p>
-        {hint && <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 2 }}>{hint}</p>}
+        <p style={{ fontSize: 13, fontWeight: 500, color: "#1b1d1b" }}>{label}</p>
+        {hint && <p style={{ fontSize: 11, color: "rgba(50,64,54,0.42)", marginTop: 2 }}>{hint}</p>}
       </div>
       <div style={{ flexShrink: 0 }}>{children}</div>
     </div>
@@ -77,11 +77,11 @@ function TextInput({ value, onChange, placeholder }: { value: string; onChange: 
       placeholder={placeholder}
       style={{
         width: 200, padding: "8px 12px", borderRadius: 10, fontSize: 13, outline: "none",
-        background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.12)",
-        color: "#f1f5f9", boxShadow: "0 1px 4px rgba(0,0,0,0.2)", transition: "border-color 0.15s",
+        background: "rgba(255,250,241,0.55)", border: "1px solid rgba(62,70,54,0.14)",
+        color: "#1b1d1b", boxShadow: "0 1px 4px rgba(0,0,0,0.2)", transition: "border-color 0.15s",
       }}
-      onFocus={(e) => { e.target.style.borderColor = "rgba(14,165,233,0.4)"; }}
-      onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.12)"; }}
+      onFocus={(e) => { e.target.style.borderColor = "rgba(31,122,92,0.4)"; }}
+      onBlur={(e) => { e.target.style.borderColor = "rgba(62,70,54,0.14)"; }}
     />
   );
 }
@@ -139,11 +139,11 @@ function SelectInput({ value, onChange, options }: { value: string; onChange: (v
         onClick={() => setOpen(!open)}
         style={{
           width: "100%", padding: "8px 12px", borderRadius: 10, fontSize: 13, textAlign: "left",
-          background: "rgba(255,255,255,0.10)", backdropFilter: "blur(12px)",
+          background: "rgba(255,250,241,0.55)", backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
-          border: open ? "1px solid rgba(14,165,233,0.35)" : "1px solid rgba(255,255,255,0.12)",
-          color: "#f1f5f9", cursor: "pointer",
-          boxShadow: open ? "0 0 0 3px rgba(14,165,233,0.10), 0 1px 4px rgba(0,0,0,0.2)" : "0 1px 4px rgba(0,0,0,0.2)",
+          border: open ? "1px solid rgba(31,122,92,0.35)" : "1px solid rgba(62,70,54,0.14)",
+          color: "#1b1d1b", cursor: "pointer",
+          boxShadow: open ? "0 0 0 3px rgba(31,122,92,0.10), 0 1px 4px rgba(0,0,0,0.2)" : "0 1px 4px rgba(0,0,0,0.2)",
           transition: "all 0.15s ease",
           display: "flex", alignItems: "center", justifyContent: "space-between",
         }}
@@ -154,7 +154,7 @@ function SelectInput({ value, onChange, options }: { value: string; onChange: (v
           transition={{ duration: 0.1 }}
           width="12" height="12" viewBox="0 0 12 12" fill="none"
         >
-          <path d="M3 4.5L6 7.5L9 4.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M3 4.5L6 7.5L9 4.5" stroke="rgba(50,64,54,0.4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         </motion.svg>
       </button>
 
@@ -170,11 +170,11 @@ function SelectInput({ value, onChange, options }: { value: string; onChange: (v
               style={{
                 position: "fixed", top: pos.top, left: pos.left, width: pos.width, zIndex: 9999,
                 borderRadius: 14, overflow: "hidden",
-                background: "rgba(30,35,50,0.95)",
+                background: "rgba(255,250,241,0.96)",
                 backdropFilter: "blur(20px) saturate(180%)",
                 WebkitBackdropFilter: "blur(20px) saturate(180%)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.30), 0 2px 8px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.06)",
+                border: "1px solid rgba(62,70,54,0.14)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.30), 0 2px 8px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,250,241,0.4)",
                 padding: "4px",
               }}
             >
@@ -188,18 +188,18 @@ function SelectInput({ value, onChange, options }: { value: string; onChange: (v
                       width: "100%", padding: "8px 12px", borderRadius: 10, fontSize: 13,
                       textAlign: "left", border: "none", cursor: "pointer",
                       display: "flex", alignItems: "center", justifyContent: "space-between",
-                      background: isActive ? "rgba(14,165,233,0.12)" : "transparent",
-                      color: isActive ? "#0ea5e9" : "rgba(255,255,255,0.65)",
+                      background: isActive ? "rgba(31,122,92,0.12)" : "transparent",
+                      color: isActive ? "#1f7a5c" : "rgba(50,64,54,0.65)",
                       fontWeight: isActive ? 600 : 400,
                       transition: "all 0.12s ease",
                     }}
-                    onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.10)"; }}
+                    onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,250,241,0.55)"; }}
                     onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
                   >
                     <span>{o.label}</span>
                     {isActive && (
                       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
-                        <Check size={13} strokeWidth={2.5} style={{ color: "#0ea5e9" }} />
+                        <Check size={13} strokeWidth={2.5} style={{ color: "#1f7a5c" }} />
                       </motion.div>
                     )}
                   </button>
@@ -214,14 +214,14 @@ function SelectInput({ value, onChange, options }: { value: string; onChange: (v
   );
 }
 
-function Toggle({ checked, onChange, accent = "#0ea5e9" }: { checked: boolean; onChange: (v: boolean) => void; accent?: string }) {
+function Toggle({ checked, onChange, accent = "#1f7a5c" }: { checked: boolean; onChange: (v: boolean) => void; accent?: string }) {
   return (
     <button
       onClick={() => onChange(!checked)}
       style={{
         width: 44, height: 24, borderRadius: 12, position: "relative", border: "none", cursor: "pointer",
-        background: checked ? `${accent}20` : "rgba(255,255,255,0.12)",
-        outline: `1px solid ${checked ? accent + "40" : "rgba(255,255,255,0.12)"}`,
+        background: checked ? `${accent}20` : "rgba(62,70,54,0.14)",
+        outline: `1px solid ${checked ? accent + "40" : "rgba(62,70,54,0.14)"}`,
         transition: "all 0.2s ease",
       }}
     >
@@ -230,7 +230,7 @@ function Toggle({ checked, onChange, accent = "#0ea5e9" }: { checked: boolean; o
         transition={{ type: "spring", stiffness: 500, damping: 35 }}
         style={{
           position: "absolute", top: 3, width: 18, height: 18, borderRadius: "50%",
-          background: checked ? accent : "rgba(255,255,255,0.42)",
+          background: checked ? accent : "rgba(50,64,54,0.42)",
           boxShadow: checked ? `0 2px 8px ${accent}60` : "none",
         }}
       />
@@ -241,8 +241,8 @@ function Toggle({ checked, onChange, accent = "#0ea5e9" }: { checked: boolean; o
 function StatusDot({ online }: { online: boolean }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-      <div style={{ width: 8, height: 8, borderRadius: "50%", background: online ? "#10b981" : "#f43f5e", boxShadow: online ? "0 0 8px rgba(16,185,129,0.5)" : "0 0 8px rgba(244,63,94,0.4)" }} />
-      <span style={{ fontSize: 12, fontWeight: 500, color: online ? "#10b981" : "#f43f5e" }}>{online ? "Working" : "Down"}</span>
+      <div style={{ width: 8, height: 8, borderRadius: "50%", background: online ? "#1f7a5c" : "#c0492f", boxShadow: online ? "0 0 8px rgba(31,122,92,0.5)" : "0 0 8px rgba(192,73,47,0.4)" }} />
+      <span style={{ fontSize: 12, fontWeight: 500, color: online ? "#1f7a5c" : "#c0492f" }}>{online ? "Working" : "Down"}</span>
     </div>
   );
 }
@@ -274,19 +274,19 @@ export default function SettingsPage() {
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 32px", height: 60,
-        background: "rgba(26,31,46,0.85)", backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.12)",
+        background: "rgba(255,250,241,0.82)", backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(62,70,54,0.14)",
         flexShrink: 0,
       }}>
         <div>
-          <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>Settings</h1>
-          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", margin: 0 }}>Manage your shop settings</p>
+          <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#1b1d1b", margin: 0 }}>Settings</h1>
+          <p style={{ fontSize: 11, color: "rgba(50,64,54,0.42)", margin: 0 }}>Manage your shop settings</p>
         </div>
 
         <motion.button
           onClick={handleSave}
           whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-          className={`${saved ? "btn-ghost !text-emerald-400" : "btn-premium"} !py-2 !text-[13px]`}
+          className={`${saved ? "btn-ghost !text-[#1f7a5c]" : "btn-premium"} !py-2 !text-[13px]`}
         >
           <AnimatePresence mode="wait">
             {saved
@@ -300,7 +300,7 @@ export default function SettingsPage() {
 
       <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
         {/* Sidebar */}
-        <div style={{ width: 200, flexShrink: 0, minHeight: 0, padding: "16px 12px", borderRight: "1px solid rgba(255,255,255,0.12)", overflowY: "auto" }}>
+        <div style={{ width: 200, flexShrink: 0, minHeight: 0, padding: "16px 12px", borderRight: "1px solid rgba(62,70,54,0.14)", overflowY: "auto" }}>
           {TABS.map(t => {
             const active = tab === t.key;
             const Icon = t.Icon;
@@ -310,17 +310,17 @@ export default function SettingsPage() {
                   width: "100%", display: "flex", alignItems: "center", gap: 10,
                   padding: "9px 12px", borderRadius: 12, marginBottom: 2,
                   fontSize: 13, fontWeight: 500, textAlign: "left", border: "none", cursor: "pointer",
-                  background: active ? "linear-gradient(135deg, rgba(14,165,233,0.12), rgba(14,165,233,0.05))" : "transparent",
-                  color: active ? "#0ea5e9" : "rgba(255,255,255,0.58)",
-                  outline: active ? "1px solid rgba(14,165,233,0.18)" : "1px solid transparent",
+                  background: active ? "linear-gradient(135deg, rgba(31,122,92,0.12), rgba(31,122,92,0.05))" : "transparent",
+                  color: active ? "#1f7a5c" : "rgba(50,64,54,0.58)",
+                  outline: active ? "1px solid rgba(31,122,92,0.18)" : "1px solid transparent",
                   transition: "all 0.15s ease",
                 }}
-                onMouseEnter={(e) => { if (!active) { const el = e.currentTarget as HTMLButtonElement; el.style.color = "rgba(255,255,255,0.8)"; el.style.background = "rgba(255,255,255,0.09)"; } }}
-                onMouseLeave={(e) => { if (!active) { const el = e.currentTarget as HTMLButtonElement; el.style.color = "rgba(255,255,255,0.58)"; el.style.background = "transparent"; } }}
+                onMouseEnter={(e) => { if (!active) { const el = e.currentTarget as HTMLButtonElement; el.style.color = "rgba(50,64,54,0.8)"; el.style.background = "rgba(255,250,241,0.82)"; } }}
+                onMouseLeave={(e) => { if (!active) { const el = e.currentTarget as HTMLButtonElement; el.style.color = "rgba(50,64,54,0.58)"; el.style.background = "transparent"; } }}
               >
-                <Icon size={14} strokeWidth={active ? 2.2 : 1.8} style={{ color: active ? "#0ea5e9" : "inherit", flexShrink: 0 }} />
+                <Icon size={14} strokeWidth={active ? 2.2 : 1.8} style={{ color: active ? "#1f7a5c" : "inherit", flexShrink: 0 }} />
                 {t.label}
-                {active && <ChevronRight size={12} strokeWidth={2.5} style={{ color: "#0ea5e9", marginLeft: "auto" }} />}
+                {active && <ChevronRight size={12} strokeWidth={2.5} style={{ color: "#1f7a5c", marginLeft: "auto" }} />}
               </button>
             );
           })}
@@ -373,17 +373,17 @@ export default function SettingsPage() {
                       <Toggle checked={s.notifyStockout} onChange={v => update("notifyStockout", v)} />
                     </FieldRow>
                     <FieldRow label="Important Tips" hint="Tell me about the big tips only">
-                      <Toggle checked={s.notifyHighImpact} onChange={v => update("notifyHighImpact", v)} accent="#f43f5e" />
+                      <Toggle checked={s.notifyHighImpact} onChange={v => update("notifyHighImpact", v)} accent="#c0492f" />
                     </FieldRow>
                     <FieldRow label="Daily Summary" hint="A short summary every morning">
-                      <Toggle checked={s.notifyDailyDigest} onChange={v => update("notifyDailyDigest", v)} accent="#8b5cf6" />
+                      <Toggle checked={s.notifyDailyDigest} onChange={v => update("notifyDailyDigest", v)} accent="#c86a33" />
                     </FieldRow>
                   </div>
 
-                  <div style={{ ...glass, borderRadius: 16, padding: 16, background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.15)" }}>
+                  <div style={{ ...glass, borderRadius: 16, padding: 16, background: "rgba(200,106,51,0.06)", border: "1px solid rgba(200,106,51,0.15)" }}>
                     <div style={{ display: "flex", gap: 10 }}>
-                      <Bell size={14} style={{ color: "#8b5cf6", flexShrink: 0, marginTop: 1 }} strokeWidth={1.8} />
-                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
+                      <Bell size={14} style={{ color: "#c86a33", flexShrink: 0, marginTop: 1 }} strokeWidth={1.8} />
+                      <p style={{ fontSize: 12, color: "rgba(50,64,54,0.55)", lineHeight: 1.6 }}>
                         For now, alerts show up inside the app — in the side menu and at the top of My Shop. Email alerts can be added later.
                       </p>
                     </div>
@@ -417,18 +417,18 @@ export default function SettingsPage() {
                   </div>
 
                   <Label>Reset</Label>
-                  <div style={{ ...glass, borderRadius: 20, padding: 20, border: "1px solid rgba(244,63,94,0.18)" }}>
-                    <p style={{ fontSize: 12, color: "rgba(255,255,255,0.48)", marginBottom: 14 }}>This cannot be undone.</p>
+                  <div style={{ ...glass, borderRadius: 20, padding: 20, border: "1px solid rgba(192,73,47,0.18)" }}>
+                    <p style={{ fontSize: 12, color: "rgba(50,64,54,0.48)", marginBottom: 14 }}>This cannot be undone.</p>
                     <button
                       onClick={() => { localStorage.removeItem(STORAGE_KEY); setS(DEFAULTS); }}
                       style={{
                         display: "flex", alignItems: "center", gap: 6, padding: "9px 16px",
                         borderRadius: 12, fontSize: 13, fontWeight: 500, cursor: "pointer",
-                        background: "rgba(244,63,94,0.10)", border: "1px solid rgba(244,63,94,0.22)", color: "#f43f5e",
+                        background: "rgba(192,73,47,0.10)", border: "1px solid rgba(192,73,47,0.22)", color: "#c0492f",
                         transition: "background 0.15s ease",
                       }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(244,63,94,0.18)"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(244,63,94,0.10)"; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(192,73,47,0.18)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(192,73,47,0.10)"; }}
                     >
                       <Shield size={14} strokeWidth={2} />
                       Reset All Settings
@@ -443,9 +443,9 @@ export default function SettingsPage() {
                   <Label>App Usage</Label>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14, marginBottom: 20 }}>
                     {[
-                      { label: "Used Today",      value: apiCalls.today.toLocaleString(),   icon: Zap,       color: "#0ea5e9" },
-                      { label: "Used This Week",   value: apiCalls.week.toLocaleString(),    icon: Clock,     color: "#8b5cf6" },
-                      { label: "Monthly Limit",    value: apiCalls.limit.toLocaleString(),   icon: BarChart2, color: "#10b981" },
+                      { label: "Used Today",      value: apiCalls.today.toLocaleString(),   icon: Zap,       color: "#1f7a5c" },
+                      { label: "Used This Week",   value: apiCalls.week.toLocaleString(),    icon: Clock,     color: "#c86a33" },
+                      { label: "Monthly Limit",    value: apiCalls.limit.toLocaleString(),   icon: BarChart2, color: "#1f7a5c" },
                     ].map((c, i) => {
                       const CIcon = c.icon;
                       return (
@@ -454,7 +454,7 @@ export default function SettingsPage() {
                             <div style={{ width: 28, height: 28, borderRadius: 10, background: `${c.color}18`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                               <CIcon size={13} style={{ color: c.color }} strokeWidth={2} />
                             </div>
-                            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)" }}>{c.label}</span>
+                            <span style={{ fontSize: 11, color: "rgba(50,64,54,0.48)" }}>{c.label}</span>
                           </div>
                           <p style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 24, fontWeight: 700, color: c.color }}>{c.value}</p>
                         </div>
@@ -470,19 +470,19 @@ export default function SettingsPage() {
                       { endpoint: "/api/copilot",       calls: 23, pct: 16 },
                       { endpoint: "/api/simulate",      calls: 10, pct: 7  },
                     ].map((r, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.09)" : "none" }}>
-                        <code style={{ fontSize: 12, background: "rgba(255,255,255,0.10)", padding: "2px 8px", borderRadius: 6, color: "rgba(255,255,255,0.6)", fontFamily: "monospace", width: 200, flexShrink: 0 }}>
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < 3 ? "1px solid rgba(255,250,241,0.82)" : "none" }}>
+                        <code style={{ fontSize: 12, background: "rgba(255,250,241,0.55)", padding: "2px 8px", borderRadius: 6, color: "rgba(50,64,54,0.6)", fontFamily: "monospace", width: 200, flexShrink: 0 }}>
                           {r.endpoint}
                         </code>
-                        <div style={{ flex: 1, height: 6, borderRadius: 999, background: "rgba(255,255,255,0.10)", overflow: "hidden" }}>
+                        <div style={{ flex: 1, height: 6, borderRadius: 999, background: "rgba(255,250,241,0.55)", overflow: "hidden" }}>
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${r.pct}%` }}
                             transition={{ duration: 0.4, delay: i * 0.05 }}
-                            style={{ height: "100%", borderRadius: 999, background: "linear-gradient(90deg, #0ea5e9, #8b5cf6)" }}
+                            style={{ height: "100%", borderRadius: 999, background: "linear-gradient(90deg, #1f7a5c, #c86a33)" }}
                           />
                         </div>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.6)", width: 60, textAlign: "right" }}>{r.calls} times</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(50,64,54,0.6)", width: 60, textAlign: "right" }}>{r.calls} times</span>
                       </div>
                     ))}
                   </div>
@@ -503,14 +503,14 @@ export default function SettingsPage() {
                     ].map((svc, i) => {
                       const SIcon = svc.icon;
                       return (
-                        <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0", borderBottom: i < 4 ? "1px solid rgba(255,255,255,0.09)" : "none" }}>
+                        <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0", borderBottom: i < 4 ? "1px solid rgba(255,250,241,0.82)" : "none" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                            <div style={{ width: 32, height: 32, borderRadius: 10, background: "rgba(255,255,255,0.10)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              <SIcon size={14} style={{ color: "rgba(255,255,255,0.45)" }} strokeWidth={1.8} />
+                            <div style={{ width: 32, height: 32, borderRadius: 10, background: "rgba(255,250,241,0.55)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <SIcon size={14} style={{ color: "rgba(50,64,54,0.45)" }} strokeWidth={1.8} />
                             </div>
                             <div>
-                              <p style={{ fontSize: 13, fontWeight: 500, color: "#f1f5f9" }}>{svc.label}</p>
-                              <code style={{ fontSize: 10, color: "rgba(255,255,255,0.3)" }}>{svc.endpoint}</code>
+                              <p style={{ fontSize: 13, fontWeight: 500, color: "#1b1d1b" }}>{svc.label}</p>
+                              <code style={{ fontSize: 10, color: "rgba(50,64,54,0.3)" }}>{svc.endpoint}</code>
                             </div>
                           </div>
                           <StatusDot online={svc.online} />
@@ -527,9 +527,9 @@ export default function SettingsPage() {
                       { key: "Storage",         val: "PostgreSQL"   },
                       { key: "Data Version",    val: "v1.0.0"       },
                     ].map((row, i) => (
-                      <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.09)" : "none" }}>
-                        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.48)" }}>{row.key}</span>
-                        <code style={{ fontSize: 12, fontFamily: "monospace", color: "rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.10)", padding: "2px 8px", borderRadius: 6 }}>{row.val}</code>
+                      <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: i < 3 ? "1px solid rgba(255,250,241,0.82)" : "none" }}>
+                        <span style={{ fontSize: 13, color: "rgba(50,64,54,0.48)" }}>{row.key}</span>
+                        <code style={{ fontSize: 12, fontFamily: "monospace", color: "rgba(50,64,54,0.6)", background: "rgba(255,250,241,0.55)", padding: "2px 8px", borderRadius: 6 }}>{row.val}</code>
                       </div>
                     ))}
                   </div>

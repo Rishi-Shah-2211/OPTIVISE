@@ -8,10 +8,10 @@ import type { Insight } from "@/types/dashboard";
 interface SStyle { Icon: React.ElementType; color: string; bg: string; border: string; label: string; }
 
 function getStyle(impact: number, type: string): SStyle {
-  if (impact > 80) return { Icon: AlertTriangle, color: "#f43f5e", bg: "rgba(244,63,94,0.10)", border: "rgba(244,63,94,0.20)", label: "Urgent" };
-  if (impact > 60) return { Icon: Zap, color: "#f59e0b", bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.20)", label: "Important" };
-  if (type?.toLowerCase().includes("success") || impact < 30) return { Icon: CheckCircle, color: "#10b981", bg: "rgba(16,185,129,0.10)", border: "rgba(16,185,129,0.15)", label: "Done" };
-  return { Icon: Info, color: "#0ea5e9", bg: "rgba(14,165,233,0.10)", border: "rgba(14,165,233,0.15)", label: "Good to Know" };
+  if (impact > 80) return { Icon: AlertTriangle, color: "#c0492f", bg: "rgba(192,73,47,0.10)", border: "rgba(192,73,47,0.20)", label: "Urgent" };
+  if (impact > 60) return { Icon: Zap, color: "#c86a33", bg: "rgba(200,106,51,0.10)", border: "rgba(200,106,51,0.20)", label: "Important" };
+  if (type?.toLowerCase().includes("success") || impact < 30) return { Icon: CheckCircle, color: "#1f7a5c", bg: "rgba(31,122,92,0.10)", border: "rgba(31,122,92,0.15)", label: "Done" };
+  return { Icon: Info, color: "#1f7a5c", bg: "rgba(31,122,92,0.10)", border: "rgba(31,122,92,0.15)", label: "Good to Know" };
 }
 
 function normalize(c: number) { return c <= 1 ? c * 100 : c; }
@@ -67,21 +67,21 @@ export function InsightCard({ insight, index }: { insight: Insight; index: numbe
           <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", padding: "2px 7px", borderRadius: 999, background: s.bg, color: s.color }}>
             {s.label}
           </span>
-          <span style={{ fontSize: 10, color: "rgba(255,255,255,0.42)", textTransform: "capitalize" }}>
+          <span style={{ fontSize: 10, color: "rgba(50,64,54,0.42)", textTransform: "capitalize" }}>
             {({ stockout: "running low", overstock: "too much stock", reorder: "order soon", lead_time: "slow delivery" } as Record<string, string>)[insight.type] ?? insight.type?.replace(/_/g, " ")}
           </span>
-          <span style={{ fontSize: 10, color: "rgba(255,255,255,0.42)", marginLeft: "auto" }}>{safeAgo(insight.createdAt)}</span>
+          <span style={{ fontSize: 10, color: "rgba(50,64,54,0.42)", marginLeft: "auto" }}>{safeAgo(insight.createdAt)}</span>
         </div>
 
-        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.5, marginBottom: 10 }}>{insight.message}</p>
+        <p style={{ fontSize: 13, color: "rgba(50,64,54,0.65)", lineHeight: 1.5, marginBottom: 10 }}>{insight.message}</p>
 
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ flex: 1 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-              <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", color: "rgba(255,255,255,0.42)" }}>How Sure</span>
+              <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", color: "rgba(50,64,54,0.42)" }}>How Sure</span>
               <span style={{ fontSize: 10, fontWeight: 700, color: s.color }}>{Math.round(conf)}%</span>
             </div>
-            <div style={{ height: 4, borderRadius: 999, background: "rgba(255,255,255,0.10)", overflow: "hidden" }}>
+            <div style={{ height: 4, borderRadius: 999, background: "rgba(255,250,241,0.55)", overflow: "hidden" }}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${conf}%` }}
@@ -91,7 +91,7 @@ export function InsightCard({ insight, index }: { insight: Insight; index: numbe
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", color: "rgba(255,255,255,0.42)", display: "block", marginBottom: 2 }}>How Big</span>
+            <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", color: "rgba(50,64,54,0.42)", display: "block", marginBottom: 2 }}>How Big</span>
             <span style={{ fontSize: 14, fontWeight: 700, color: s.color }}>{Math.round(insight.impact)}</span>
           </div>
           <button

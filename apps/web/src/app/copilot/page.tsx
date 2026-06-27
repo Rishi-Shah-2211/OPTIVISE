@@ -12,20 +12,20 @@ type Role = "user" | "assistant";
 interface Message { id: string; role: Role; content: string; timestamp: Date; }
 
 const glass: React.CSSProperties = {
-  background: "rgba(255,255,255,0.09)",
+  background: "rgba(255,250,241,0.82)",
   backdropFilter: "blur(20px) saturate(180%)",
   WebkitBackdropFilter: "blur(20px) saturate(180%)",
-  border: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.05)",
+  border: "1px solid rgba(62,70,54,0.14)",
+  boxShadow: "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,250,241,0.45)",
 };
 
 const SUGGESTED = [
-  { Icon: AlertTriangle, text: "Which items will finish this week?",                  color: "#e11d48" },
-  { Icon: Package,       text: "Which items do I have too much of?",                  color: "#d97706" },
-  { Icon: TrendingDown,  text: "Where is my money stuck in extra stock?",            color: "#7c3aed" },
-  { Icon: Clock,         text: "Which items take longest to get delivered?",         color: "#059669" },
-  { Icon: Target,        text: "How much should I order of my fast-selling items?",  color: "#0284c7" },
-  { Icon: Globe,         text: "Which of my suppliers are the most reliable?",        color: "#d97706" },
+  { Icon: AlertTriangle, text: "Which items will finish this week?",                  color: "#a83a26" },
+  { Icon: Package,       text: "Which items do I have too much of?",                  color: "#a8551f" },
+  { Icon: TrendingDown,  text: "Where is my money stuck in extra stock?",            color: "#a8551f" },
+  { Icon: Clock,         text: "Which items take longest to get delivered?",         color: "#154f3d" },
+  { Icon: Target,        text: "How much should I order of my fast-selling items?",  color: "#154f3d" },
+  { Icon: Globe,         text: "Which of my suppliers are the most reliable?",        color: "#a8551f" },
 ];
 
 const FOLLOW_UP_MAP: { keywords: string[]; chips: string[] }[] = [
@@ -69,21 +69,21 @@ function FollowUpChips({ content, onChipClick }: { content: string; onChipClick:
           onClick={() => onChipClick(chip)}
           style={{
             padding: "5px 13px", borderRadius: 999, fontSize: 11, fontWeight: 500,
-            background: "rgba(14,165,233,0.08)", border: "1px solid rgba(14,165,233,0.18)",
-            color: "#0ea5e9", cursor: "pointer", transition: "all 0.15s ease",
+            background: "rgba(31,122,92,0.08)", border: "1px solid rgba(31,122,92,0.18)",
+            color: "#1f7a5c", cursor: "pointer", transition: "all 0.15s ease",
             whiteSpace: "nowrap",
           }}
           onMouseEnter={(e) => {
             const el = e.currentTarget as HTMLButtonElement;
-            el.style.background = "rgba(14,165,233,0.16)";
-            el.style.borderColor = "rgba(14,165,233,0.32)";
+            el.style.background = "rgba(31,122,92,0.16)";
+            el.style.borderColor = "rgba(31,122,92,0.32)";
             el.style.transform = "translateY(-1px)";
-            el.style.boxShadow = "0 2px 8px rgba(14,165,233,0.15)";
+            el.style.boxShadow = "0 2px 8px rgba(31,122,92,0.15)";
           }}
           onMouseLeave={(e) => {
             const el = e.currentTarget as HTMLButtonElement;
-            el.style.background = "rgba(14,165,233,0.08)";
-            el.style.borderColor = "rgba(14,165,233,0.18)";
+            el.style.background = "rgba(31,122,92,0.08)";
+            el.style.borderColor = "rgba(31,122,92,0.18)";
             el.style.transform = "translateY(0)";
             el.style.boxShadow = "none";
           }}
@@ -99,12 +99,12 @@ function TypingIndicator() {
   return (
     <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
       style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-      <div style={{ width: 28, height: 28, borderRadius: "50%", flexShrink: 0, background: "rgba(14,165,233,0.12)", border: "1px solid rgba(14,165,233,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Bot size={13} style={{ color: "#0ea5e9" }} strokeWidth={2} />
+      <div style={{ width: 28, height: 28, borderRadius: "50%", flexShrink: 0, background: "rgba(31,122,92,0.12)", border: "1px solid rgba(31,122,92,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Bot size={13} style={{ color: "#1f7a5c" }} strokeWidth={2} />
       </div>
       <div style={{ ...glass, padding: "12px 16px", borderRadius: "18px 18px 18px 4px", display: "flex", gap: 5, alignItems: "center" }}>
         {[0, 1, 2].map(i => (
-          <motion.div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: "#0ea5e9" }}
+          <motion.div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: "#1f7a5c" }}
             animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.1, 0.8] }}
             transition={{ duration: 0.55, repeat: Infinity, delay: i * 0.09 }} />
         ))}
@@ -124,27 +124,27 @@ function MessageBubble({ message }: { message: Message }) {
     >
       <div style={{
         width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-        background: isUser ? "rgba(139,92,246,0.15)" : "rgba(14,165,233,0.12)",
-        border: isUser ? "1px solid rgba(139,92,246,0.25)" : "1px solid rgba(14,165,233,0.2)",
+        background: isUser ? "rgba(200,106,51,0.15)" : "rgba(31,122,92,0.12)",
+        border: isUser ? "1px solid rgba(200,106,51,0.25)" : "1px solid rgba(31,122,92,0.2)",
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
-        {isUser ? <User size={13} style={{ color: "#7c3aed" }} strokeWidth={2} /> : <Bot size={13} style={{ color: "#0284c7" }} strokeWidth={2} />}
+        {isUser ? <User size={13} style={{ color: "#a8551f" }} strokeWidth={2} /> : <Bot size={13} style={{ color: "#154f3d" }} strokeWidth={2} />}
       </div>
 
       <div style={{
         maxWidth: "72%", padding: "12px 16px", fontSize: 13, lineHeight: 1.65,
         borderRadius: isUser ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
         background: isUser
-          ? "linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.07))"
-          : "rgba(255,255,255,0.10)",
-        border: isUser ? "1px solid rgba(139,92,246,0.2)" : "1px solid rgba(255,255,255,0.12)",
+          ? "linear-gradient(135deg, rgba(200,106,51,0.12), rgba(200,106,51,0.07))"
+          : "rgba(255,250,241,0.55)",
+        border: isUser ? "1px solid rgba(200,106,51,0.2)" : "1px solid rgba(62,70,54,0.14)",
         boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-        color: "#f1f5f9",
+        color: "#1b1d1b",
       }}>
         {message.content.split("\n").map((line, i, arr) => (
           <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
         ))}
-        <p style={{ fontSize: 10, marginTop: 7, color: isUser ? "rgba(139,92,246,0.5)" : "rgba(255,255,255,0.42)" }}>
+        <p style={{ fontSize: 10, marginTop: 7, color: isUser ? "rgba(200,106,51,0.5)" : "rgba(50,64,54,0.42)" }}>
           {message.timestamp.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false })}
         </p>
       </div>
@@ -158,19 +158,19 @@ function WelcomeState({ onPrompt }: { onPrompt: (t: string) => void }) {
       style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", paddingBottom: 32 }}>
       <motion.div
         style={{ width: 64, height: 64, borderRadius: 22, marginBottom: 18, display: "flex", alignItems: "center", justifyContent: "center",
-          background: "linear-gradient(135deg, rgba(14,165,233,0.12), rgba(139,92,246,0.10))",
-          border: "1px solid rgba(14,165,233,0.25)", boxShadow: "0 8px 32px rgba(14,165,233,0.12)",
+          background: "linear-gradient(135deg, rgba(31,122,92,0.12), rgba(200,106,51,0.10))",
+          border: "1px solid rgba(31,122,92,0.25)", boxShadow: "0 8px 32px rgba(31,122,92,0.12)",
         }}
-        animate={{ boxShadow: ["0 8px 32px rgba(14,165,233,0.12)", "0 8px 40px rgba(14,165,233,0.22)", "0 8px 32px rgba(14,165,233,0.12)"] }}
+        animate={{ boxShadow: ["0 8px 32px rgba(31,122,92,0.12)", "0 8px 40px rgba(31,122,92,0.22)", "0 8px 32px rgba(31,122,92,0.12)"] }}
         transition={{ duration: 1.5, repeat: Infinity }}
       >
-        <Sparkles size={26} style={{ color: "#0284c7" }} strokeWidth={1.5} />
+        <Sparkles size={26} style={{ color: "#154f3d" }} strokeWidth={1.5} />
       </motion.div>
 
-      <h2 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 20, fontWeight: 700, color: "#f1f5f9", marginBottom: 6, textAlign: "center" }}>
+      <h2 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 20, fontWeight: 700, color: "#1b1d1b", marginBottom: 6, textAlign: "center" }}>
         Shop Helper
       </h2>
-      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)", marginBottom: 28, textAlign: "center", maxWidth: 300, lineHeight: 1.6 }}>
+      <p style={{ fontSize: 13, color: "rgba(50,64,54,0.60)", marginBottom: 28, textAlign: "center", maxWidth: 300, lineHeight: 1.6 }}>
         Ask me anything about your shop. I know all your items and stock. Type in Hindi or English — anything works.
       </p>
 
@@ -183,7 +183,7 @@ function WelcomeState({ onPrompt }: { onPrompt: (t: string) => void }) {
               onClick={() => onPrompt(s.text)}
               style={{
                 ...glass, padding: "12px 14px", borderRadius: 16, display: "flex", alignItems: "flex-start",
-                gap: 10, textAlign: "left", cursor: "pointer", border: "1px solid rgba(255,255,255,0.12)",
+                gap: 10, textAlign: "left", cursor: "pointer", border: "1px solid rgba(62,70,54,0.14)",
                 transition: "all 0.15s ease",
               }}
               onMouseEnter={(e) => { const el = e.currentTarget as HTMLButtonElement; el.style.boxShadow = "0 6px 24px rgba(0,0,0,0.25)"; el.style.transform = "translateY(-2px)"; }}
@@ -192,7 +192,7 @@ function WelcomeState({ onPrompt }: { onPrompt: (t: string) => void }) {
               <div style={{ width: 28, height: 28, borderRadius: 10, background: `${s.color}12`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <SIcon size={13} style={{ color: s.color }} strokeWidth={2} />
               </div>
-              <p style={{ fontSize: 12, lineHeight: 1.5, color: "rgba(255,255,255,0.7)" }}>{s.text}</p>
+              <p style={{ fontSize: 12, lineHeight: 1.5, color: "rgba(50,64,54,0.7)" }}>{s.text}</p>
             </motion.button>
           );
         })}
@@ -251,17 +251,17 @@ export default function CopilotPage() {
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 32px", height: 60,
-        background: "rgba(26,31,46,0.85)", backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.12)",
+        background: "rgba(255,250,241,0.82)", backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(62,70,54,0.14)",
         flexShrink: 0,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 10, background: "linear-gradient(135deg, rgba(14,165,233,0.15), rgba(139,92,246,0.12))", border: "1px solid rgba(14,165,233,0.25)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Sparkles size={13} style={{ color: "#0284c7" }} strokeWidth={2} />
+          <div style={{ width: 28, height: 28, borderRadius: 10, background: "linear-gradient(135deg, rgba(31,122,92,0.15), rgba(200,106,51,0.12))", border: "1px solid rgba(31,122,92,0.25)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Sparkles size={13} style={{ color: "#154f3d" }} strokeWidth={2} />
           </div>
           <div>
-            <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>AI Helper</h1>
-            <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", margin: 0 }}>Your shop's smart assistant</p>
+            <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#1b1d1b", margin: 0 }}>AI Helper</h1>
+            <p style={{ fontSize: 11, color: "rgba(50,64,54,0.5)", margin: 0 }}>Your shop's smart assistant</p>
           </div>
         </div>
 
@@ -295,16 +295,16 @@ export default function CopilotPage() {
       </div>
 
       {/* Input */}
-      <div style={{ padding: "16px 32px", borderTop: "1px solid rgba(255,255,255,0.12)", background: "rgba(26,31,46,0.85)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", flexShrink: 0 }}>
+      <div style={{ padding: "16px 32px", borderTop: "1px solid rgba(62,70,54,0.14)", background: "rgba(255,250,241,0.82)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", flexShrink: 0 }}>
         <div
           style={{
             display: "flex", alignItems: "flex-end", gap: 10, maxWidth: 760, margin: "0 auto",
             padding: "10px 12px", borderRadius: 20,
-            background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(255,250,241,0.55)", border: "1px solid rgba(62,70,54,0.14)",
             boxShadow: "0 2px 12px rgba(0,0,0,0.2)", transition: "border-color 0.15s ease, box-shadow 0.15s ease",
           }}
-          onFocusCapture={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(14,165,233,0.4)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 0 0 3px rgba(14,165,233,0.08), 0 2px 12px rgba(0,0,0,0.2)"; }}
-          onBlurCapture={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(255,255,255,0.12)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.2)"; }}
+          onFocusCapture={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(31,122,92,0.4)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 0 0 3px rgba(31,122,92,0.08), 0 2px 12px rgba(0,0,0,0.2)"; }}
+          onBlurCapture={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(62,70,54,0.14)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.2)"; }}
         >
           <textarea
             ref={textareaRef}
@@ -315,7 +315,7 @@ export default function CopilotPage() {
             rows={1}
             style={{
               flex: 1, resize: "none", background: "transparent", border: "none", outline: "none",
-              fontSize: 13, color: "#f1f5f9", lineHeight: 1.6, maxHeight: 120, overflowY: "auto",
+              fontSize: 13, color: "#1b1d1b", lineHeight: 1.6, maxHeight: 120, overflowY: "auto",
             }}
           />
           <button
@@ -325,22 +325,22 @@ export default function CopilotPage() {
               width: 32, height: 32, borderRadius: 12, flexShrink: 0, border: "none",
               display: "flex", alignItems: "center", justifyContent: "center",
               background: input.trim() && !isLoading
-                ? "linear-gradient(135deg, #0ea5e9, #8b5cf6)"
-                : "rgba(255,255,255,0.10)",
+                ? "linear-gradient(135deg, #1f7a5c, #c86a33)"
+                : "rgba(255,250,241,0.55)",
               cursor: input.trim() && !isLoading ? "pointer" : "not-allowed",
               transition: "all 0.15s ease",
-              boxShadow: input.trim() && !isLoading ? "0 2px 10px rgba(14,165,233,0.3)" : "none",
+              boxShadow: input.trim() && !isLoading ? "0 2px 10px rgba(31,122,92,0.3)" : "none",
             }}
           >
             {isLoading
               ? <motion.div animate={{ rotate: 360 }} transition={{ duration: 0.4, repeat: Infinity, ease: "linear" }}>
-                  <div style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.1)", borderTopColor: "#0ea5e9" }} />
+                  <div style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid rgba(255,250,241,0.55)", borderTopColor: "#1f7a5c" }} />
                 </motion.div>
-              : <Send size={13} style={{ color: input.trim() ? "#fff" : "rgba(255,255,255,0.3)" }} strokeWidth={2} />
+              : <Send size={13} style={{ color: input.trim() ? "#fff" : "rgba(50,64,54,0.3)" }} strokeWidth={2} />
             }
           </button>
         </div>
-        <p style={{ textAlign: "center", fontSize: 10, color: "rgba(255,255,255,0.42)", marginTop: 8 }}>
+        <p style={{ textAlign: "center", fontSize: 10, color: "rgba(50,64,54,0.42)", marginTop: 8 }}>
           Enter to send · Shift+Enter for new line
         </p>
       </div>

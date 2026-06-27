@@ -51,7 +51,7 @@ function LiveClock() {
     return () => clearInterval(id);
   }, []);
   return (
-    <span className="font-mono text-[11px] tabular-nums text-white/45">
+    <span className="font-mono text-[11px] tabular-nums text-[#1b1d1b]/45">
       {time}
     </span>
   );
@@ -84,7 +84,7 @@ function NavItem({
         {highlighted && (
           <motion.span
             layoutId="sidebar-indicator"
-            className="absolute inset-0 -z-[1] rounded-full bg-gradient-to-br from-sky-500/20 to-violet-500/10 border border-sky-400/25 shadow-[0_4px_20px_rgba(14,165,233,0.12)]"
+            className="absolute inset-0 -z-[1] rounded-full bg-gradient-to-br from-[#256a52]/20 to-violet-500/10 border border-[#1f7a5c]/25 shadow-[0_4px_20px_rgba(31,122,92,0.12)]"
             transition={{ type: "spring", stiffness: 260, damping: 26 }}
           />
         )}
@@ -92,11 +92,11 @@ function NavItem({
       <Icon
         size={15}
         strokeWidth={highlighted ? 2.2 : 1.8}
-        className={`shrink-0 transition-colors duration-300 ${highlighted ? "text-sky-400" : "text-white/55"}`}
+        className={`shrink-0 transition-colors duration-300 ${highlighted ? "text-[#1f7a5c]" : "text-[#1b1d1b]/55"}`}
       />
-      <span className={highlighted ? "text-sky-100" : "text-white/58"}>{label}</span>
+      <span className={highlighted ? "text-[#154f3d]" : "text-[#1b1d1b]/58"}>{label}</span>
       {active && (
-        <span className="ml-auto h-1.5 w-1.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(14,165,233,0.5)]" />
+        <span className="ml-auto h-1.5 w-1.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(31,122,92,0.5)]" />
       )}
     </Link>
   );
@@ -131,16 +131,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="relative z-10 min-h-dvh">{children}</div>
             ) : (
             <div className="relative z-10 flex h-dvh min-h-dvh overflow-hidden">
-              <aside className="flex h-full w-[220px] shrink-0 flex-col border-r border-white/12 bg-[rgba(26,31,46,0.85)] shadow-[2px_0_16px_rgba(0,0,0,0.22)] backdrop-blur-2xl backdrop-saturate-180">
-                <div className="flex h-[60px] shrink-0 items-center gap-2.5 border-b border-white/12 px-5">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-[10px] border border-sky-400/30 bg-gradient-to-br from-sky-500/22 to-sky-500/8 shadow-[0_2px_8px_rgba(14,165,233,0.25)]">
-                    <Activity size={13} className="text-sky-400" strokeWidth={2.2} />
+              <aside className="flex h-full w-[220px] shrink-0 flex-col border-r border-[#3e4636]/12 bg-[rgba(255,250,241,0.82)] shadow-[2px_0_16px_rgba(0,0,0,0.22)] backdrop-blur-2xl backdrop-saturate-180">
+                <div className="flex h-[60px] shrink-0 items-center gap-2.5 border-b border-[#3e4636]/12 px-5">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-[10px] border border-[#1f7a5c]/30 bg-gradient-to-br from-[#256a52]/22 to-[#154f3d]/8 shadow-[0_2px_8px_rgba(31,122,92,0.25)]">
+                    <Activity size={13} className="text-[#1f7a5c]" strokeWidth={2.2} />
                   </div>
                   <div className="leading-none">
                     <span className="font-serif text-[15px] font-bold tracking-tight text-slate-100">
                       Optivise
                     </span>
-                    <p className="font-editorial mt-0.5 text-[10px] text-white/40">your shop, optimized</p>
+                    <p className="font-editorial mt-0.5 text-[10px] text-[#1b1d1b]/40">your shop, optimized</p>
                   </div>
                 </div>
 
@@ -148,7 +148,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4"
                   onMouseLeave={() => setNavHover(null)}
                 >
-                  <p className="mb-2 px-3 text-[9px] font-bold uppercase tracking-[0.13em] text-white/42">
+                  <p className="mb-2 px-3 text-[9px] font-bold uppercase tracking-[0.13em] text-[#1b1d1b]/42">
                     Menu
                   </p>
                   {NAV_ITEMS.map((item) => (
@@ -168,17 +168,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   ))}
                 </nav>
 
-                <div className="shrink-0 border-t border-white/12 px-5 py-4">
+                <div className="shrink-0 border-t border-[#3e4636]/12 px-5 py-4">
                   <div className="mb-1.5 flex items-center justify-between">
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-white/42">Status</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#1b1d1b]/42">Status</span>
                     <LiveClock />
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="relative flex h-1.5 w-1.5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1f7a5c] opacity-60" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#1f7a5c] shadow-[0_0_6px_rgba(31,122,92,0.5)]" />
                     </span>
-                    <span className="text-[10px] text-white/48">Everything is working</span>
+                    <span className="text-[10px] text-[#1b1d1b]/48">Everything is working</span>
                   </div>
                   <button
                     onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); window.location.href = "/login"; }}

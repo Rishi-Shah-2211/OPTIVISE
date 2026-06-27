@@ -15,13 +15,13 @@ export function FillBar({
 }) {
   const toneClass =
     tone === "violet"
-      ? "from-[#8b5cf6] to-[#6d28d9]"
+      ? "from-[#c86a33] to-[#6d28d9]"
       : tone === "muted"
         ? "from-[#64748b] to-[#475569]"
-        : "from-[#0ea5e9] to-[#0284c7]";
+        : "from-[#1f7a5c] to-[#154f3d]";
 
   return (
-    <div className={`relative h-1.5 w-full overflow-hidden rounded-full bg-white/10 ${className}`}>
+    <div className={`relative h-1.5 w-full overflow-hidden rounded-full bg-[#fffaf1]/10 ${className}`}>
       <motion.div
         initial={{ width: "0%" }}
         whileInView={{ width: `${Math.min(100, pct)}%` }}

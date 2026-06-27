@@ -21,13 +21,13 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-0 z-30 h-screen w-[260px] border-r border-white/10 bg-[#0B0F17]">
+    <aside className="fixed left-0 top-0 z-30 h-screen w-[260px] border-r border-[#3e4636]/10 bg-[#f5efe2]">
       <div className="h-full flex flex-col p-4">
         <div className="mb-6 px-2 py-2">
-          <div className="text-base font-semibold tracking-tight text-zinc-100">
+          <div className="text-base font-semibold tracking-tight text-[#1b1d1b]">
             Optivise
           </div>
-          <div className="mt-1 text-xs text-zinc-400">Your shop stock helper</div>
+          <div className="mt-1 text-xs text-[#5a6557]">Your shop stock helper</div>
         </div>
 
         <nav className="flex flex-col gap-2">
@@ -41,10 +41,10 @@ export function Sidebar() {
                 href={item.href}
                 className={clsx(
                   "relative flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-300",
-                  "hover:bg-white/5 hover:text-zinc-100 hover:translate-x-0.5",
+                  "hover:bg-[#fffaf1]/5 hover:text-[#1b1d1b] hover:translate-x-0.5",
                   active
                     ? "bg-blue-500/12 border border-blue-400/20 shadow-[0_0_0_1px_rgba(96,165,250,0.18),0_0_24px_rgba(59,130,246,0.14)]"
-                    : "text-zinc-300"
+                    : "text-[#324036]"
                 )}
               >
                 {/* Active accent */}
@@ -56,8 +56,8 @@ export function Sidebar() {
                   )}
                 />
 
-                <Icon size={18} className={clsx("shrink-0", active ? "text-blue-100" : "text-zinc-300")} />
-                <span className={clsx("text-sm font-medium", active ? "text-white" : "text-zinc-300")}>
+                <Icon size={18} className={clsx("shrink-0", active ? "text-blue-100" : "text-[#324036]")} />
+                <span className={clsx("text-sm font-medium", active ? "text-[#1b1d1b]" : "text-[#324036]")}>
                   {item.name}
                 </span>
               </Link>

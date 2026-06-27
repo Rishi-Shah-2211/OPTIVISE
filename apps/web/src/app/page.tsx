@@ -19,7 +19,7 @@ import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import type { Product } from "@/types/dashboard";
 
-const glassPanel = "glass-panel card-lift shimmer-card rounded-[1.75rem] border border-white/12";
+const glassPanel = "glass-panel card-lift shimmer-card rounded-[1.75rem] border border-[#3e4636]/12";
 
 function LoadRealDataButton({ onComplete }: { onComplete: () => void }) {
   const [state, setState] = useStateImport<"idle" | "loading" | "success" | "error">("idle");
@@ -57,16 +57,16 @@ function LoadRealDataButton({ onComplete }: { onComplete: () => void }) {
         display: "flex", alignItems: "center", gap: 7, padding: "6px 14px",
         borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: state === "loading" ? "wait" : "pointer",
         background: state === "success"
-          ? "rgba(16,185,129,0.12)"
+          ? "rgba(31,122,92,0.12)"
           : state === "error"
-            ? "rgba(244,63,94,0.12)"
-            : "linear-gradient(135deg, rgba(16,185,129,0.14), rgba(14,165,233,0.12))",
+            ? "rgba(192,73,47,0.12)"
+            : "linear-gradient(135deg, rgba(31,122,92,0.14), rgba(31,122,92,0.12))",
         border: state === "success"
-          ? "1px solid rgba(16,185,129,0.3)"
+          ? "1px solid rgba(31,122,92,0.3)"
           : state === "error"
-            ? "1px solid rgba(244,63,94,0.3)"
-            : "1px solid rgba(16,185,129,0.3)",
-        color: state === "success" ? "#10b981" : state === "error" ? "#f43f5e" : "#10b981",
+            ? "1px solid rgba(192,73,47,0.3)"
+            : "1px solid rgba(31,122,92,0.3)",
+        color: state === "success" ? "#1f7a5c" : state === "error" ? "#c0492f" : "#1f7a5c",
         transition: "all 0.2s ease",
         boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
         opacity: state === "loading" ? 0.7 : 1,
@@ -93,22 +93,22 @@ function DashboardHeader({ isLoading, isRefreshing, lastUpdated, onRefetch }: {
   const spinning = isLoading || isRefreshing;
 
   return (
-    <div className="sticky top-0 z-10 flex h-[60px] shrink-0 items-center justify-between border-b border-white/12 bg-[rgba(26,31,46,0.85)] px-8 backdrop-blur-xl">
+    <div className="sticky top-0 z-10 flex h-[60px] shrink-0 items-center justify-between border-b border-[#3e4636]/12 bg-[rgba(255,250,241,0.82)] px-8 backdrop-blur-xl">
       <div>
         <h1 className="font-serif m-0 text-[15px] font-bold text-slate-100">My Shop</h1>
         <div className="mt-0.5 flex items-center gap-1.5">
           <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1f7a5c] opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#1f7a5c] shadow-[0_0_6px_rgba(31,122,92,0.5)]" />
           </span>
-          <span className="text-[11px] text-white/45">
+          <span className="text-[11px] text-[#1b1d1b]/45">
             Live
             {lastUpdated && !spinning && (
-              <span className="ml-1.5 text-white/30">
+              <span className="ml-1.5 text-[#1b1d1b]/30">
                 · Updated {lastUpdated.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}
               </span>
             )}
-            {spinning && <span className="ml-1.5 text-sky-400">· Refreshing...</span>}
+            {spinning && <span className="ml-1.5 text-[#1f7a5c]">· Refreshing...</span>}
           </span>
         </div>
       </div>
@@ -142,7 +142,7 @@ function SectionHeader({ title, subtitle, action }: { title: string; subtitle?: 
     <div className="mb-4 flex items-center justify-between">
       <div>
         <h2 className="font-serif m-0 text-sm font-bold text-slate-100">{title}</h2>
-        {subtitle && <p className="mt-0.5 text-[11px] text-white/42">{subtitle}</p>}
+        {subtitle && <p className="mt-0.5 text-[11px] text-[#1b1d1b]/42">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -154,7 +154,7 @@ function ViewAllLink({ label, href }: { label: string; href: string }) {
   return (
     <button
       onClick={() => router.push(href)}
-      className="link-sweep flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[11px] font-medium text-sky-400"
+      className="link-sweep flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[11px] font-medium text-[#1f7a5c]"
     >
       {label}
       <ChevronRight size={12} strokeWidth={2.5} />
@@ -171,8 +171,8 @@ function ProductsTable({ products }: { products: Product[] }) {
       <div style={{
         display: "grid", gridTemplateColumns: "1fr 72px 72px 52px",
         padding: "10px 16px", fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-        letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)",
-        borderBottom: "1px solid rgba(255,255,255,0.12)",
+        letterSpacing: "0.1em", color: "rgba(50,64,54,0.3)",
+        borderBottom: "1px solid rgba(62,70,54,0.14)",
       }}>
         <span>Item</span>
         <span style={{ textAlign: "right" }}>In Stock</span>
@@ -182,7 +182,7 @@ function ProductsTable({ products }: { products: Product[] }) {
 
       {sorted.map((p, idx) => {
         const pressure = p.inventory > 0 ? Math.min((p.demand / p.inventory) * 100, 100) : 100;
-        const pc = pressure > 80 ? "#f43f5e" : pressure > 50 ? "#f59e0b" : "#10b981";
+        const pc = pressure > 80 ? "#c0492f" : pressure > 50 ? "#c86a33" : "#1f7a5c";
 
         return (
           <motion.div
@@ -192,24 +192,24 @@ function ProductsTable({ products }: { products: Product[] }) {
             transition={{ delay: 0.15 + idx * 0.02 }}
             style={{
               display: "grid", gridTemplateColumns: "1fr 72px 72px 52px",
-              padding: "10px 16px", borderBottom: "1px solid rgba(255,255,255,0.08)",
+              padding: "10px 16px", borderBottom: "1px solid rgba(255,250,241,0.7)",
               transition: "background 0.15s ease",
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.06)"; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = "rgba(255,250,241,0.4)"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.background = "transparent"; }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ width: 24, height: 24, borderRadius: 8, background: "rgba(255,255,255,0.10)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Package size={11} style={{ color: "rgba(255,255,255,0.42)" }} strokeWidth={1.8} />
+              <div style={{ width: 24, height: 24, borderRadius: 8, background: "rgba(255,250,241,0.55)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Package size={11} style={{ color: "rgba(50,64,54,0.42)" }} strokeWidth={1.8} />
               </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.7)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(50,64,54,0.7)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</span>
             </div>
-            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", textAlign: "right", alignSelf: "center" }}>{p.inventory.toLocaleString()}</span>
+            <span style={{ fontSize: 13, color: "rgba(50,64,54,0.45)", textAlign: "right", alignSelf: "center" }}>{p.inventory.toLocaleString()}</span>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4, alignSelf: "center" }}>
               <span style={{ fontSize: 13, fontWeight: 600, color: pc }}>{p.demand.toLocaleString()}</span>
               <TrendingUp size={10} style={{ color: pc }} strokeWidth={2.5} />
             </div>
-            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.42)", textAlign: "right", alignSelf: "center" }}>{p.leadTime}d</span>
+            <span style={{ fontSize: 13, color: "rgba(50,64,54,0.42)", textAlign: "right", alignSelf: "center" }}>{p.leadTime}d</span>
           </motion.div>
         );
       })}
@@ -225,21 +225,21 @@ function CopilotTeaser() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
       onClick={() => router.push("/copilot")}
-      className="card-lift mt-3 cursor-pointer rounded-[1.4rem] border border-sky-400/15 bg-gradient-to-br from-sky-500/8 to-violet-500/6 p-3.5 transition-shadow duration-300 hover:shadow-[0_4px_16px_rgba(14,165,233,0.15)]"
+      className="card-lift mt-3 cursor-pointer rounded-[1.4rem] border border-[#1f7a5c]/15 bg-gradient-to-br from-[#256a52]/8 to-violet-500/6 p-3.5 transition-shadow duration-300 hover:shadow-[0_4px_16px_rgba(31,122,92,0.15)]"
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <Sparkles size={14} style={{ color: "#0ea5e9" }} strokeWidth={1.8} />
-        <span style={{ fontSize: 12, fontWeight: 500, color: "#0ea5e9" }}>Ask the Helper about your stock</span>
-        <ChevronRight size={12} style={{ color: "#0ea5e9", marginLeft: "auto" }} />
+        <Sparkles size={14} style={{ color: "#1f7a5c" }} strokeWidth={1.8} />
+        <span style={{ fontSize: 12, fontWeight: 500, color: "#1f7a5c" }}>Ask the Helper about your stock</span>
+        <ChevronRight size={12} style={{ color: "#1f7a5c", marginLeft: "auto" }} />
       </div>
-      <p style={{ fontSize: 11, marginTop: 5, paddingLeft: 22, color: "rgba(255,255,255,0.42)" }}>
+      <p style={{ fontSize: 11, marginTop: 5, paddingLeft: 22, color: "rgba(50,64,54,0.42)" }}>
         "Which items will finish this week?"
       </p>
     </motion.div>
   );
 }
 
-const REGION_COLORS = ["#0ea5e9", "#10b981", "#f59e0b", "#8b5cf6", "#f43f5e", "#22d3ee", "#34d399", "#fbbf24"];
+const REGION_COLORS = ["#1f7a5c", "#1f7a5c", "#c86a33", "#c86a33", "#c0492f", "#2f9e76", "#3fa07d", "#e0935a"];
 
 function CategoryChart({ data }: { data: { name: string; inventory: number; demand: number }[] }) {
   const tilt = useTilt(5);
@@ -259,7 +259,7 @@ function CategoryChart({ data }: { data: { name: string; inventory: number; dema
         <p className="font-serif m-0 text-sm font-bold text-slate-100">
           Stock by Type
         </p>
-        <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 3 }}>
+        <p style={{ fontSize: 11, color: "rgba(50,64,54,0.42)", marginTop: 3 }}>
           How much you have vs how much sells, by item type
         </p>
       </div>
@@ -268,29 +268,29 @@ function CategoryChart({ data }: { data: { name: string; inventory: number; dema
           <BarChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 5 }} barCategoryGap="20%">
             <defs>
               <linearGradient id="gInv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#10b981" stopOpacity={0.9} />
-                <stop offset="100%" stopColor="#10b981" stopOpacity={0.3} />
+                <stop offset="0%" stopColor="#1f7a5c" stopOpacity={0.9} />
+                <stop offset="100%" stopColor="#1f7a5c" stopOpacity={0.3} />
               </linearGradient>
               <linearGradient id="gDem" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#0ea5e9" stopOpacity={0.9} />
-                <stop offset="100%" stopColor="#0ea5e9" stopOpacity={0.3} />
+                <stop offset="0%" stopColor="#1f7a5c" stopOpacity={0.9} />
+                <stop offset="100%" stopColor="#1f7a5c" stopOpacity={0.3} />
               </linearGradient>
             </defs>
             <CartesianGrid {...gridProps} />
             <XAxis dataKey="name" tick={axisTickStyle} {...axisProps} />
             <YAxis tick={axisTickStyle} {...axisProps} tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
-            <Tooltip contentStyle={chartTooltip} cursor={{ fill: "rgba(255,255,255,0.06)" }} />
+            <Tooltip contentStyle={chartTooltip} cursor={{ fill: "rgba(255,250,241,0.4)" }} />
             <Bar dataKey="inventory" name="In Stock" fill="url(#gInv)" radius={[8, 8, 0, 0]} {...animationProps} />
             <Bar dataKey="demand" name="Sells" fill="url(#gDem)" radius={[8, 8, 0, 0]} {...animationProps} />
           </BarChart>
         </ResponsiveContainer>
       </div>
       <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 8 }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "rgba(255,255,255,0.48)" }}>
-          <span style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(180deg, #10b981, rgba(16,185,129,0.3))" }} /> In Stock
+        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "rgba(50,64,54,0.48)" }}>
+          <span style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(180deg, #1f7a5c, rgba(31,122,92,0.3))" }} /> In Stock
         </span>
-        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "rgba(255,255,255,0.48)" }}>
-          <span style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(180deg, #0ea5e9, rgba(14,165,233,0.3))" }} /> Sells
+        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "rgba(50,64,54,0.48)" }}>
+          <span style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(180deg, #1f7a5c, rgba(31,122,92,0.3))" }} /> Sells
         </span>
       </div>
     </motion.div>
@@ -315,7 +315,7 @@ function DemandPressureChart({ data }: { data: { name: string; pressure: number;
         <p className="font-serif m-0 text-sm font-bold text-slate-100">
           Selling Fast
         </p>
-        <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 3 }}>
+        <p style={{ fontSize: 11, color: "rgba(50,64,54,0.42)", marginTop: 3 }}>
           Items selling faster than you are restocking
         </p>
       </div>
@@ -325,8 +325,8 @@ function DemandPressureChart({ data }: { data: { name: string; pressure: number;
             <CartesianGrid {...gridProps} horizontal={false} />
             <XAxis type="number" tick={axisTickStyle} {...axisProps}
               domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
-            <YAxis type="category" dataKey="name" tick={{ ...axisTickStyle, fill: "rgba(255,255,255,0.58)" }} {...axisProps} width={90} />
-            <Tooltip contentStyle={chartTooltip} formatter={(v) => [`${v}%`, "Selling vs stock"]} cursor={{ fill: "rgba(255,255,255,0.06)" }} />
+            <YAxis type="category" dataKey="name" tick={{ ...axisTickStyle, fill: "rgba(50,64,54,0.58)" }} {...axisProps} width={90} />
+            <Tooltip contentStyle={chartTooltip} formatter={(v) => [`${v}%`, "Selling vs stock"]} cursor={{ fill: "rgba(255,250,241,0.4)" }} />
             <Bar dataKey="pressure" radius={[0, 8, 8, 0]} barSize={18} {...animationProps}>
               {data.map((entry, index) => (
                 <Cell key={index} fill={entry.fill} fillOpacity={0.85} />
@@ -336,8 +336,8 @@ function DemandPressureChart({ data }: { data: { name: string; pressure: number;
         </ResponsiveContainer>
       </div>
       <div style={{ display: "flex", gap: 14, justifyContent: "center", marginTop: 8 }}>
-        {[{ c: "#f43f5e", l: "Order now" }, { c: "#f59e0b", l: "Keep an eye" }, { c: "#10b981", l: "All good" }].map(({ c, l }) => (
-          <span key={l} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "rgba(255,255,255,0.48)" }}>
+        {[{ c: "#c0492f", l: "Order now" }, { c: "#c86a33", l: "Keep an eye" }, { c: "#1f7a5c", l: "All good" }].map(({ c, l }) => (
+          <span key={l} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "rgba(50,64,54,0.48)" }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: c }} /> {l}
           </span>
         ))}
@@ -365,7 +365,7 @@ function RegionDonutChart({ data }: { data: { name: string; value: number; avgRe
         <p className="font-serif m-0 text-sm font-bold text-slate-100">
           Your Suppliers
         </p>
-        <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 3 }}>
+        <p style={{ fontSize: 11, color: "rgba(50,64,54,0.42)", marginTop: 3 }}>
           Where your suppliers are
         </p>
       </div>
@@ -386,12 +386,12 @@ function RegionDonutChart({ data }: { data: { name: string; value: number; avgRe
           textAlign: "center", pointerEvents: "none",
         }}>
           <p className="font-serif m-0 text-[22px] font-bold text-slate-100">{total}</p>
-          <p style={{ fontSize: 10, color: "rgba(255,255,255,0.42)", margin: 0 }}>products</p>
+          <p style={{ fontSize: 10, color: "rgba(50,64,54,0.42)", margin: 0 }}>products</p>
         </div>
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 12px", justifyContent: "center", marginTop: 6 }}>
         {data.map((d, i) => (
-          <span key={i} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "rgba(255,255,255,0.48)" }}>
+          <span key={i} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "rgba(50,64,54,0.48)" }}>
             <span style={{ width: 7, height: 7, borderRadius: "50%", background: d.fill, flexShrink: 0 }} />
             {d.name}
           </span>
@@ -427,7 +427,7 @@ export default function DashboardPage() {
         return {
           name: p.name.length > 18 ? p.name.slice(0, 18) + "…" : p.name,
           pressure: Math.min(prs, 100),
-          fill: prs > 80 ? "#f43f5e" : prs > 50 ? "#f59e0b" : "#10b981",
+          fill: prs > 80 ? "#c0492f" : prs > 50 ? "#c86a33" : "#1f7a5c",
         };
       })
       .sort((a, b) => b.pressure - a.pressure)

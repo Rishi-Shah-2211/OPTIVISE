@@ -18,19 +18,19 @@ import type { Product, Insight } from "@/types/dashboard";
 const ICONS: Record<string, React.ElementType> = { Package, Boxes, Clock, BrainCircuit, ShieldAlert, TrendingUp };
 
 const ACCENT_MAP: Record<string, { color: string; rgb: string; light: string; gradient: string }> = {
-  cyan:    { color: "#0ea5e9", rgb: "14,165,233",   light: "rgba(14,165,233,0.10)",   gradient: "linear-gradient(135deg, #0ea5e9, #0284c7)" },
-  emerald: { color: "#10b981", rgb: "16,185,129",   light: "rgba(16,185,129,0.10)",   gradient: "linear-gradient(135deg, #10b981, #059669)" },
-  amber:   { color: "#f59e0b", rgb: "245,158,11",   light: "rgba(245,158,11,0.10)",   gradient: "linear-gradient(135deg, #f59e0b, #d97706)" },
-  violet:  { color: "#8b5cf6", rgb: "139,92,246",    light: "rgba(139,92,246,0.10)",   gradient: "linear-gradient(135deg, #8b5cf6, #7c3aed)" },
-  rose:    { color: "#f43f5e", rgb: "244,63,94",     light: "rgba(244,63,94,0.10)",    gradient: "linear-gradient(135deg, #f43f5e, #e11d48)" },
+  cyan:    { color: "#1f7a5c", rgb: "14,165,233",   light: "rgba(31,122,92,0.10)",   gradient: "linear-gradient(135deg, #1f7a5c, #154f3d)" },
+  emerald: { color: "#1f7a5c", rgb: "16,185,129",   light: "rgba(31,122,92,0.10)",   gradient: "linear-gradient(135deg, #1f7a5c, #154f3d)" },
+  amber:   { color: "#c86a33", rgb: "245,158,11",   light: "rgba(200,106,51,0.10)",   gradient: "linear-gradient(135deg, #c86a33, #a8551f)" },
+  violet:  { color: "#c86a33", rgb: "139,92,246",    light: "rgba(200,106,51,0.10)",   gradient: "linear-gradient(135deg, #c86a33, #a8551f)" },
+  rose:    { color: "#c0492f", rgb: "244,63,94",     light: "rgba(192,73,47,0.10)",    gradient: "linear-gradient(135deg, #c0492f, #a83a26)" },
 };
 
 const glass: React.CSSProperties = {
-  background: "rgba(255,255,255,0.09)",
+  background: "rgba(255,250,241,0.82)",
   backdropFilter: "blur(20px) saturate(180%)",
   WebkitBackdropFilter: "blur(20px) saturate(180%)",
-  border: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.05)",
+  border: "1px solid rgba(62,70,54,0.14)",
+  boxShadow: "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,250,241,0.45)",
 };
 
 interface MetricConfig {
@@ -65,9 +65,9 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const critical = p.filter(x => x.inventory === 0);
       const total = p.length || 1;
       return [
-        { label: "Enough Stock", value: `${healthy.length}`, pct: (healthy.length / total) * 100, color: "#059669" },
-        { label: "Running Low", value: `${atRisk.length}`, pct: (atRisk.length / total) * 100, color: "#d97706" },
-        { label: "Finished", value: `${critical.length}`, pct: (critical.length / total) * 100, color: "#e11d48" },
+        { label: "Enough Stock", value: `${healthy.length}`, pct: (healthy.length / total) * 100, color: "#154f3d" },
+        { label: "Running Low", value: `${atRisk.length}`, pct: (atRisk.length / total) * 100, color: "#a8551f" },
+        { label: "Finished", value: `${critical.length}`, pct: (critical.length / total) * 100, color: "#a83a26" },
       ];
     },
     getChartData: (p) => {
@@ -108,7 +108,7 @@ const METRIC_CONFIGS: MetricConfig[] = [
         label: x.name,
         value: x.inventory.toLocaleString(),
         pct: (x.inventory / total) * 100,
-        color: x.inventory > x.demand * 2 ? "#d97706" : "#059669",
+        color: x.inventory > x.demand * 2 ? "#a8551f" : "#154f3d",
       }));
     },
     getChartData: (p) => {
@@ -143,16 +143,16 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const slow = p.filter(x => x.leadTime > 14);
       const total = p.length || 1;
       return [
-        { label: "Fast (<=7d)", value: `${fast.length} items`, pct: (fast.length / total) * 100, color: "#059669" },
-        { label: "Medium (8-14d)", value: `${medium.length} items`, pct: (medium.length / total) * 100, color: "#d97706" },
-        { label: "Slow (>14d)", value: `${slow.length} items`, pct: (slow.length / total) * 100, color: "#e11d48" },
+        { label: "Fast (<=7d)", value: `${fast.length} items`, pct: (fast.length / total) * 100, color: "#154f3d" },
+        { label: "Medium (8-14d)", value: `${medium.length} items`, pct: (medium.length / total) * 100, color: "#a8551f" },
+        { label: "Slow (>14d)", value: `${slow.length} items`, pct: (slow.length / total) * 100, color: "#a83a26" },
       ];
     },
     getChartData: (p) => {
       return [...p].sort((a, b) => b.leadTime - a.leadTime).slice(0, 10).map(x => ({
         name: x.name.length > 12 ? x.name.slice(0, 12) + "..." : x.name,
         value: x.leadTime,
-        fill: x.leadTime > 14 ? "#e11d48" : x.leadTime > 7 ? "#d97706" : "#059669",
+        fill: x.leadTime > 14 ? "#a83a26" : x.leadTime > 7 ? "#a8551f" : "#154f3d",
       }));
     },
     getInsights: (p) => {
@@ -184,9 +184,9 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const low = ins.filter(i => (i.confidence <= 1 ? i.confidence * 100 : i.confidence) < 60);
       const total = ins.length || 1;
       return [
-        { label: "High (>=80%)", value: `${high.length} tips`, pct: (high.length / total) * 100, color: "#059669" },
-        { label: "Medium (60-79%)", value: `${med.length} tips`, pct: (med.length / total) * 100, color: "#d97706" },
-        { label: "Low (<60%)", value: `${low.length} tips`, pct: (low.length / total) * 100, color: "#e11d48" },
+        { label: "High (>=80%)", value: `${high.length} tips`, pct: (high.length / total) * 100, color: "#154f3d" },
+        { label: "Medium (60-79%)", value: `${med.length} tips`, pct: (med.length / total) * 100, color: "#a8551f" },
+        { label: "Low (<60%)", value: `${low.length} tips`, pct: (low.length / total) * 100, color: "#a83a26" },
       ];
     },
     getChartData: (_, ins) => {
@@ -224,7 +224,7 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const types: Record<string, number> = {};
       critical.forEach(i => { types[i.type] = (types[i.type] || 0) + 1; });
       const total = critical.length || 1;
-      const colors = ["#e11d48", "#d97706", "#7c3aed", "#0284c7"];
+      const colors = ["#a83a26", "#a8551f", "#a8551f", "#154f3d"];
       return Object.entries(types).map(([type, count], idx) => ({
         label: type.charAt(0).toUpperCase() + type.slice(1),
         value: `${count} tip${count > 1 ? "s" : ""}`,
@@ -271,9 +271,9 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const high = p.filter(x => { const r = x.inventory > 0 ? (x.demand / x.inventory) * 100 : 100; return r > 80; });
       const total = p.length || 1;
       return [
-        { label: "Selling Slow", value: `${low.length} items`, pct: (low.length / total) * 100, color: "#059669" },
-        { label: "Selling Okay", value: `${med.length} items`, pct: (med.length / total) * 100, color: "#d97706" },
-        { label: "Selling Fast", value: `${high.length} items`, pct: (high.length / total) * 100, color: "#e11d48" },
+        { label: "Selling Slow", value: `${low.length} items`, pct: (low.length / total) * 100, color: "#154f3d" },
+        { label: "Selling Okay", value: `${med.length} items`, pct: (med.length / total) * 100, color: "#a8551f" },
+        { label: "Selling Fast", value: `${high.length} items`, pct: (high.length / total) * 100, color: "#a83a26" },
       ];
     },
     getChartData: (p) => {
@@ -284,7 +284,7 @@ const METRIC_CONFIGS: MetricConfig[] = [
       }).slice(0, 10).map(x => ({
         name: x.name.length > 12 ? x.name.slice(0, 12) + "..." : x.name,
         value: parseFloat((Math.min(x.inventory > 0 ? (x.demand / x.inventory) * 100 : 100, 100)).toFixed(1)),
-        fill: (() => { const r = x.inventory > 0 ? (x.demand / x.inventory) * 100 : 100; return r > 80 ? "#e11d48" : r > 50 ? "#d97706" : "#059669"; })(),
+        fill: (() => { const r = x.inventory > 0 ? (x.demand / x.inventory) * 100 : 100; return r > 80 ? "#a83a26" : r > 50 ? "#a8551f" : "#154f3d"; })(),
       }));
     },
     getInsights: (p) => {
@@ -313,9 +313,9 @@ function StatCard({ label, value, accent, icon: IconEl }: { label: string; value
         <div style={{ width: 32, height: 32, borderRadius: 10, background: accent.light, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <IconEl size={15} style={{ color: accent.color }} strokeWidth={2} />
         </div>
-        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", fontWeight: 500 }}>{label}</span>
+        <span style={{ fontSize: 11, color: "rgba(50,64,54,0.60)", fontWeight: 500 }}>{label}</span>
       </div>
-      <p style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 28, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{value}</p>
+      <p style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 28, fontWeight: 700, color: "#1b1d1b", margin: 0 }}>{value}</p>
     </motion.div>
   );
 }
@@ -331,10 +331,10 @@ export default function MetricDetailPage() {
   if (!config) {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 16 }}>
-        <ShieldAlert size={40} style={{ color: "#e11d48" }} />
-        <h2 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 18, fontWeight: 700, color: "#f1f5f9" }}>Page not found</h2>
-        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)" }}>This page does not exist.</p>
-        <button onClick={() => router.push("/")} style={{ padding: "8px 20px", borderRadius: 12, background: "linear-gradient(135deg, #0ea5e9, #8b5cf6)", color: "#fff", border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+        <ShieldAlert size={40} style={{ color: "#a83a26" }} />
+        <h2 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 18, fontWeight: 700, color: "#1b1d1b" }}>Page not found</h2>
+        <p style={{ fontSize: 13, color: "rgba(50,64,54,0.60)" }}>This page does not exist.</p>
+        <button onClick={() => router.push("/")} style={{ padding: "8px 20px", borderRadius: 12, background: "linear-gradient(135deg, #1f7a5c, #c86a33)", color: "#fff", border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
           Back to My Shop
         </button>
       </div>
@@ -365,7 +365,7 @@ export default function MetricDetailPage() {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 0.5, repeat: Infinity, ease: "linear" }}
-          style={{ width: 32, height: 32, borderRadius: "50%", border: "3px solid rgba(255,255,255,0.12)", borderTopColor: accent.color }}
+          style={{ width: 32, height: 32, borderRadius: "50%", border: "3px solid rgba(62,70,54,0.14)", borderTopColor: accent.color }}
         />
       </div>
     );
@@ -377,8 +377,8 @@ export default function MetricDetailPage() {
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 32px", height: 60,
-        background: "rgba(26,31,46,0.85)", backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.12)",
+        background: "rgba(255,250,241,0.82)", backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(62,70,54,0.14)",
         flexShrink: 0,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -387,12 +387,12 @@ export default function MetricDetailPage() {
             whileTap={{ scale: 0.95 }}
             onClick={() => router.push("/")}
             style={{
-              width: 32, height: 32, borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)",
-              background: "rgba(255,255,255,0.10)", display: "flex", alignItems: "center", justifyContent: "center",
+              width: 32, height: 32, borderRadius: 10, border: "1px solid rgba(62,70,54,0.14)",
+              background: "rgba(255,250,241,0.55)", display: "flex", alignItems: "center", justifyContent: "center",
               cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
             }}
           >
-            <ArrowLeft size={14} strokeWidth={2} style={{ color: "#f1f5f9" }} />
+            <ArrowLeft size={14} strokeWidth={2} style={{ color: "#1b1d1b" }} />
           </motion.button>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
@@ -403,8 +403,8 @@ export default function MetricDetailPage() {
               <Icon size={15} style={{ color: accent.color }} strokeWidth={2} />
             </div>
             <div>
-              <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{config.title}</h1>
-              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", margin: 0 }}>Full details</p>
+              <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#1b1d1b", margin: 0 }}>{config.title}</h1>
+              <p style={{ fontSize: 11, color: "rgba(50,64,54,0.60)", margin: 0 }}>Full details</p>
             </div>
           </div>
         </div>
@@ -425,9 +425,9 @@ export default function MetricDetailPage() {
               }}
             >
               <div style={{ position: "absolute", top: -20, right: -20, width: 80, height: 80, borderRadius: "50%", background: `radial-gradient(circle, rgba(${accent.rgb},0.18) 0%, transparent 70%)`, pointerEvents: "none" }} />
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 8 }}>Right Now</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(50,64,54,0.48)", marginBottom: 8 }}>Right Now</p>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
-                <span style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 48, fontWeight: 800, color: "#f1f5f9", lineHeight: 1 }}>{displayValue}</span>
+                <span style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 48, fontWeight: 800, color: "#1b1d1b", lineHeight: 1 }}>{displayValue}</span>
                 <span style={{ fontSize: 16, fontWeight: 600, color: accent.color, marginBottom: 6 }}>{config.unit}</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 12 }}>
@@ -438,7 +438,7 @@ export default function MetricDetailPage() {
                   <TrendIcon size={12} style={{ color: accent.color }} strokeWidth={2.5} />
                   <span style={{ fontSize: 11, fontWeight: 600, color: accent.color }}>Live</span>
                 </div>
-                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)" }}>From {products.length} items & {insights.length} tips</span>
+                <span style={{ fontSize: 11, color: "rgba(50,64,54,0.48)" }}>From {products.length} items & {insights.length} tips</span>
               </div>
             </motion.div>
 
@@ -448,8 +448,8 @@ export default function MetricDetailPage() {
               transition={{ duration: 0.2, delay: 0.05 }}
               style={{ ...glass, borderRadius: 22, padding: 28 }}
             >
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 12 }}>What This Means</p>
-              <p style={{ fontSize: 13, lineHeight: 1.7, color: "rgba(255,255,255,0.65)" }}>{config.description}</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(50,64,54,0.48)", marginBottom: 12 }}>What This Means</p>
+              <p style={{ fontSize: 13, lineHeight: 1.7, color: "rgba(50,64,54,0.65)" }}>{config.description}</p>
             </motion.div>
           </div>
 
@@ -463,7 +463,7 @@ export default function MetricDetailPage() {
               style={{ ...glass, borderRadius: 22, padding: 24, perspective: "1000px" }}
               {...chartPerspectiveHover}
             >
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 16 }}>Spread</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(50,64,54,0.48)", marginBottom: 16 }}>Spread</p>
               <div style={{ height: 260 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   {config.id === "ai-confidence" ? (
@@ -475,8 +475,8 @@ export default function MetricDetailPage() {
                         </linearGradient>
                       </defs>
                       <CartesianGrid {...gridProps} />
-                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: "rgba(255,255,255,0.48)" }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fontSize: 11, fill: "rgba(255,255,255,0.48)" }} axisLine={false} tickLine={false} />
+                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: "rgba(50,64,54,0.48)" }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 11, fill: "rgba(50,64,54,0.48)" }} axisLine={false} tickLine={false} />
                       <Tooltip
                         contentStyle={{ ...tooltipStyle }}
                       />
@@ -485,8 +485,8 @@ export default function MetricDetailPage() {
                   ) : (
                     <BarChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                       <CartesianGrid {...gridProps} />
-                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: "rgba(255,255,255,0.48)" }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fontSize: 11, fill: "rgba(255,255,255,0.48)" }} axisLine={false} tickLine={false} />
+                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: "rgba(50,64,54,0.48)" }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 11, fill: "rgba(50,64,54,0.48)" }} axisLine={false} tickLine={false} />
                       <Tooltip
                         contentStyle={{ ...tooltipStyle }}
                       />
@@ -508,15 +508,15 @@ export default function MetricDetailPage() {
               transition={{ duration: 0.2, delay: 0.1 }}
               style={{ ...glass, borderRadius: 22, padding: 24 }}
             >
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 16 }}>Breakdown</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(50,64,54,0.48)", marginBottom: 16 }}>Breakdown</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {breakdown.map((item, i) => (
                   <div key={i}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                      <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>{item.label}</span>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(50,64,54,0.7)" }}>{item.label}</span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: item.color }}>{item.value}</span>
                     </div>
-                    <div style={{ height: 6, borderRadius: 999, background: "rgba(255,255,255,0.10)", overflow: "hidden" }}>
+                    <div style={{ height: 6, borderRadius: 999, background: "rgba(255,250,241,0.55)", overflow: "hidden" }}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.min(item.pct, 100)}%` }}
@@ -558,13 +558,13 @@ export default function MetricDetailPage() {
             transition={{ duration: 0.2, delay: 0.125 }}
             style={{ ...glass, borderRadius: 22, padding: 24 }}
           >
-            <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 16 }}>Smart Tips</p>
+            <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(50,64,54,0.48)", marginBottom: 16 }}>Smart Tips</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {metricInsights.map((item, i) => {
                 const IIcon = item.icon;
-                const bg = item.type === "critical" ? "rgba(225,29,72,0.06)" : item.type === "warning" ? "rgba(217,119,6,0.06)" : "rgba(5,150,105,0.06)";
-                const border = item.type === "critical" ? "rgba(225,29,72,0.15)" : item.type === "warning" ? "rgba(217,119,6,0.15)" : "rgba(5,150,105,0.15)";
-                const iconColor = item.type === "critical" ? "#e11d48" : item.type === "warning" ? "#d97706" : "#059669";
+                const bg = item.type === "critical" ? "rgba(168,58,38,0.06)" : item.type === "warning" ? "rgba(168,85,31,0.06)" : "rgba(21,79,61,0.06)";
+                const border = item.type === "critical" ? "rgba(168,58,38,0.15)" : item.type === "warning" ? "rgba(168,85,31,0.15)" : "rgba(21,79,61,0.15)";
+                const iconColor = item.type === "critical" ? "#a83a26" : item.type === "warning" ? "#a8551f" : "#154f3d";
                 return (
                   <motion.div
                     key={i}
@@ -578,7 +578,7 @@ export default function MetricDetailPage() {
                     }}
                   >
                     <IIcon size={16} style={{ color: iconColor, flexShrink: 0, marginTop: 1 }} strokeWidth={2} />
-                    <p style={{ fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,0.7)", margin: 0 }}>{item.text}</p>
+                    <p style={{ fontSize: 13, lineHeight: 1.6, color: "rgba(50,64,54,0.7)", margin: 0 }}>{item.text}</p>
                   </motion.div>
                 );
               })}

@@ -30,7 +30,7 @@ export function TiltCard({
   const srx = useSpring(rx, { stiffness: 220, damping: 20 });
   const sry = useSpring(ry, { stiffness: 220, damping: 20 });
 
-  const glowBg = useMotionTemplate`radial-gradient(220px circle at ${mx}% ${my}%, rgba(14,165,233,0.18), transparent 60%)`;
+  const glowBg = useMotionTemplate`radial-gradient(220px circle at ${mx}% ${my}%, rgba(31,122,92,0.18), transparent 60%)`;
 
   function onMove(e: MouseEvent) {
     if (!ref.current) return;

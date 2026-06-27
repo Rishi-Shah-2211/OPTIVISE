@@ -4,11 +4,11 @@ import { useMemo } from "react";
 import type { AccentColor } from "@/types/dashboard";
 
 const ACCENTS: Record<AccentColor, { stroke: string }> = {
-  cyan:    { stroke: "#0ea5e9" },
-  amber:   { stroke: "#f59e0b" },
-  rose:    { stroke: "#f43f5e" },
-  emerald: { stroke: "#10b981" },
-  violet:  { stroke: "#8b5cf6" },
+  cyan:    { stroke: "#1f7a5c" },
+  amber:   { stroke: "#c86a33" },
+  rose:    { stroke: "#c0492f" },
+  emerald: { stroke: "#1f7a5c" },
+  violet:  { stroke: "#c86a33" },
 };
 
 export function Sparkline({ data, accent, width = 100, height = 36 }: { data: number[]; accent: AccentColor; width?: number; height?: number }) {

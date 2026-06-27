@@ -23,54 +23,54 @@ type AccentTokens = {
 
 const ACCENTS: Record<AccentColor, AccentTokens> = {
   cyan: {
-    border: "rgba(14,165,233,0.20)",
+    border: "rgba(31,122,92,0.20)",
     glowRgb: "14,165,233",
-    text: "#0ea5e9",
-    iconBg: "rgba(14,165,233,0.12)",
-    badge: "rgba(14,165,233,0.12)",
-    bgTint: "rgba(14,165,233,0.04)",
-    beam: "rgba(125,211,252,0.18)",
-    halo: "rgba(14,165,233,0.22)",
+    text: "#1f7a5c",
+    iconBg: "rgba(31,122,92,0.12)",
+    badge: "rgba(31,122,92,0.12)",
+    bgTint: "rgba(31,122,92,0.04)",
+    beam: "rgba(168,216,194,0.18)",
+    halo: "rgba(31,122,92,0.22)",
   },
   amber: {
-    border: "rgba(245,158,11,0.20)",
+    border: "rgba(200,106,51,0.20)",
     glowRgb: "245,158,11",
-    text: "#f59e0b",
-    iconBg: "rgba(245,158,11,0.12)",
-    badge: "rgba(245,158,11,0.12)",
-    bgTint: "rgba(245,158,11,0.04)",
-    beam: "rgba(253,224,71,0.14)",
-    halo: "rgba(245,158,11,0.20)",
+    text: "#c86a33",
+    iconBg: "rgba(200,106,51,0.12)",
+    badge: "rgba(200,106,51,0.12)",
+    bgTint: "rgba(200,106,51,0.04)",
+    beam: "rgba(245,217,193,0.14)",
+    halo: "rgba(200,106,51,0.20)",
   },
   rose: {
-    border: "rgba(244,63,94,0.20)",
+    border: "rgba(192,73,47,0.20)",
     glowRgb: "244,63,94",
-    text: "#f43f5e",
-    iconBg: "rgba(244,63,94,0.10)",
-    badge: "rgba(244,63,94,0.10)",
-    bgTint: "rgba(244,63,94,0.04)",
-    beam: "rgba(251,113,133,0.14)",
-    halo: "rgba(244,63,94,0.18)",
+    text: "#c0492f",
+    iconBg: "rgba(192,73,47,0.10)",
+    badge: "rgba(192,73,47,0.10)",
+    bgTint: "rgba(192,73,47,0.04)",
+    beam: "rgba(212,119,95,0.14)",
+    halo: "rgba(192,73,47,0.18)",
   },
   emerald: {
-    border: "rgba(16,185,129,0.18)",
+    border: "rgba(31,122,92,0.18)",
     glowRgb: "16,185,129",
-    text: "#10b981",
-    iconBg: "rgba(16,185,129,0.12)",
-    badge: "rgba(16,185,129,0.12)",
-    bgTint: "rgba(16,185,129,0.04)",
-    beam: "rgba(110,231,183,0.14)",
-    halo: "rgba(16,185,129,0.18)",
+    text: "#1f7a5c",
+    iconBg: "rgba(31,122,92,0.12)",
+    badge: "rgba(31,122,92,0.12)",
+    bgTint: "rgba(31,122,92,0.04)",
+    beam: "rgba(168,216,194,0.14)",
+    halo: "rgba(31,122,92,0.18)",
   },
   violet: {
-    border: "rgba(139,92,246,0.18)",
+    border: "rgba(200,106,51,0.18)",
     glowRgb: "139,92,246",
-    text: "#8b5cf6",
-    iconBg: "rgba(139,92,246,0.10)",
-    badge: "rgba(139,92,246,0.10)",
-    bgTint: "rgba(139,92,246,0.04)",
-    beam: "rgba(196,181,253,0.14)",
-    halo: "rgba(139,92,246,0.20)",
+    text: "#c86a33",
+    iconBg: "rgba(200,106,51,0.10)",
+    badge: "rgba(200,106,51,0.10)",
+    bgTint: "rgba(200,106,51,0.04)",
+    beam: "rgba(245,217,193,0.14)",
+    halo: "rgba(200,106,51,0.20)",
   },
 };
 
@@ -95,12 +95,12 @@ function TrendBadge({ trend, accent }: { trend: "up" | "down" | "neutral"; accen
         fontWeight: 700,
         padding: "4px 9px",
         borderRadius: 999,
-        background: `linear-gradient(135deg, ${token.badge}, rgba(255,255,255,0.04))`,
+        background: `linear-gradient(135deg, ${token.badge}, rgba(62,70,54,0.08))`,
         color: token.text,
         textTransform: "uppercase",
         letterSpacing: "0.06em",
         border: `1px solid rgba(${token.glowRgb},0.16)`,
-        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 12px rgba(${token.glowRgb},0.10)`,
+        boxShadow: `inset 0 1px 0 rgba(255,250,241,0.7), 0 2px 12px rgba(${token.glowRgb},0.10)`,
       }}
     >
       <span>{symbol}</span>
@@ -149,7 +149,7 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
       whileHover={{
         y: -4,
         scale: 1.01,
-        boxShadow: `0 18px 48px rgba(${a.glowRgb},0.20), 0 10px 18px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08)`,
+        boxShadow: `0 18px 48px rgba(${a.glowRgb},0.20), 0 10px 18px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,250,241,0.7)`,
         borderColor: a.border,
       }}
       ref={cardRef}
@@ -170,12 +170,12 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
         cursor: "pointer",
         background: `
           radial-gradient(circle at top right, ${a.halo} 0%, transparent 34%),
-          linear-gradient(155deg, rgba(255,255,255,0.12) 0%, ${a.bgTint} 42%, rgba(8,12,22,0.72) 100%)
+          linear-gradient(155deg, rgba(62,70,54,0.14) 0%, ${a.bgTint} 42%, rgba(245,239,226,0.72) 100%)
         `,
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
-        border: "1px solid rgba(255,255,255,0.12)",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.22), 0 1px 4px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05)",
+        border: "1px solid rgba(62,70,54,0.14)",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.22), 0 1px 4px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,250,241,0.45)",
         transition: "box-shadow 0.22s ease, border-color 0.22s ease",
       }}
       onMouseEnter={() => setHovered(true)}
@@ -203,8 +203,8 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
           borderRadius: 21,
           pointerEvents: "none",
           background: `
-            linear-gradient(125deg, rgba(255,255,255,0.18) 0%, transparent 24%, transparent 72%, rgba(255,255,255,0.05) 100%),
-            radial-gradient(circle at 14% 8%, rgba(255,255,255,0.14), transparent 22%)
+            linear-gradient(125deg, rgba(50,64,54,0.18) 0%, transparent 24%, transparent 72%, rgba(255,250,241,0.45) 100%),
+            radial-gradient(circle at 14% 8%, rgba(62,70,54,0.18), transparent 22%)
           `,
           opacity: 0.9,
         }}
@@ -244,12 +244,12 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
             width: 42,
             height: 42,
             borderRadius: 14,
-            background: `linear-gradient(145deg, ${a.iconBg}, rgba(255,255,255,0.05))`,
+            background: `linear-gradient(145deg, ${a.iconBg}, rgba(255,250,241,0.45))`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             border: `1px solid rgba(${a.glowRgb},0.15)`,
-            boxShadow: `0 8px 22px rgba(${a.glowRgb},0.16), inset 0 1px 0 rgba(255,255,255,0.08)`,
+            boxShadow: `0 8px 22px rgba(${a.glowRgb},0.16), inset 0 1px 0 rgba(255,250,241,0.7)`,
           }}
         >
           <Icon size={16} style={{ color: a.text }} strokeWidth={1.9} />
@@ -260,7 +260,7 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
       <div style={{ position: "relative", zIndex: 1 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
           <span style={{ width: 28, height: 1, background: `linear-gradient(90deg, rgba(${a.glowRgb},0.9), transparent)` }} />
-          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.42)" }}>
+          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(50,64,54,0.42)" }}>
             Live Number
           </span>
         </div>
@@ -271,7 +271,7 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
               fontFamily: "var(--font-fraunces), ui-serif, serif",
               fontSize: 32,
               fontWeight: 700,
-              color: "#f8fbff",
+              color: "#1b1d1b",
               lineHeight: 0.95,
               letterSpacing: "-0.03em",
               textShadow: "0 4px 18px rgba(0,0,0,0.22)",
@@ -281,8 +281,8 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
           </span>
           <span style={{ fontSize: 13, fontWeight: 700, marginBottom: 2, color: a.text }}>{unit}</span>
         </div>
-        <p style={{ fontSize: 14, marginTop: 8, fontWeight: 700, color: "rgba(255,255,255,0.82)" }}>{title}</p>
-        <p style={{ fontSize: 11, marginTop: 4, color: "rgba(255,255,255,0.48)", maxWidth: "90%" }}>{description}</p>
+        <p style={{ fontSize: 14, marginTop: 8, fontWeight: 700, color: "rgba(50,64,54,0.82)" }}>{title}</p>
+        <p style={{ fontSize: 11, marginTop: 4, color: "rgba(50,64,54,0.48)", maxWidth: "90%" }}>{description}</p>
       </div>
 
       <div
@@ -294,7 +294,7 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
           justifyContent: "space-between",
           gap: 12,
           paddingTop: 10,
-          borderTop: "1px solid rgba(255,255,255,0.08)",
+          borderTop: "1px solid rgba(255,250,241,0.7)",
         }}
       >
         <div
@@ -302,8 +302,8 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
             flex: 1,
             padding: "10px 12px 8px",
             borderRadius: 14,
-            background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015))",
-            border: "1px solid rgba(255,255,255,0.06)",
+            background: "linear-gradient(180deg, rgba(255,250,241,0.45), rgba(50,64,54,0.015))",
+            border: "1px solid rgba(255,250,241,0.4)",
           }}
         >
           <Sparkline data={sparkData} accent={accent} width={112} height={36} />
