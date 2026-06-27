@@ -73,12 +73,15 @@ export async function POST() {
 
     // Perturb base values so each load produces unique data
     const masterRand = seededRandom(runtimeSeed);
-    const perturbedRows = rows.map((row) => ({
-      ...row,
-      stock: Math.max(10, Math.round(row.stock * (0.4 + masterRand() * 1.2))),
-      monthly_demand: Math.max(5, Math.round(row.monthly_demand * (0.5 + masterRand() * 1.0))),
-      price: parseFloat((row.price * (0.85 + masterRand() * 0.3)).toFixed(2)),
-    }));
+    const perturbedRows = rows.map((row, i) => {
+      const monthly_demand = Math.max(5, Math.round(row.monthly_demand * (0.5 + masterRand() * 1.0)));
+      let stock = Math.max(10, Math.round(row.stock * (0.4 + masterRand() * 1.2)));
+      // Make a realistic chunk of items genuinely low so the Order List is alive
+      if (i % 4 === 0) stock = Math.round(monthly_demand * (0.1 + masterRand() * 0.18)); // running out
+      else if (i % 6 === 0) stock = Math.round(monthly_demand * (0.3 + masterRand() * 0.2)); // getting low
+      const price = parseFloat((row.price * (0.85 + masterRand() * 0.3)).toFixed(2));
+      return { ...row, stock: Math.max(1, stock), monthly_demand, price };
+    });
 
     console.log(`[LoadRealData] Parsed ${rows.length} products from CSV`);
 

@@ -16,6 +16,7 @@ import {
   LogOut,
   Package,
   ClipboardList,
+  Truck,
 } from "lucide-react";
 import { QueryProvider } from "@/providers/QueryProvider";
 
@@ -35,6 +36,7 @@ const NAV_ITEMS = [
   { href: "/insights",  label: "Smart Tips", Icon: Lightbulb       },
   { href: "/simulator", label: "What-If",    Icon: FlaskConical    },
   { href: "/orders",    label: "Order List", Icon: ClipboardList   },
+  { href: "/suppliers", label: "Suppliers",  Icon: Truck           },
   { href: "/copilot",   label: "AI Helper",  Icon: Zap             },
   { href: "/settings",  label: "Settings",   Icon: Settings        },
 ];
