@@ -14,6 +14,7 @@ import {
   Zap,
   Activity,
   LogOut,
+  Package,
 } from "lucide-react";
 import { QueryProvider } from "@/providers/QueryProvider";
 
@@ -29,6 +30,7 @@ const instrumentSerif = Instrument_Serif({
 
 const NAV_ITEMS = [
   { href: "/",          label: "My Shop",    Icon: LayoutDashboard },
+  { href: "/items",     label: "My Items",   Icon: Package         },
   { href: "/insights",  label: "Smart Tips", Icon: Lightbulb       },
   { href: "/simulator", label: "What-If",    Icon: FlaskConical    },
   { href: "/copilot",   label: "AI Helper",  Icon: Zap             },
