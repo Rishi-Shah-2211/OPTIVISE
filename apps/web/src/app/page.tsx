@@ -14,6 +14,7 @@ import { InsightCard } from "@/components/dashboard/InsightCard";
 import { SkeletonMetricCard, SkeletonInsightCard } from "@/components/dashboard/SkeletonCard";
 import { EmptyState, ErrorState } from "@/components/dashboard/EmptyState";
 import { tooltipStyle as chartTooltip, axisTickStyle, axisProps, gridProps, animationProps, chartContainerGlass, chartPerspectiveHover } from "@/components/charts/chartTheme";
+import { useTilt } from "@/lib/ui/useTilt";
 import type { Product } from "@/types/dashboard";
 
 const glass: React.CSSProperties = {
@@ -84,7 +85,7 @@ function LoadRealDataButton({ onComplete }: { onComplete: () => void }) {
       ) : (
         <Database size={13} strokeWidth={2} />
       )}
-      {state === "loading" ? "Loading Dataset..." : state === "success" ? summary : state === "error" ? summary : "Load Real Market Dataset"}
+      {state === "loading" ? "Loading..." : state === "success" ? summary : state === "error" ? summary : "Load Sample Data"}
     </motion.button>
   );
 }
@@ -104,7 +105,7 @@ function DashboardHeader({ isLoading, isRefreshing, lastUpdated, onRefetch }: {
     }}>
       <div>
         <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>
-          Command Center
+          My Shop
         </h1>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
           <motion.div
@@ -162,7 +163,7 @@ function DashboardHeader({ isLoading, isRefreshing, lastUpdated, onRefetch }: {
           onMouseLeave={(e) => { const el = e.currentTarget as HTMLButtonElement; el.style.background = "linear-gradient(135deg, rgba(14,165,233,0.14), rgba(139,92,246,0.12))"; el.style.boxShadow = "0 1px 4px rgba(14,165,233,0.15)"; }}
         >
           <Sparkles size={12} strokeWidth={2} />
-          AI Copilot
+          AI Helper
         </button>
       </div>
     </div>
@@ -202,7 +203,7 @@ function ViewAllLink({ label, href }: { label: string; href: string }) {
 
 function ProductsTable({ products }: { products: Product[] }) {
   const sorted = [...products].sort((a, b) => b.demand - a.demand).slice(0, 6);
-  if (products.length === 0) return <EmptyState title="No products" description="Add products to see them here." />;
+  if (products.length === 0) return <EmptyState title="No items" description="Load sample data to see your items." />;
 
   return (
     <div>
@@ -212,10 +213,10 @@ function ProductsTable({ products }: { products: Product[] }) {
         letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)",
         borderBottom: "1px solid rgba(255,255,255,0.12)",
       }}>
-        <span>Product</span>
-        <span style={{ textAlign: "right" }}>Stock</span>
-        <span style={{ textAlign: "right" }}>Demand</span>
-        <span style={{ textAlign: "right" }}>Lead</span>
+        <span>Item</span>
+        <span style={{ textAlign: "right" }}>In Stock</span>
+        <span style={{ textAlign: "right" }}>Sells</span>
+        <span style={{ textAlign: "right" }}>Days</span>
       </div>
 
       {sorted.map((p, idx) => {
@@ -274,11 +275,11 @@ function CopilotTeaser() {
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <Sparkles size={14} style={{ color: "#0ea5e9" }} strokeWidth={1.8} />
-        <span style={{ fontSize: 12, fontWeight: 500, color: "#0ea5e9" }}>Ask Copilot about inventory risks</span>
+        <span style={{ fontSize: 12, fontWeight: 500, color: "#0ea5e9" }}>Ask the Helper about your stock</span>
         <ChevronRight size={12} style={{ color: "#0ea5e9", marginLeft: "auto" }} />
       </div>
       <p style={{ fontSize: 11, marginTop: 5, paddingLeft: 22, color: "rgba(255,255,255,0.42)" }}>
-        "Which SKUs are at risk of stockout this week?"
+        "Which items will finish this week?"
       </p>
     </motion.div>
   );
@@ -287,21 +288,25 @@ function CopilotTeaser() {
 const REGION_COLORS = ["#0ea5e9", "#10b981", "#f59e0b", "#8b5cf6", "#f43f5e", "#22d3ee", "#34d399", "#fbbf24"];
 
 function CategoryChart({ data }: { data: { name: string; inventory: number; demand: number }[] }) {
+  const tilt = useTilt(5);
   if (data.length === 0) return null;
   return (
     <motion.div
+      ref={tilt.ref}
+      onMouseMove={tilt.onMouseMove}
+      onMouseLeave={tilt.onMouseLeave}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="shimmer-card chart-depth"
-      style={{ ...chartContainerGlass, perspective: "1000px" }}
+      style={{ ...chartContainerGlass, perspective: "1000px", rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformPerspective: 1000 }}
       {...chartPerspectiveHover}
     >
       <div style={{ marginBottom: 18 }}>
         <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>
-          Category Performance
+          Stock by Type
         </p>
         <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 3 }}>
-          Inventory vs demand across product categories
+          How much you have vs how much sells, by item type
         </p>
       </div>
       <div style={{ height: 260 }}>
@@ -321,17 +326,17 @@ function CategoryChart({ data }: { data: { name: string; inventory: number; dema
             <XAxis dataKey="name" tick={axisTickStyle} {...axisProps} />
             <YAxis tick={axisTickStyle} {...axisProps} tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
             <Tooltip contentStyle={chartTooltip} cursor={{ fill: "rgba(255,255,255,0.06)" }} />
-            <Bar dataKey="inventory" name="Stock" fill="url(#gInv)" radius={[8, 8, 0, 0]} {...animationProps} />
-            <Bar dataKey="demand" name="Demand" fill="url(#gDem)" radius={[8, 8, 0, 0]} {...animationProps} />
+            <Bar dataKey="inventory" name="In Stock" fill="url(#gInv)" radius={[8, 8, 0, 0]} {...animationProps} />
+            <Bar dataKey="demand" name="Sells" fill="url(#gDem)" radius={[8, 8, 0, 0]} {...animationProps} />
           </BarChart>
         </ResponsiveContainer>
       </div>
       <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 8 }}>
         <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "rgba(255,255,255,0.48)" }}>
-          <span style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(180deg, #10b981, rgba(16,185,129,0.3))" }} /> Stock
+          <span style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(180deg, #10b981, rgba(16,185,129,0.3))" }} /> In Stock
         </span>
         <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "rgba(255,255,255,0.48)" }}>
-          <span style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(180deg, #0ea5e9, rgba(14,165,233,0.3))" }} /> Demand
+          <span style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(180deg, #0ea5e9, rgba(14,165,233,0.3))" }} /> Sells
         </span>
       </div>
     </motion.div>
@@ -339,21 +344,25 @@ function CategoryChart({ data }: { data: { name: string; inventory: number; dema
 }
 
 function DemandPressureChart({ data }: { data: { name: string; pressure: number; fill: string }[] }) {
+  const tilt = useTilt(5);
   if (data.length === 0) return null;
   return (
     <motion.div
+      ref={tilt.ref}
+      onMouseMove={tilt.onMouseMove}
+      onMouseLeave={tilt.onMouseLeave}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="shimmer-card chart-depth"
-      style={{ ...chartContainerGlass, perspective: "1000px" }}
+      style={{ ...chartContainerGlass, perspective: "1000px", rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformPerspective: 1000 }}
       {...chartPerspectiveHover}
     >
       <div style={{ marginBottom: 18 }}>
         <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>
-          Demand Pressure Index
+          Selling Fast
         </p>
         <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 3 }}>
-          Products under highest demand-to-stock pressure
+          Items selling faster than you are restocking
         </p>
       </div>
       <div style={{ height: 260 }}>
@@ -363,7 +372,7 @@ function DemandPressureChart({ data }: { data: { name: string; pressure: number;
             <XAxis type="number" tick={axisTickStyle} {...axisProps}
               domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
             <YAxis type="category" dataKey="name" tick={{ ...axisTickStyle, fill: "rgba(255,255,255,0.58)" }} {...axisProps} width={90} />
-            <Tooltip contentStyle={chartTooltip} formatter={(v) => [`${v}%`, "Pressure"]} cursor={{ fill: "rgba(255,255,255,0.06)" }} />
+            <Tooltip contentStyle={chartTooltip} formatter={(v) => [`${v}%`, "Selling vs stock"]} cursor={{ fill: "rgba(255,255,255,0.06)" }} />
             <Bar dataKey="pressure" radius={[0, 8, 8, 0]} barSize={18} {...animationProps}>
               {data.map((entry, index) => (
                 <Cell key={index} fill={entry.fill} fillOpacity={0.85} />
@@ -373,7 +382,7 @@ function DemandPressureChart({ data }: { data: { name: string; pressure: number;
         </ResponsiveContainer>
       </div>
       <div style={{ display: "flex", gap: 14, justifyContent: "center", marginTop: 8 }}>
-        {[{ c: "#f43f5e", l: "Critical >80%" }, { c: "#f59e0b", l: "Watch >50%" }, { c: "#10b981", l: "Healthy" }].map(({ c, l }) => (
+        {[{ c: "#f43f5e", l: "Order now" }, { c: "#f59e0b", l: "Keep an eye" }, { c: "#10b981", l: "All good" }].map(({ c, l }) => (
           <span key={l} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "rgba(255,255,255,0.48)" }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: c }} /> {l}
           </span>
@@ -384,22 +393,26 @@ function DemandPressureChart({ data }: { data: { name: string; pressure: number;
 }
 
 function RegionDonutChart({ data }: { data: { name: string; value: number; avgReliability: number; fill: string }[] }) {
+  const tilt = useTilt(5);
   if (data.length === 0) return null;
   const total = data.reduce((s, d) => s + d.value, 0);
   return (
     <motion.div
+      ref={tilt.ref}
+      onMouseMove={tilt.onMouseMove}
+      onMouseLeave={tilt.onMouseLeave}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="shimmer-card chart-depth"
-      style={{ ...chartContainerGlass, display: "flex", flexDirection: "column", perspective: "1000px" }}
+      style={{ ...chartContainerGlass, display: "flex", flexDirection: "column", perspective: "1000px", rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformPerspective: 1000 }}
       {...chartPerspectiveHover}
     >
       <div style={{ marginBottom: 12 }}>
         <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>
-          Supplier Geography
+          Your Suppliers
         </p>
         <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 3 }}>
-          Supply chain distribution by region
+          Where your suppliers are
         </p>
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative", flex: 1, minHeight: 180 }}>
@@ -489,10 +502,10 @@ export default function DashboardPage() {
   }, [products]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       <DashboardHeader isLoading={isLoading} isRefreshing={isRefreshing} lastUpdated={lastUpdated} onRefetch={refetch} />
 
-      <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "28px 32px" }}>
         <AnimatePresence mode="wait">
           {isError ? (
             <ErrorState key="error" message={errorMessage} onRetry={refetch} />
@@ -502,8 +515,8 @@ export default function DashboardPage() {
               {/* KPI Grid */}
               <section style={{ marginBottom: 28 }}>
                 <SectionHeader
-                  title="Key Metrics"
-                  subtitle="Computed live from all monitored SKUs and AI insights"
+                  title="Quick Numbers"
+                  subtitle="Updated live from all your items"
                 />
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
                   {isLoading
@@ -516,8 +529,8 @@ export default function DashboardPage() {
               {!isLoading && products.length > 0 && (
                 <section style={{ marginBottom: 28 }}>
                   <SectionHeader
-                    title="Analytics"
-                    subtitle="Live performance breakdown across categories, products & supply regions"
+                    title="Your Shop at a Glance"
+                    subtitle="How your items and suppliers are doing"
                   />
                   <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 16, marginBottom: 16 }}>
                     <CategoryChart data={categoryData} />
@@ -531,15 +544,15 @@ export default function DashboardPage() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: 20 }}>
                 <section>
                   <SectionHeader
-                    title="AI Insights"
-                    subtitle={`${insights.length} active signal${insights.length !== 1 ? "s" : ""}`}
+                    title="Smart Tips"
+                    subtitle={`${insights.length} tip${insights.length !== 1 ? "s" : ""}`}
                     action={<ViewAllLink label="View all" href="/insights" />}
                   />
                   <div style={{ ...glass, borderRadius: 20, padding: 12 }}>
                     {isLoading
                       ? Array.from({ length: 3 }, (_, i) => <SkeletonInsightCard key={i} index={i} />)
                       : insights.length === 0
-                        ? <EmptyState title="No insights" description="Run the AI engine to generate insights." />
+                        ? <EmptyState title="No tips yet" description="Load sample data to see helpful tips." />
                         : insights.slice(0, 5).map((ins, idx) => (
                             <InsightCard key={ins.id ?? `insight-${idx}`} insight={ins} index={idx} />
                           ))
@@ -549,9 +562,9 @@ export default function DashboardPage() {
 
                 <section>
                   <SectionHeader
-                    title="Top Products"
-                    subtitle="Sorted by demand pressure"
-                    action={<ViewAllLink label="Manage" href="/simulator" />}
+                    title="Top Sellers"
+                    subtitle="Your fastest-selling items"
+                    action={<ViewAllLink label="Open" href="/simulator" />}
                   />
                   <div style={{ ...glass, borderRadius: 20, overflow: "hidden" }}>
                     {isLoading

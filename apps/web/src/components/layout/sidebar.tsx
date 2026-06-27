@@ -6,9 +6,9 @@ import Link from "next/link";
 import clsx from "clsx";
 
 const navItems = [
-  { name: "Dashboard", icon: Home, href: "/" },
-  { name: "Insights", icon: Brain, href: "/insights" },
-  { name: "Simulator", icon: BarChart3, href: "/simulator" },
+  { name: "My Shop", icon: Home, href: "/" },
+  { name: "Smart Tips", icon: Brain, href: "/insights" },
+  { name: "What-If", icon: BarChart3, href: "/simulator" },
   { name: "Settings", icon: Settings, href: "/settings" },
 ];
 
@@ -27,7 +27,7 @@ export function Sidebar() {
           <div className="text-base font-semibold tracking-tight text-zinc-100">
             Optivise
           </div>
-          <div className="mt-1 text-xs text-zinc-400">Supply chain insights</div>
+          <div className="mt-1 text-xs text-zinc-400">Your shop stock helper</div>
         </div>
 
         <nav className="flex flex-col gap-2">

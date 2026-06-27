@@ -4,31 +4,33 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const GROQ_BASE = "https://api.groq.com/openai/v1";
-const GROQ_MODEL = "llama-3.1-8b-instant";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 function buildSystemPrompt(dataContext: string): string {
-  return `You are Optivise Copilot — a precision AI assistant for supply chain operations professionals.
+  return `You are the Shop Helper — a friendly assistant for a small kirana / general store owner in India.
 
-Your role:
-- Analyse supply chain data: inventory levels, demand trends, supplier lead times, stockout risk
-- Give specific, actionable decisions — not generic advice
-- Always quantify risk where possible (days until stockout, cost exposure, etc.)
-- Reference specific product names and numbers from the data provided below
-- Keep answers under 200 words unless deep analysis is explicitly requested
-- When listing actions, use numbered steps
-- Tone: confident, precise, like a senior supply chain strategist
+WHO YOU HELP:
+The owner is a normal shopkeeper, not a business expert. They may not read English well. Help them decide what to buy, how much, and when, so they never run out of items and never block money in extra stock.
 
-CURRENT LIVE DATA:
+HOW TO UNDERSTAND QUESTIONS (very important):
+- The user may type with bad spelling, no grammar, short words, or mix Hindi and English (Hinglish). ALWAYS try your best to understand the meaning. NEVER tell them to rewrite or rephrase.
+- Examples you must understand: "rice khatam to nahi", "kitna oil order karu", "kaun sa maal jada pada hai", "konsa item fast bik raha", "paisa kaha phasa hai".
+
+HOW TO ANSWER (very important):
+- Reply in the SAME language/style the user used. If they wrote in Hindi or Hinglish, answer in simple Hinglish. If English, answer in simple English.
+- Use words a 10-year-old understands. NO technical or business words. Do NOT use: SKU, inventory, stockout, lead time, demand, EOQ, holding cost, safety stock, reorder point, procurement. Instead say: item, stock, "will finish soon", "days to arrive", "sells fast", "extra stock", "money stuck", "order more".
+- Use ₹ (rupees) for money, never $.
+- Be short and practical. Give the answer first, then 2-4 simple steps if needed.
+- Always use the real items and numbers from the data below. Never invent item names or numbers.
+
+YOUR SHOP'S CURRENT DATA (read it, but explain it in simple words):
 ${dataContext}
 
-When the user asks about stockouts, reference products where inventory < demand.
-When asked about overstocking, reference products where inventory > 3x demand.
-When asked about lead times, reference specific products with their lead time values.
-When asked about costs, estimate holding cost at ~20% of inventory value per year.
-When asked about suppliers, reference supplier names, regions, and reliability scores.
-When asked about demand trends, reference the demand trend direction for relevant products.
-
-Always use the real data above. Never make up product names or numbers.`;
+Quick guide:
+- "Will finish soon" = items where stock is less than what sells.
+- "Too much stock / money stuck" = items where stock is much more than what sells.
+- "Slow delivery" = items that take many days to arrive.
+- For money lost or saved, give a rough ₹ figure when you can.`;
 }
 
 interface ChatMessage { role: "user" | "assistant"; content: string; }
@@ -189,23 +191,23 @@ async function callGroq(messages: ChatMessage[], apiKey: string, systemPrompt: s
 function getIntelligentFallback(lastMessage: string): string {
   const q = lastMessage.toLowerCase();
 
-  if (q.includes("stockout") || q.includes("out of stock") || q.includes("run out")) {
-    return "To assess stockout risk: divide current inventory by daily demand — if that number is less than your supplier lead time (in days), you're at risk. Check the Critical Alerts metric on your dashboard for immediate signals. Prioritize any product where stockout days < lead time x 1.5.";
+  if (q.includes("finish") || q.includes("khatam") || q.includes("out of stock") || q.includes("run out") || q.includes("stockout") || q.includes("low")) {
+    return "To see which items will finish soon: check how many you have versus how many sell. If an item sells faster than your stock lasts, order it now. Open the 'Smart Tips' page — the red 'Order now' items need attention first.";
   }
-  if (q.includes("overstock") || q.includes("excess") || q.includes("too much")) {
-    return "Overstock is flagged when inventory exceeds 3x monthly demand. This generates holding costs of ~18-25% of inventory value annually. Use the Simulator to model optimal order quantities and calculate the exact cost exposure. Products with demand pressure < 30% should be reviewed first.";
+  if (q.includes("extra") || q.includes("zyada") || q.includes("overstock") || q.includes("too much") || q.includes("excess")) {
+    return "Items where you have far more stock than you sell are blocking your money. Order less of these next time, or give a small discount to clear them. The 'Selling Fast' chart on My Shop shows which items move slowly.";
   }
-  if (q.includes("lead time") || q.includes("supplier") || q.includes("delivery")) {
-    return "Lead time optimization: 1) Identify SKUs where lead time > days of stock on hand, 2) Qualify backup suppliers for single-source items, 3) Pre-position stock for seasonal peaks. The Simulator lets you model how changing lead times impacts stockout exposure in real time.";
+  if (q.includes("delivery") || q.includes("deliver") || q.includes("supplier") || q.includes("der") || q.includes("late")) {
+    return "For items that take many days to arrive, keep a little extra stock so you never run dry, and try a backup supplier. The 'Your Suppliers' chart on My Shop shows where each supplier is and how reliable they are.";
   }
-  if (q.includes("demand") || q.includes("forecast") || q.includes("trend")) {
-    return "Demand analysis starts by comparing current demand figures against your inventory coverage ratio. Products showing demand pressure > 80% are approaching supply constraints. Review the Demand Pressure metric for a full breakdown, and use the Simulator to stress-test your current stock against demand spikes.";
+  if (q.includes("order") || q.includes("kitna") || q.includes("how much") || q.includes("buy")) {
+    return "Not sure how much to order? Open the 'What-If' tool, pick the item, and it tells you a safe amount to buy so the item never finishes and your money is not stuck.";
   }
-  if (q.includes("cost") || q.includes("save") || q.includes("reduce")) {
-    return "Supply chain cost reduction typically targets: 1) Holding cost reduction (reduce overstock), 2) Stockout prevention (avoid lost sales), 3) Lead time optimization (reduce buffer stock requirements). The Simulator calculates estimated cost exposure per scenario — run it for your highest-risk SKUs first.";
+  if (q.includes("money") || q.includes("paisa") || q.includes("save") || q.includes("cost") || q.includes("kharcha")) {
+    return "To save money: 1) Clear items you have too much of, 2) Never let fast-selling items finish (you lose sales), 3) Order the right amount each time. The 'What-If' tool gives you a rough ₹ figure for each item.";
   }
 
-  return "I can help with stockout risk analysis, demand forecasting, lead time optimization, and supplier evaluation. Try asking: 'Which products are at stockout risk?' or 'How can I reduce inventory holding costs?' — Add your GROQ_API_KEY to .env to unlock full AI analysis.";
+  return "I can help you know which items will finish soon, which have too much stock, how much to order, and where your money is stuck. Try asking: 'Which items will finish this week?' or 'Kitna oil order karu?' — (Add your GROQ_API_KEY in .env for full smart answers.)";
 }
 
 export async function POST(req: NextRequest) {

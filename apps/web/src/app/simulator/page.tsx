@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import {
   FlaskConical, Search, Play,
-  AlertTriangle, CheckCircle2, TrendingDown,
+  AlertTriangle, CheckCircle2,
   DollarSign, Gauge, Lightbulb, BarChart2,
   Minus, Plus,
 } from "lucide-react";
 import type { Product } from "@/types/dashboard";
+import { runScenario, type ScenarioResult } from "@/lib/simulation/engine";
 
 const glass: React.CSSProperties = {
   background: "rgba(255,255,255,0.09)",
@@ -28,105 +29,16 @@ async function fetchProducts(): Promise<Product[]> {
   return [];
 }
 
-interface SimResult {
-  riskLevel: "low" | "medium" | "high" | "critical";
-  stockoutDays: number;
-  overstockScore: number;
-  costImpact: number;
-  costDirection: "save" | "loss";
-  recommendation: string;
-  insights: { icon: React.ElementType; text: string; type: "warn" | "ok" | "info" }[];
-  optimization: string;
-}
-
-const AVG_UNIT_COST = 24;
-const AVG_HOLDING_RATE = 0.22;
-const STOCKOUT_PENALTY = 48;
-
-function simulate(product: Product, demand: number, inventory: number, leadTime: number): SimResult {
-  const daysStock = demand > 0 ? Math.floor(inventory / demand) : 999;
-  const stockoutRisk = daysStock < leadTime;
-  const criticalRisk = daysStock < leadTime * 0.5;
-  const overstockRatio = inventory / (demand || 1);
-  const overstock = overstockRatio > 3;
-  const pressure = Math.min((demand / (inventory || 1)) * 100, 100);
-
-  let riskLevel: SimResult["riskLevel"] = "low";
-  if (criticalRisk) riskLevel = "critical";
-  else if (stockoutRisk) riskLevel = "high";
-  else if (daysStock < leadTime * 1.5) riskLevel = "medium";
-
-  // Cost impact calculation
-  let costImpact = 0;
-  let costDirection: "save" | "loss" = "save";
-
-  if (stockoutRisk) {
-    const unmetDemand = (leadTime - daysStock) * demand;
-    costImpact = unmetDemand * STOCKOUT_PENALTY;
-    costDirection = "loss";
-  } else if (overstock) {
-    const excessUnits = inventory - demand * 60;
-    const holdingCost = Math.max(0, excessUnits) * AVG_UNIT_COST * (AVG_HOLDING_RATE / 12);
-    costImpact = holdingCost;
-    costDirection = excessUnits > 0 ? "loss" : "save";
-  } else {
-    const safetyStock = demand * leadTime * 1.5;
-    const savedUnits = Math.max(0, safetyStock - inventory);
-    costImpact = savedUnits * AVG_UNIT_COST * (AVG_HOLDING_RATE / 12);
-    costDirection = "save";
-  }
-
-  // Insights
-  const insights: SimResult["insights"] = [];
-
-  if (criticalRisk)
-    insights.push({ icon: AlertTriangle, text: `CRITICAL: Stock depletes in ${daysStock}d but lead time is ${leadTime}d. Stockout in ${Math.max(0, daysStock)}d.`, type: "warn" });
-  else if (stockoutRisk)
-    insights.push({ icon: AlertTriangle, text: `Stock runs out ${leadTime - daysStock}d before your next delivery arrives. Buffer reorder needed now.`, type: "warn" });
-  else
-    insights.push({ icon: CheckCircle2, text: `Current stock covers ${daysStock}d of demand — ${daysStock - leadTime}d safety buffer above lead time.`, type: "ok" });
-
-  if (overstock)
-    insights.push({ icon: TrendingDown, text: `Overstock detected: inventory = ${(overstockRatio).toFixed(1)}× monthly demand. Holding costs accumulating daily.`, type: "warn" });
-  else if (demand > 0)
-    insights.push({ icon: CheckCircle2, text: `Inventory-to-demand ratio is healthy at ${overstockRatio.toFixed(1)}×. No excess holding costs.`, type: "ok" });
-
-  if (leadTime > 21)
-    insights.push({ icon: AlertTriangle, text: `Lead time of ${leadTime} days is high. Explore dual-sourcing to reduce supplier dependency risk.`, type: "warn" });
-  else if (leadTime > 14)
-    insights.push({ icon: Lightbulb, text: `Lead time is moderately high (${leadTime}d). Consider pre-positioning stock for peak seasons.`, type: "info" });
-
-  if (pressure > 85)
-    insights.push({ icon: Lightbulb, text: `Demand pressure at ${Math.round(pressure)}%. Consider pricing adjustment or demand smoothing strategy.`, type: "info" });
-
-  const recommendation =
-    riskLevel === "critical" ? `Emergency action required for ${product.name}. Place an expedited order covering at least ${leadTime * demand * 2} units immediately. Cost of inaction: ~$${Math.round(costImpact).toLocaleString()} in lost revenue.`
-    : riskLevel === "high"   ? `Reorder ${product.name} within 24–48 hours. Current trajectory leads to stockout before next delivery. Minimum order: ${Math.round(demand * leadTime * 1.3)} units.`
-    : riskLevel === "medium" ? `Monitor ${product.name} closely. Buffer is thin — consider a precautionary order of ${Math.round(demand * 7)} units within the next 5 days.`
-    : overstock              ? `Reduce next order for ${product.name} by ~${Math.round((inventory - demand * 45))} units. Consider a promotional push to reduce excess stock.`
-    : `${product.name} inventory is well-positioned. No immediate action required. Schedule next review in ${Math.max(7, Math.round(daysStock / 4))} days.`;
-
-  const optimization =
-    riskLevel === "critical" ? `Set automated reorder at ${Math.round(demand * leadTime * 1.8)} units (${Math.round(leadTime * 1.8)}d supply) to prevent recurrence.`
-    : riskLevel === "high"   ? `Optimal safety stock for this demand/lead time profile: ${Math.round(demand * (leadTime + 7))} units. Adjust min-stock threshold in your ERP.`
-    : overstock              ? `Optimal order quantity at current demand: ${Math.round(demand * 30)} units/month (30-day supply). Reduces holding cost by ~${Math.round(AVG_HOLDING_RATE * 100 * 0.4)}%.`
-    : `Your current parameters align with an Economic Order Quantity of ~${Math.round(demand * leadTime * 1.25)} units. Maintain this cadence for optimal cost efficiency.`;
-
-  return {
-    riskLevel, stockoutDays: Math.min(daysStock, 999),
-    overstockScore: Math.min(Math.round((overstockRatio / 5) * 100), 100),
-    costImpact: Math.round(costImpact),
-    costDirection,
-    recommendation, optimization,
-    insights,
-  };
-}
+// Result shape comes from the shared scenario engine (see lib/simulation/engine.ts).
+// The same engine runs on the server (/api/simulate) and here as a fallback,
+// so the numbers are always identical.
+type SimResult = ScenarioResult;
 
 const RISK_STYLES = {
-  critical: { color: "#f43f5e", bg: "rgba(244,63,94,0.10)", border: "rgba(244,63,94,0.2)", label: "Critical Risk"  },
-  high:     { color: "#f43f5e", bg: "rgba(244,63,94,0.08)", border: "rgba(244,63,94,0.15)", label: "High Risk"     },
-  medium:   { color: "#f59e0b", bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.18)", label: "Medium Risk"   },
-  low:      { color: "#10b981", bg: "rgba(16,185,129,0.10)", border: "rgba(16,185,129,0.15)", label: "Low Risk"      },
+  critical: { color: "#f43f5e", bg: "rgba(244,63,94,0.10)", border: "rgba(244,63,94,0.2)", label: "Act Now"     },
+  high:     { color: "#f43f5e", bg: "rgba(244,63,94,0.08)", border: "rgba(244,63,94,0.15)", label: "Order Soon"  },
+  medium:   { color: "#f59e0b", bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.18)", label: "Keep Watch" },
+  low:      { color: "#10b981", bg: "rgba(16,185,129,0.10)", border: "rgba(16,185,129,0.15)", label: "All Good"   },
 };
 
 function StepButton({ direction, color, onClick }: {
@@ -225,20 +137,20 @@ export default function SimulatorPage() {
       const res = await fetch("/api/simulate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: selectedProduct.id, demand, inventory, leadTime }),
+        body: JSON.stringify({ productId: selectedProduct.id, name: selectedProduct.name, demand, inventory, leadTime }),
       });
       const data = await res.json();
       if (res.ok && data?.riskLevel) setResult(data as SimResult);
-      else setResult(simulate(selectedProduct, demand, inventory, leadTime));
+      else setResult(runScenario({ name: selectedProduct.name, demand, inventory, leadTime }));
     } catch {
-      setResult(simulate(selectedProduct, demand, inventory, leadTime));
+      setResult(runScenario({ name: selectedProduct.name, demand, inventory, leadTime }));
     } finally {
       setTimeout(() => setIsRunning(false), 350);
     }
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       <div style={{
         display: "flex", alignItems: "center", gap: 10,
         padding: "0 32px", height: 60,
@@ -250,23 +162,23 @@ export default function SimulatorPage() {
           <FlaskConical size={13} style={{ color: "#059669" }} strokeWidth={2} />
         </div>
         <div>
-          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>Scenario Simulator</h1>
-          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", margin: 0 }}>Model outcomes before they happen</p>
+          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>What-If Tool</h1>
+          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", margin: 0 }}>See what happens before you buy</p>
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "28px 32px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 24 }}>
           {/* Controls */}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div>
-              <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 8 }}>Select Product</p>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 8 }}>Pick an Item</p>
               <div style={{ position: "relative", marginBottom: 8 }}>
                 <Search size={13} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#9CA3AF" }} />
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search products..."
+                  placeholder="Search items..."
                   style={{
                     width: "100%", paddingLeft: 36, paddingRight: 12, paddingTop: 9, paddingBottom: 9,
                     borderRadius: 12, fontSize: 13, outline: "none",
@@ -277,9 +189,9 @@ export default function SimulatorPage() {
               </div>
               <div style={{ ...glass, borderRadius: 16, overflow: "hidden", maxHeight: 200, overflowY: "auto" }}>
                 {isLoading
-                  ? <p style={{ padding: 14, fontSize: 13, color: "rgba(255,255,255,0.48)" }}>Loading products...</p>
+                  ? <p style={{ padding: 14, fontSize: 13, color: "rgba(255,255,255,0.48)" }}>Loading items...</p>
                   : searchFiltered.length === 0
-                    ? <p style={{ padding: 14, fontSize: 13, color: "rgba(255,255,255,0.48)" }}>No products found</p>
+                    ? <p style={{ padding: 14, fontSize: 13, color: "rgba(255,255,255,0.48)" }}>No items found</p>
                     : searchFiltered.map(p => (
                         <button key={p.id} onClick={() => setSelectedId(p.id)}
                           style={{
@@ -302,9 +214,9 @@ export default function SimulatorPage() {
 
             {selectedProduct && (
               <>
-                <SliderControl label="Daily Demand" value={demand} onChange={(v) => { setDemand(v); setResult(null); }} min={0} max={2000} color="#0284c7" />
-                <SliderControl label="Current Inventory" value={inventory} onChange={(v) => { setInventory(v); setResult(null); }} min={0} max={10000} color="#059669" />
-                <SliderControl label="Lead Time" value={leadTime} onChange={(v) => { setLeadTime(v); setResult(null); }} min={1} max={90} color="#d97706" format={(v) => `${v}d`} />
+                <SliderControl label="Sells Per Day" value={demand} onChange={(v) => { setDemand(v); setResult(null); }} min={0} max={2000} color="#0284c7" />
+                <SliderControl label="In Stock Now" value={inventory} onChange={(v) => { setInventory(v); setResult(null); }} min={0} max={10000} color="#059669" />
+                <SliderControl label="Days to Arrive" value={leadTime} onChange={(v) => { setLeadTime(v); setResult(null); }} min={1} max={90} color="#d97706" format={(v) => `${v}d`} />
 
                 <motion.button
                   onClick={runSim}
@@ -322,8 +234,8 @@ export default function SimulatorPage() {
                   }}
                 >
                   {isRunning
-                    ? <><motion.div animate={{ rotate: 360 }} transition={{ duration: 0.4, repeat: Infinity, ease: "linear" }}><div style={{ width: 16, height: 16, borderRadius: "50%", border: "2px solid rgba(0,0,0,0.12)", borderTopColor: "#059669" }} /></motion.div> Analysing...</>
-                    : <><Play size={15} strokeWidth={2.5} /> Run Simulation</>
+                    ? <><motion.div animate={{ rotate: 360 }} transition={{ duration: 0.4, repeat: Infinity, ease: "linear" }}><div style={{ width: 16, height: 16, borderRadius: "50%", border: "2px solid rgba(0,0,0,0.12)", borderTopColor: "#059669" }} /></motion.div> Checking...</>
+                    : <><Play size={15} strokeWidth={2.5} /> See Result</>
                   }
                 </motion.button>
               </>
@@ -341,7 +253,7 @@ export default function SimulatorPage() {
                       animate={{ scale: [1, 1.5, 1], opacity: [0.6, 0, 0.6] }} transition={{ duration: 0.7, repeat: Infinity }} />
                     <div style={{ width: "100%", height: "100%", borderRadius: "50%", border: "3px solid rgba(5,150,105,0.15)", borderTopColor: "#059669", animation: "spin 0.4s linear infinite" }} />
                   </div>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)" }}>Running scenario analysis...</p>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)" }}>Working it out...</p>
                   <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
                 </motion.div>
               ) : result && selectedProduct ? (
@@ -363,9 +275,9 @@ export default function SimulatorPage() {
                   {/* Stats */}
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
                     {[
-                      { Icon: Gauge,      label: "Days Until Stockout", value: result.stockoutDays > 365 ? "365+" : `${result.stockoutDays}d`, color: result.stockoutDays < 14 ? "#e11d48" : "#059669" },
-                      { Icon: BarChart2,  label: "Overstock Score",      value: `${result.overstockScore}/100`,  color: result.overstockScore > 60 ? "#d97706" : "#059669" },
-                      { Icon: DollarSign, label: `Est. ${result.costDirection === "loss" ? "Cost Exposure" : "Cost Saving"}`, value: `$${result.costImpact.toLocaleString()}`, color: result.costDirection === "loss" ? "#e11d48" : "#059669" },
+                      { Icon: Gauge,      label: "Days Till It Finishes", value: result.stockoutDays > 365 ? "365+" : `${result.stockoutDays}d`, color: result.stockoutDays < 14 ? "#e11d48" : "#059669" },
+                      { Icon: BarChart2,  label: "Too-Much Score",        value: `${result.overstockScore}/100`,  color: result.overstockScore > 60 ? "#d97706" : "#059669" },
+                      { Icon: DollarSign, label: result.costDirection === "loss" ? "Money at Risk" : "Money Saved", value: `₹${result.costImpact.toLocaleString()}`, color: result.costDirection === "loss" ? "#e11d48" : "#059669" },
                     ].map((s, i) => (
                       <div key={i} style={{ ...glass, borderRadius: 16, padding: "14px 16px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10 }}>
@@ -379,10 +291,10 @@ export default function SimulatorPage() {
 
                   {/* Insights */}
                   <div style={{ ...glass, borderRadius: 20, padding: 20 }}>
-                    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 13, fontWeight: 700, color: "#f1f5f9", marginBottom: 14 }}>Scenario Breakdown</p>
+                    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 13, fontWeight: 700, color: "#f1f5f9", marginBottom: 14 }}>What This Means</p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                       {result.insights.map((ins, i) => {
-                        const InsIcon = ins.icon;
+                        const InsIcon = ins.type === "warn" ? AlertTriangle : ins.type === "ok" ? CheckCircle2 : Lightbulb;
                         const ic = ins.type === "warn" ? "#e11d48" : ins.type === "ok" ? "#059669" : "#0284c7";
                         const ibg = ins.type === "warn" ? "rgba(225,29,72,0.10)" : ins.type === "ok" ? "rgba(5,150,105,0.10)" : "rgba(2,132,199,0.10)";
                         return (
@@ -402,7 +314,7 @@ export default function SimulatorPage() {
                   <div style={{ ...glass, borderRadius: 20, padding: 20, background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.18)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                       <Lightbulb size={14} style={{ color: "#7c3aed" }} strokeWidth={1.8} />
-                      <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>Optimization Recommendation</p>
+                      <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>Best Move</p>
                     </div>
                     <p style={{ fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,0.7)" }}>{result.optimization}</p>
                   </div>
@@ -413,9 +325,9 @@ export default function SimulatorPage() {
                   <div style={{ width: 64, height: 64, borderRadius: 20, background: "rgba(5,150,105,0.08)", border: "1px solid rgba(5,150,105,0.18)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <FlaskConical size={26} style={{ color: "#059669" }} strokeWidth={1.5} />
                   </div>
-                  <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", textAlign: "center" }}>Ready to Simulate</h3>
+                  <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", textAlign: "center" }}>Ready to Check</h3>
                   <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)", textAlign: "center", maxWidth: 280, lineHeight: 1.5 }}>
-                    Select a product, adjust demand, inventory, and lead time parameters, then run the simulation.
+                    Pick an item, set how much sells, how much you have, and delivery days — then tap See Result.
                   </p>
                 </motion.div>
               )}

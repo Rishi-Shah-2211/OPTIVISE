@@ -38,9 +38,9 @@ function getSeverity(impact: number): FilterTab {
 type SStyle = { color: string; bg: string; border: string; Icon: React.ElementType; label: string };
 
 function getStyle(impact: number): SStyle {
-  if (impact > 80) return { color: "#f43f5e", bg: "rgba(244,63,94,0.10)",  border: "rgba(244,63,94,0.18)",  Icon: AlertTriangle, label: "Critical"  };
-  if (impact > 60) return { color: "#f59e0b", bg: "rgba(245,158,11,0.10)",  border: "rgba(245,158,11,0.18)",  Icon: Zap,           label: "High"       };
-  return               { color: "#0ea5e9", bg: "rgba(14,165,233,0.08)",   border: "rgba(14,165,233,0.15)",  Icon: Info,          label: "Advisory"   };
+  if (impact > 80) return { color: "#f43f5e", bg: "rgba(244,63,94,0.10)",  border: "rgba(244,63,94,0.18)",  Icon: AlertTriangle, label: "Urgent"       };
+  if (impact > 60) return { color: "#f59e0b", bg: "rgba(245,158,11,0.10)",  border: "rgba(245,158,11,0.18)",  Icon: Zap,           label: "Important"    };
+  return               { color: "#0ea5e9", bg: "rgba(14,165,233,0.08)",   border: "rgba(14,165,233,0.15)",  Icon: Info,          label: "Good to Know" };
 }
 
 function normalize(c: number) { return c <= 1 ? c * 100 : c; }
@@ -104,7 +104,7 @@ function InsightRow({ insight, index }: { insight: Insight; index: number }) {
               {s.label}
             </span>
             <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)", textTransform: "capitalize" }}>
-              {insight.type?.replace(/_/g, " ")}
+              {({ stockout: "running low", overstock: "too much stock", reorder: "order soon", lead_time: "slow delivery" } as Record<string, string>)[insight.type] ?? insight.type?.replace(/_/g, " ")}
             </span>
             <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)", marginLeft: "auto" }}>{safeAgo(insight.createdAt)}</span>
           </div>
@@ -116,7 +116,7 @@ function InsightRow({ insight, index }: { insight: Insight; index: number }) {
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
             <div style={{ flex: 1, maxWidth: 220 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.48)" }}>Confidence</span>
+                <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.48)" }}>How Sure</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: s.color }}>{Math.round(conf)}%</span>
               </div>
               <div style={{ height: 5, borderRadius: 999, background: "rgba(255,255,255,0.10)", overflow: "hidden" }}>
@@ -132,7 +132,7 @@ function InsightRow({ insight, index }: { insight: Insight; index: number }) {
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <TrendingDown size={14} style={{ color: s.color }} strokeWidth={2} />
               <span style={{ fontSize: 14, fontWeight: 700, color: s.color }}>{Math.round(insight.impact)}</span>
-              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)" }}>impact</span>
+              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)" }}>how big</span>
             </div>
           </div>
         </div>
@@ -179,22 +179,22 @@ export default function InsightsPage() {
   }), [insights]);
 
   const TABS: { key: FilterTab; label: string; color: string }[] = [
-    { key: "all",      label: "All",      color: "#f1f5f9" },
-    { key: "critical", label: "Critical", color: "#f43f5e" },
-    { key: "high",     label: "High",     color: "#f59e0b" },
-    { key: "advisory", label: "Advisory", color: "#0ea5e9" },
+    { key: "all",      label: "All",          color: "#f1f5f9" },
+    { key: "critical", label: "Urgent",       color: "#f43f5e" },
+    { key: "high",     label: "Important",    color: "#f59e0b" },
+    { key: "advisory", label: "Good to Know", color: "#0ea5e9" },
   ];
 
   const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-    { key: "impact",     label: "By Impact"     },
-    { key: "confidence", label: "By Confidence" },
-    { key: "date",       label: "By Date"       },
+    { key: "impact",     label: "Most Important" },
+    { key: "confidence", label: "Most Sure"      },
+    { key: "date",       label: "Newest First"   },
   ];
 
   const currentSort = SORT_OPTIONS.find(o => o.key === sort)!;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       {/* Header */}
       <div style={{
         padding: "20px 32px", flexShrink: 0,
@@ -204,9 +204,9 @@ export default function InsightsPage() {
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
           <div>
-            <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>AI Insights</h1>
+            <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>Smart Tips</h1>
             <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)", marginTop: 4 }}>
-              {insights.length} active signals detected across your supply chain
+              {insights.length} helpful tips for your shop
             </p>
           </div>
           <button
@@ -234,7 +234,7 @@ export default function InsightsPage() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by message or type..."
+              placeholder="Search tips..."
               style={{
                 width: "100%", paddingLeft: 36, paddingRight: 12, paddingTop: 9, paddingBottom: 9,
                 borderRadius: 12, fontSize: 13, outline: "none",
@@ -340,7 +340,7 @@ export default function InsightsPage() {
       </div>
 
       {/* List */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px" }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "24px 32px" }}>
         {isLoading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {Array.from({ length: 5 }, (_, i) => (
@@ -350,14 +350,14 @@ export default function InsightsPage() {
           </div>
         ) : isError ? (
           <div style={{ textAlign: "center", padding: 60 }}>
-            <p style={{ color: "#f43f5e", marginBottom: 12 }}>Failed to load insights.</p>
+            <p style={{ color: "#f43f5e", marginBottom: 12 }}>Could not load tips.</p>
             <button onClick={() => refetch()} style={{ color: "#0ea5e9", cursor: "pointer", background: "none", border: "none", fontSize: 13 }}>Retry</button>
           </div>
         ) : filtered.length === 0 ? (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 60, gap: 10 }}>
             <Filter size={28} style={{ color: "rgba(255,255,255,0.2)" }} strokeWidth={1.5} />
             <p style={{ color: "rgba(255,255,255,0.60)", fontSize: 14 }}>
-              {search.trim() ? `No insights match "${search}"` : "No insights match this filter"}
+              {search.trim() ? `No tips match "${search}"` : "No tips here right now"}
             </p>
             {(search.trim() || filter !== "all") && (
               <button onClick={() => { setSearch(""); setFilter("all"); }}

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { DatabaseZap, RefreshCw, WifiOff } from "lucide-react";
 
-export function EmptyState({ title = "No data yet", description = "Once data is available, it will appear here." }: { title?: string; description?: string }) {
+export function EmptyState({ title = "Nothing here yet", description = "Once you add data, it will show up here." }: { title?: string; description?: string }) {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.15 }}
       style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", textAlign: "center" }}>
@@ -23,9 +23,9 @@ export function ErrorState({ message, onRetry }: { message: string | null; onRet
       <div style={{ width: 48, height: 48, borderRadius: 16, background: "rgba(244,63,94,0.10)", border: "1px solid rgba(244,63,94,0.18)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
         <WifiOff size={20} style={{ color: "#f43f5e" }} strokeWidth={1.5} />
       </div>
-      <h3 style={{ fontSize: 14, fontWeight: 600, color: "#f1f5f9", marginBottom: 5 }}>Failed to load data</h3>
+      <h3 style={{ fontSize: 14, fontWeight: 600, color: "#f1f5f9", marginBottom: 5 }}>Could not load</h3>
       <p style={{ fontSize: 12, color: "rgba(255,255,255,0.48)", maxWidth: 260, lineHeight: 1.6, marginBottom: 16 }}>
-        {message ?? "An unexpected error occurred. Please try again."}
+        {message ?? "Something went wrong. Please try again."}
       </p>
       <button onClick={onRetry} style={{
         display: "flex", alignItems: "center", gap: 6, padding: "8px 16px",

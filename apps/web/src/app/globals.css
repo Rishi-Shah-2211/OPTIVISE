@@ -126,6 +126,45 @@ input[type="range"]::-webkit-slider-thumb {
   overflow: hidden;
 }
 
+/* Glassy light sweep on hover — adds life without changing colors */
+.shimmer-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.07) 44%,
+    rgba(255, 255, 255, 0.16) 50%,
+    rgba(255, 255, 255, 0.07) 56%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  background-position: 160% 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 2;
+  transition: opacity 0.35s ease;
+}
+
+.shimmer-card:hover::after {
+  opacity: 1;
+  animation: shimmer-sweep 0.85s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes shimmer-sweep {
+  0% { background-position: 160% 0; }
+  100% { background-position: -160% 0; }
+}
+
+/* Soft breathing glow for accent dots / live indicators */
+@keyframes ring-pulse {
+  0% { transform: scale(1); opacity: 0.55; }
+  70% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
 .glass-noise::before {
   content: "";
   position: absolute;

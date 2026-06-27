@@ -32,10 +32,10 @@ interface Settings {
 }
 
 const DEFAULTS: Settings = {
-  displayName: "Supply Chain Admin",
-  role: "Operations Manager",
-  company: "My Organization",
-  timezone: "UTC",
+  displayName: "Shop Owner",
+  role: "Shop Owner",
+  company: "My Shop",
+  timezone: "Asia/Kolkata",
   notifyStockout: true,
   notifyHighImpact: true,
   notifyDailyDigest: false,
@@ -47,10 +47,10 @@ type Tab = "profile" | "notifications" | "data" | "usage" | "status";
 
 const TABS: { key: Tab; label: string; Icon: React.ElementType }[] = [
   { key: "profile",       label: "Profile",        Icon: User       },
-  { key: "notifications", label: "Notifications",  Icon: Bell       },
-  { key: "data",          label: "Data Controls",  Icon: Database   },
-  { key: "usage",         label: "API Usage",      Icon: BarChart2  },
-  { key: "status",        label: "System Status",  Icon: Activity   },
+  { key: "notifications", label: "Alerts",         Icon: Bell       },
+  { key: "data",          label: "Data",           Icon: Database   },
+  { key: "usage",         label: "Usage",          Icon: BarChart2  },
+  { key: "status",        label: "Status",         Icon: Activity   },
 ];
 
 function Label({ children }: { children: React.ReactNode }) {
@@ -242,7 +242,7 @@ function StatusDot({ online }: { online: boolean }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
       <div style={{ width: 8, height: 8, borderRadius: "50%", background: online ? "#10b981" : "#f43f5e", boxShadow: online ? "0 0 8px rgba(16,185,129,0.5)" : "0 0 8px rgba(244,63,94,0.4)" }} />
-      <span style={{ fontSize: 12, fontWeight: 500, color: online ? "#10b981" : "#f43f5e" }}>{online ? "Operational" : "Degraded"}</span>
+      <span style={{ fontSize: 12, fontWeight: 500, color: online ? "#10b981" : "#f43f5e" }}>{online ? "Working" : "Down"}</span>
     </div>
   );
 }
@@ -269,7 +269,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       {/* Header */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -280,7 +280,7 @@ export default function SettingsPage() {
       }}>
         <div>
           <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>Settings</h1>
-          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", margin: 0 }}>Manage your Optivise workspace</p>
+          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", margin: 0 }}>Manage your shop settings</p>
         </div>
 
         <motion.button
@@ -305,9 +305,9 @@ export default function SettingsPage() {
         </motion.button>
       </div>
 
-      <div style={{ display: "flex", flex: 1 }}>
+      <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
         {/* Sidebar */}
-        <div style={{ width: 200, flexShrink: 0, padding: "16px 12px", borderRight: "1px solid rgba(255,255,255,0.12)", overflowY: "auto" }}>
+        <div style={{ width: 200, flexShrink: 0, minHeight: 0, padding: "16px 12px", borderRight: "1px solid rgba(255,255,255,0.12)", overflowY: "auto" }}>
           {TABS.map(t => {
             const active = tab === t.key;
             const Icon = t.Icon;
@@ -334,31 +334,30 @@ export default function SettingsPage() {
         </div>
 
         {/* Content */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "28px 32px" }}>
           <AnimatePresence mode="wait">
             <motion.div key={tab} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.09 }}>
 
               {/* Profile */}
               {tab === "profile" && (
                 <div>
-                  <Label>Personal Information</Label>
+                  <Label>Your Details</Label>
                   <div style={{ ...glass, borderRadius: 20, padding: "0 20px", marginBottom: 20 }}>
-                    <FieldRow label="Display Name" hint="Used in reports and exports">
+                    <FieldRow label="Your Name" hint="Shown in the app">
                       <TextInput value={s.displayName} onChange={v => update("displayName", v)} />
                     </FieldRow>
-                    <FieldRow label="Role" hint="Your position in the organization">
+                    <FieldRow label="You Are" hint="What you do at the shop">
                       <SelectInput value={s.role} onChange={v => update("role", v)} options={[
-                        { value: "Operations Manager",     label: "Operations Manager"     },
-                        { value: "Supply Chain Analyst",   label: "Supply Chain Analyst"   },
-                        { value: "Procurement Lead",       label: "Procurement Lead"       },
-                        { value: "Logistics Coordinator",  label: "Logistics Coordinator"  },
-                        { value: "C-Suite Executive",      label: "C-Suite Executive"      },
+                        { value: "Shop Owner",  label: "Shop Owner"  },
+                        { value: "Manager",     label: "Manager"     },
+                        { value: "Helper",      label: "Helper"      },
+                        { value: "Cashier",     label: "Cashier"     },
                       ]} />
                     </FieldRow>
-                    <FieldRow label="Company" hint="Organization name">
-                      <TextInput value={s.company} onChange={v => update("company", v)} placeholder="Your company" />
+                    <FieldRow label="Shop Name" hint="Your shop's name">
+                      <TextInput value={s.company} onChange={v => update("company", v)} placeholder="Your shop" />
                     </FieldRow>
-                    <FieldRow label="Timezone" hint="Used for time-based reporting">
+                    <FieldRow label="Time Zone" hint="For showing correct times">
                       <SelectInput value={s.timezone} onChange={v => update("timezone", v)} options={[
                         { value: "UTC",           label: "UTC"             },
                         { value: "Asia/Kolkata",  label: "IST (UTC+5:30)"  },
@@ -375,15 +374,15 @@ export default function SettingsPage() {
               {/* Notifications */}
               {tab === "notifications" && (
                 <div>
-                  <Label>Alert Preferences</Label>
+                  <Label>Alerts</Label>
                   <div style={{ ...glass, borderRadius: 20, padding: "0 20px", marginBottom: 20 }}>
-                    <FieldRow label="Stockout Risk Alerts" hint="Notify when products approach zero stock coverage">
+                    <FieldRow label="Low Stock Alerts" hint="Tell me when an item is about to finish">
                       <Toggle checked={s.notifyStockout} onChange={v => update("notifyStockout", v)} />
                     </FieldRow>
-                    <FieldRow label="High Impact Insights" hint="Notify for insights with impact score > 70">
+                    <FieldRow label="Important Tips" hint="Tell me about the big tips only">
                       <Toggle checked={s.notifyHighImpact} onChange={v => update("notifyHighImpact", v)} accent="#f43f5e" />
                     </FieldRow>
-                    <FieldRow label="Daily Digest" hint="Receive a summary of all insights each morning">
+                    <FieldRow label="Daily Summary" hint="A short summary every morning">
                       <Toggle checked={s.notifyDailyDigest} onChange={v => update("notifyDailyDigest", v)} accent="#8b5cf6" />
                     </FieldRow>
                   </div>
@@ -392,7 +391,7 @@ export default function SettingsPage() {
                     <div style={{ display: "flex", gap: 10 }}>
                       <Bell size={14} style={{ color: "#8b5cf6", flexShrink: 0, marginTop: 1 }} strokeWidth={1.8} />
                       <p style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
-                        Notification delivery requires email configuration. Alerts are currently shown as in-app indicators in the sidebar and dashboard header.
+                        For now, alerts show up inside the app — in the side menu and at the top of My Shop. Email alerts can be added later.
                       </p>
                     </div>
                   </div>
@@ -402,18 +401,18 @@ export default function SettingsPage() {
               {/* Data Controls */}
               {tab === "data" && (
                 <div>
-                  <Label>Data Refresh</Label>
+                  <Label>Auto Update</Label>
                   <div style={{ ...glass, borderRadius: 20, padding: "0 20px", marginBottom: 20 }}>
-                    <FieldRow label="Auto-Refresh Interval" hint="How often dashboard polls for updated data">
+                    <FieldRow label="Update How Often" hint="How often the app checks for new numbers">
                       <SelectInput value={String(s.refreshInterval)} onChange={v => update("refreshInterval", Number(v))} options={[
                         { value: "15",  label: "Every 15 seconds" },
                         { value: "30",  label: "Every 30 seconds" },
                         { value: "60",  label: "Every minute"     },
                         { value: "300", label: "Every 5 minutes"  },
-                        { value: "0",   label: "Manual only"      },
+                        { value: "0",   label: "Only when I tap"   },
                       ]} />
                     </FieldRow>
-                    <FieldRow label="Data Retention" hint="How many days of historical insights to retain">
+                    <FieldRow label="Keep History For" hint="How long to keep old tips and numbers">
                       <SelectInput value={String(s.dataRetentionDays)} onChange={v => update("dataRetentionDays", Number(v))} options={[
                         { value: "30",  label: "30 days"  },
                         { value: "60",  label: "60 days"  },
@@ -424,9 +423,9 @@ export default function SettingsPage() {
                     </FieldRow>
                   </div>
 
-                  <Label>Danger Zone</Label>
+                  <Label>Reset</Label>
                   <div style={{ ...glass, borderRadius: 20, padding: 20, border: "1px solid rgba(244,63,94,0.18)" }}>
-                    <p style={{ fontSize: 12, color: "rgba(255,255,255,0.48)", marginBottom: 14 }}>These actions are irreversible.</p>
+                    <p style={{ fontSize: 12, color: "rgba(255,255,255,0.48)", marginBottom: 14 }}>This cannot be undone.</p>
                     <button
                       onClick={() => { localStorage.removeItem(STORAGE_KEY); setS(DEFAULTS); }}
                       style={{
@@ -448,11 +447,11 @@ export default function SettingsPage() {
               {/* API Usage */}
               {tab === "usage" && (
                 <div>
-                  <Label>API Usage This Period</Label>
+                  <Label>App Usage</Label>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14, marginBottom: 20 }}>
                     {[
-                      { label: "Calls Today",     value: apiCalls.today.toLocaleString(),   icon: Zap,       color: "#0ea5e9" },
-                      { label: "Calls This Week",  value: apiCalls.week.toLocaleString(),    icon: Clock,     color: "#8b5cf6" },
+                      { label: "Used Today",      value: apiCalls.today.toLocaleString(),   icon: Zap,       color: "#0ea5e9" },
+                      { label: "Used This Week",   value: apiCalls.week.toLocaleString(),    icon: Clock,     color: "#8b5cf6" },
                       { label: "Monthly Limit",    value: apiCalls.limit.toLocaleString(),   icon: BarChart2, color: "#10b981" },
                     ].map((c, i) => {
                       const CIcon = c.icon;
@@ -470,7 +469,7 @@ export default function SettingsPage() {
                     })}
                   </div>
 
-                  <Label>Usage Breakdown</Label>
+                  <Label>Where It's Used</Label>
                   <div style={{ ...glass, borderRadius: 20, padding: 20 }}>
                     {[
                       { endpoint: "/api/products",      calls: 58, pct: 41 },
@@ -490,7 +489,7 @@ export default function SettingsPage() {
                             style={{ height: "100%", borderRadius: 999, background: "linear-gradient(90deg, #0ea5e9, #8b5cf6)" }}
                           />
                         </div>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.6)", width: 60, textAlign: "right" }}>{r.calls} calls</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.6)", width: 60, textAlign: "right" }}>{r.calls} times</span>
                       </div>
                     ))}
                   </div>
@@ -500,14 +499,14 @@ export default function SettingsPage() {
               {/* System Status */}
               {tab === "status" && (
                 <div>
-                  <Label>Service Health</Label>
+                  <Label>What's Working</Label>
                   <div style={{ ...glass, borderRadius: 20, padding: "0 20px", marginBottom: 20 }}>
                     {[
-                      { label: "Products API",       endpoint: "/api/products",       icon: Database, online: true  },
-                      { label: "Insights API",        endpoint: "/api/insights-data",  icon: Activity, online: true  },
-                      { label: "Simulation Engine",   endpoint: "/api/simulate",       icon: Zap,      online: true  },
-                      { label: "Copilot AI (Groq)",   endpoint: "/api/copilot",        icon: Wifi,     online: !!process.env.NEXT_PUBLIC_GROQ_ENABLED },
-                      { label: "Database (Prisma)",   endpoint: "PostgreSQL via Neon", icon: Database, online: true  },
+                      { label: "Items",        endpoint: "/api/products",       icon: Database, online: true  },
+                      { label: "Smart Tips",   endpoint: "/api/insights-data",  icon: Activity, online: true  },
+                      { label: "What-If Tool", endpoint: "/api/simulate",       icon: Zap,      online: true  },
+                      { label: "AI Helper",    endpoint: "/api/copilot",        icon: Wifi,     online: !!process.env.NEXT_PUBLIC_GROQ_ENABLED },
+                      { label: "Storage",      endpoint: "PostgreSQL via Neon", icon: Database, online: true  },
                     ].map((svc, i) => {
                       const SIcon = svc.icon;
                       return (
@@ -527,13 +526,13 @@ export default function SettingsPage() {
                     })}
                   </div>
 
-                  <Label>Environment</Label>
+                  <Label>About</Label>
                   <div style={{ ...glass, borderRadius: 20, padding: 20 }}>
                     {[
-                      { key: "Next.js Version",      val: "16.2.1"        },
-                      { key: "Prisma Client",         val: "5.22.0"        },
-                      { key: "Groq Model",            val: "llama-3.1-8b-instant" },
-                      { key: "Data Schema",           val: "v1.0.0"        },
+                      { key: "App Version",     val: "1.0.0"        },
+                      { key: "AI Helper",       val: "Llama 3.3 70B (Groq)" },
+                      { key: "Storage",         val: "PostgreSQL"   },
+                      { key: "Data Version",    val: "v1.0.0"       },
                     ].map((row, i) => (
                       <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.09)" : "none" }}>
                         <span style={{ fontSize: 13, color: "rgba(255,255,255,0.48)" }}>{row.key}</span>

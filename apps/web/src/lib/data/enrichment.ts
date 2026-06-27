@@ -5,27 +5,23 @@
  */
 
 const SUPPLIER_POOL = [
-  { name: "GlobalSource Ltd",        region: "East Asia",        reliability: 0.92 },
-  { name: "PrimeParts Inc",          region: "North America",    reliability: 0.96 },
-  { name: "EuroLogistics GmbH",      region: "Western Europe",   reliability: 0.94 },
-  { name: "QuickShip Distributors",  region: "North America",    reliability: 0.88 },
-  { name: "ShenZhen Direct",         region: "East Asia",        reliability: 0.85 },
-  { name: "MediterraneanTrade Co",   region: "Southern Europe",  reliability: 0.90 },
-  { name: "IndoSupply Partners",     region: "South Asia",       reliability: 0.83 },
-  { name: "NordicFreight AB",        region: "Northern Europe",  reliability: 0.95 },
-  { name: "LatAm Wholesale",         region: "South America",    reliability: 0.80 },
-  { name: "PacificRim Exports",      region: "Southeast Asia",   reliability: 0.87 },
+  { name: "Sharma Wholesale",     region: "Local Mandi",     reliability: 0.95 },
+  { name: "Gupta Distributors",   region: "City Market",     reliability: 0.90 },
+  { name: "Annapurna Traders",    region: "Local Mandi",     reliability: 0.88 },
+  { name: "Patel Agencies",       region: "Highway Depot",   reliability: 0.92 },
+  { name: "Verma Suppliers",      region: "City Market",     reliability: 0.85 },
+  { name: "Jain Trading Co",      region: "Wholesale Bazaar", reliability: 0.93 },
+  { name: "Singh Brothers",       region: "Highway Depot",   reliability: 0.83 },
+  { name: "Mehta Stores Supply",  region: "City Market",     reliability: 0.89 },
+  { name: "Krishna Agro Mart",    region: "Local Mandi",     reliability: 0.87 },
+  { name: "Reddy Provisions",     region: "Wholesale Bazaar", reliability: 0.86 },
 ];
 
 const LEAD_TIME_RANGES: Record<string, [number, number]> = {
-  "East Asia":        [14, 35],
-  "North America":    [3, 12],
-  "Western Europe":   [5, 15],
-  "Southern Europe":  [7, 18],
-  "South Asia":       [18, 40],
-  "Northern Europe":  [4, 14],
-  "South America":    [20, 45],
-  "Southeast Asia":   [15, 30],
+  "Local Mandi":      [1, 4],
+  "City Market":      [2, 6],
+  "Highway Depot":    [4, 10],
+  "Wholesale Bazaar": [3, 8],
 };
 
 export function seededRandom(seed: number): () => number {

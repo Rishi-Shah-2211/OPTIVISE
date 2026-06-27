@@ -53,11 +53,11 @@ interface InsightItem { icon: React.ElementType; text: string; type: "success" |
 const METRIC_CONFIGS: MetricConfig[] = [
   {
     id: "total-skus",
-    title: "Total SKUs",
+    title: "Total Items",
     icon: "Package",
     accent: "cyan",
-    unit: "products",
-    description: "Total number of active products tracked across your supply chain. This metric represents your full catalog footprint and directly impacts warehousing costs and procurement complexity.",
+    unit: "items",
+    description: "How many different items your shop keeps. More items means more to look after, so it helps to know which ones really sell.",
     getValue: (p) => p.length,
     getBreakdown: (p) => {
       const healthy = p.filter(x => x.inventory > x.demand);
@@ -65,9 +65,9 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const critical = p.filter(x => x.inventory === 0);
       const total = p.length || 1;
       return [
-        { label: "Healthy Stock", value: `${healthy.length}`, pct: (healthy.length / total) * 100, color: "#059669" },
-        { label: "At Risk", value: `${atRisk.length}`, pct: (atRisk.length / total) * 100, color: "#d97706" },
-        { label: "Critical (Zero)", value: `${critical.length}`, pct: (critical.length / total) * 100, color: "#e11d48" },
+        { label: "Enough Stock", value: `${healthy.length}`, pct: (healthy.length / total) * 100, color: "#059669" },
+        { label: "Running Low", value: `${atRisk.length}`, pct: (atRisk.length / total) * 100, color: "#d97706" },
+        { label: "Finished", value: `${critical.length}`, pct: (critical.length / total) * 100, color: "#e11d48" },
       ];
     },
     getChartData: (p) => {
@@ -87,19 +87,19 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const zeroStock = p.filter(x => x.inventory === 0).length;
       const highDemand = p.filter(x => x.demand > x.inventory * 2).length;
       const items: InsightItem[] = [];
-      if (zeroStock > 0) items.push({ icon: AlertTriangle, text: `${zeroStock} SKU${zeroStock > 1 ? "s" : ""} have zero inventory — immediate restock needed`, type: "critical" });
-      if (highDemand > 0) items.push({ icon: TrendingUp, text: `${highDemand} SKU${highDemand > 1 ? "s" : ""} have demand exceeding 2x inventory`, type: "warning" });
-      items.push({ icon: CheckCircle2, text: `${p.length} products actively monitored across the system`, type: "success" });
+      if (zeroStock > 0) items.push({ icon: AlertTriangle, text: `${zeroStock} item${zeroStock > 1 ? "s are" : " is"} fully finished — restock now`, type: "critical" });
+      if (highDemand > 0) items.push({ icon: TrendingUp, text: `${highDemand} item${highDemand > 1 ? "s are" : " is"} selling much faster than your stock`, type: "warning" });
+      items.push({ icon: CheckCircle2, text: `${p.length} items are being watched for you`, type: "success" });
       return items;
     },
   },
   {
     id: "inventory",
-    title: "Total Inventory",
+    title: "Total Stock",
     icon: "Boxes",
     accent: "emerald",
-    unit: "units",
-    description: "Aggregate stock on hand across all SKUs. This directly correlates with your warehousing costs (typically 18-25% of inventory value annually) and working capital utilization.",
+    unit: "pieces",
+    description: "All the pieces sitting in your shop right now, added up. Too much stock means your money is stuck on the shelf.",
     getValue: (p) => p.reduce((s, x) => s + x.inventory, 0),
     getBreakdown: (p) => {
       const sorted = [...p].sort((a, b) => b.inventory - a.inventory);
@@ -122,20 +122,20 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const overstock = p.filter(x => x.inventory > x.demand * 3);
       const overstockUnits = overstock.reduce((s, x) => s + (x.inventory - x.demand * 3), 0);
       const items: InsightItem[] = [];
-      if (overstock.length > 0) items.push({ icon: AlertTriangle, text: `${overstock.length} products are overstocked (>3x demand) — ${overstockUnits.toLocaleString()} excess units`, type: "warning" });
-      items.push({ icon: Package, text: `Total inventory value: ${total.toLocaleString()} units across ${p.length} SKUs`, type: "success" });
+      if (overstock.length > 0) items.push({ icon: AlertTriangle, text: `${overstock.length} items have too much stock — ${overstockUnits.toLocaleString()} extra pieces with money stuck`, type: "warning" });
+      items.push({ icon: Package, text: `Total stock: ${total.toLocaleString()} pieces across ${p.length} items`, type: "success" });
       const avgStock = p.length > 0 ? Math.round(total / p.length) : 0;
-      items.push({ icon: CheckCircle2, text: `Average stock per SKU: ${avgStock.toLocaleString()} units`, type: "success" });
+      items.push({ icon: CheckCircle2, text: `Average stock per item: ${avgStock.toLocaleString()} pieces`, type: "success" });
       return items;
     },
   },
   {
     id: "lead-time",
-    title: "Avg Lead Time",
+    title: "Delivery Time",
     icon: "Clock",
     accent: "amber",
     unit: "days",
-    description: "Average supplier lead time across all products. Lead times above 14 days significantly increase stockout risk and require larger safety stock buffers, tying up working capital.",
+    description: "How many days, on average, new stock takes to reach your shop. If it takes long, keep a little extra so items never finish.",
     getValue: (p) => p.length > 0 ? parseFloat((p.reduce((s, x) => s + x.leadTime, 0) / p.length).toFixed(1)) : 0,
     getBreakdown: (p) => {
       const fast = p.filter(x => x.leadTime <= 7);
@@ -143,9 +143,9 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const slow = p.filter(x => x.leadTime > 14);
       const total = p.length || 1;
       return [
-        { label: "Fast (<=7d)", value: `${fast.length} SKUs`, pct: (fast.length / total) * 100, color: "#059669" },
-        { label: "Medium (8-14d)", value: `${medium.length} SKUs`, pct: (medium.length / total) * 100, color: "#d97706" },
-        { label: "Slow (>14d)", value: `${slow.length} SKUs`, pct: (slow.length / total) * 100, color: "#e11d48" },
+        { label: "Fast (<=7d)", value: `${fast.length} items`, pct: (fast.length / total) * 100, color: "#059669" },
+        { label: "Medium (8-14d)", value: `${medium.length} items`, pct: (medium.length / total) * 100, color: "#d97706" },
+        { label: "Slow (>14d)", value: `${slow.length} items`, pct: (slow.length / total) * 100, color: "#e11d48" },
       ];
     },
     getChartData: (p) => {
@@ -159,21 +159,21 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const slow = p.filter(x => x.leadTime > 14);
       const atRisk = p.filter(x => x.leadTime > Math.floor(x.inventory / (x.demand || 1)));
       const items: InsightItem[] = [];
-      if (slow.length > 0) items.push({ icon: Clock, text: `${slow.length} products have lead times >14 days — consider dual-sourcing`, type: "warning" });
-      if (atRisk.length > 0) items.push({ icon: AlertTriangle, text: `${atRisk.length} products where lead time exceeds days-of-stock coverage`, type: "critical" });
+      if (slow.length > 0) items.push({ icon: Clock, text: `${slow.length} items take more than 14 days to arrive — keep a backup supplier`, type: "warning" });
+      if (atRisk.length > 0) items.push({ icon: AlertTriangle, text: `${atRisk.length} items may finish before new stock arrives`, type: "critical" });
       const fastest = p.length > 0 ? Math.min(...p.map(x => x.leadTime)) : 0;
       const slowest = p.length > 0 ? Math.max(...p.map(x => x.leadTime)) : 0;
-      items.push({ icon: CheckCircle2, text: `Lead time range: ${fastest}d (fastest) to ${slowest}d (slowest)`, type: "success" });
+      items.push({ icon: CheckCircle2, text: `Delivery takes from ${fastest} days (fastest) to ${slowest} days (slowest)`, type: "success" });
       return items;
     },
   },
   {
     id: "ai-confidence",
-    title: "AI Confidence",
+    title: "Tip Accuracy",
     icon: "BrainCircuit",
     accent: "violet",
     unit: "%",
-    description: "Average certainty score across all AI-generated insights. Higher confidence means the model has stronger signal from your data. Below 75% suggests data quality issues or insufficient history.",
+    description: "How sure the helper is about its tips. A higher number means the tips are based on strong, clear data from your shop.",
     getValue: (_, ins) => {
       if (ins.length === 0) return 0;
       return parseFloat((ins.reduce((s, i) => s + (i.confidence <= 1 ? i.confidence * 100 : i.confidence), 0) / ins.length).toFixed(1));
@@ -184,9 +184,9 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const low = ins.filter(i => (i.confidence <= 1 ? i.confidence * 100 : i.confidence) < 60);
       const total = ins.length || 1;
       return [
-        { label: "High (>=80%)", value: `${high.length} insights`, pct: (high.length / total) * 100, color: "#059669" },
-        { label: "Medium (60-79%)", value: `${med.length} insights`, pct: (med.length / total) * 100, color: "#d97706" },
-        { label: "Low (<60%)", value: `${low.length} insights`, pct: (low.length / total) * 100, color: "#e11d48" },
+        { label: "High (>=80%)", value: `${high.length} tips`, pct: (high.length / total) * 100, color: "#059669" },
+        { label: "Medium (60-79%)", value: `${med.length} tips`, pct: (med.length / total) * 100, color: "#d97706" },
+        { label: "Low (<60%)", value: `${low.length} tips`, pct: (low.length / total) * 100, color: "#e11d48" },
       ];
     },
     getChartData: (_, ins) => {
@@ -205,19 +205,19 @@ const METRIC_CONFIGS: MetricConfig[] = [
     getInsights: (_, ins) => {
       const avgConf = ins.length > 0 ? ins.reduce((s, i) => s + (i.confidence <= 1 ? i.confidence * 100 : i.confidence), 0) / ins.length : 0;
       const items: InsightItem[] = [];
-      if (avgConf < 75) items.push({ icon: AlertTriangle, text: `Average confidence is below 75% — model may need more data points`, type: "warning" });
-      else items.push({ icon: CheckCircle2, text: `Model confidence is healthy at ${avgConf.toFixed(1)}%`, type: "success" });
-      items.push({ icon: BrainCircuit, text: `${ins.length} total insights generated from ${new Set(ins.map(i => i.type)).size} categories`, type: "success" });
+      if (avgConf < 75) items.push({ icon: AlertTriangle, text: `The helper is less than 75% sure — it needs a bit more shop data`, type: "warning" });
+      else items.push({ icon: CheckCircle2, text: `The helper is quite sure — ${avgConf.toFixed(1)}%`, type: "success" });
+      items.push({ icon: BrainCircuit, text: `${ins.length} tips made from ${new Set(ins.map(i => i.type)).size} kinds of checks`, type: "success" });
       return items;
     },
   },
   {
     id: "critical-alerts",
-    title: "Critical Alerts",
+    title: "Needs Attention",
     icon: "ShieldAlert",
     accent: "rose",
-    unit: "active",
-    description: "Number of AI insights with impact score above 70. These represent high-severity signals that require immediate attention — typically stockout risks, demand spikes, or supplier delays.",
+    unit: "items",
+    description: "Things that need action right now — like items about to finish or selling much faster than expected. Handle these first.",
     getValue: (_, ins) => ins.filter(i => i.impact > 70).length,
     getBreakdown: (_, ins) => {
       const critical = ins.filter(i => i.impact > 70);
@@ -227,7 +227,7 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const colors = ["#e11d48", "#d97706", "#7c3aed", "#0284c7"];
       return Object.entries(types).map(([type, count], idx) => ({
         label: type.charAt(0).toUpperCase() + type.slice(1),
-        value: `${count} alert${count > 1 ? "s" : ""}`,
+        value: `${count} tip${count > 1 ? "s" : ""}`,
         pct: (count / total) * 100,
         color: colors[idx % colors.length],
       }));
@@ -242,24 +242,24 @@ const METRIC_CONFIGS: MetricConfig[] = [
     getInsights: (p, ins) => {
       const critical = ins.filter(i => i.impact > 70);
       const items: InsightItem[] = [];
-      if (critical.length === 0) items.push({ icon: CheckCircle2, text: "No critical alerts — all systems are within normal parameters", type: "success" });
+      if (critical.length === 0) items.push({ icon: CheckCircle2, text: "Nothing urgent — everything looks fine", type: "success" });
       else {
-        items.push({ icon: ShieldAlert, text: `${critical.length} high-impact alerts require immediate review`, type: "critical" });
+        items.push({ icon: ShieldAlert, text: `${critical.length} thing${critical.length > 1 ? "s need" : " needs"} your attention now`, type: "critical" });
         const stockouts = critical.filter(i => i.type === "stockout");
-        if (stockouts.length > 0) items.push({ icon: AlertTriangle, text: `${stockouts.length} stockout risk${stockouts.length > 1 ? "s" : ""} detected — prioritize replenishment`, type: "critical" });
+        if (stockouts.length > 0) items.push({ icon: AlertTriangle, text: `${stockouts.length} item${stockouts.length > 1 ? "s" : ""} may finish soon — restock first`, type: "critical" });
       }
       const avgImpact = critical.length > 0 ? (critical.reduce((s, i) => s + i.impact, 0) / critical.length).toFixed(0) : "0";
-      items.push({ icon: TrendingUp, text: `Average impact score of critical alerts: ${avgImpact}`, type: "warning" });
+      items.push({ icon: TrendingUp, text: `Average urgency score: ${avgImpact}`, type: "warning" });
       return items;
     },
   },
   {
     id: "demand-pressure",
-    title: "Demand Pressure",
+    title: "Selling Speed",
     icon: "TrendingUp",
     accent: "amber",
     unit: "%",
-    description: "Average demand-to-inventory ratio across all products, expressed as a percentage. Values above 80% indicate supply is struggling to keep up with demand, increasing stockout probability.",
+    description: "How fast your items sell compared to how much you keep. A high number means items are selling faster than you are stocking them.",
     getValue: (p) => {
       if (p.length === 0) return 0;
       const raw = (p.reduce((s, x) => s + (x.inventory > 0 ? Math.min(x.demand / x.inventory, 1) : 1), 0) / p.length) * 100;
@@ -271,9 +271,9 @@ const METRIC_CONFIGS: MetricConfig[] = [
       const high = p.filter(x => { const r = x.inventory > 0 ? (x.demand / x.inventory) * 100 : 100; return r > 80; });
       const total = p.length || 1;
       return [
-        { label: "Low Pressure (<=50%)", value: `${low.length} SKUs`, pct: (low.length / total) * 100, color: "#059669" },
-        { label: "Moderate (51-80%)", value: `${med.length} SKUs`, pct: (med.length / total) * 100, color: "#d97706" },
-        { label: "High Pressure (>80%)", value: `${high.length} SKUs`, pct: (high.length / total) * 100, color: "#e11d48" },
+        { label: "Selling Slow", value: `${low.length} items`, pct: (low.length / total) * 100, color: "#059669" },
+        { label: "Selling Okay", value: `${med.length} items`, pct: (med.length / total) * 100, color: "#d97706" },
+        { label: "Selling Fast", value: `${high.length} items`, pct: (high.length / total) * 100, color: "#e11d48" },
       ];
     },
     getChartData: (p) => {
@@ -290,11 +290,11 @@ const METRIC_CONFIGS: MetricConfig[] = [
     getInsights: (p) => {
       const highPressure = p.filter(x => (x.inventory > 0 ? (x.demand / x.inventory) * 100 : 100) > 80);
       const items: InsightItem[] = [];
-      if (highPressure.length > 0) items.push({ icon: AlertTriangle, text: `${highPressure.length} products with demand pressure >80% — reorder urgently`, type: "critical" });
+      if (highPressure.length > 0) items.push({ icon: AlertTriangle, text: `${highPressure.length} items are selling very fast — order more now`, type: "critical" });
       const balanced = p.filter(x => { const r = x.inventory > 0 ? (x.demand / x.inventory) * 100 : 100; return r >= 30 && r <= 70; });
-      items.push({ icon: CheckCircle2, text: `${balanced.length} products are within optimal demand-inventory balance (30-70%)`, type: "success" });
+      items.push({ icon: CheckCircle2, text: `${balanced.length} items have a good balance of stock and selling`, type: "success" });
       const zeroInv = p.filter(x => x.inventory === 0);
-      if (zeroInv.length > 0) items.push({ icon: ShieldAlert, text: `${zeroInv.length} products have zero inventory — 100% pressure`, type: "critical" });
+      if (zeroInv.length > 0) items.push({ icon: ShieldAlert, text: `${zeroInv.length} items are fully finished`, type: "critical" });
       return items;
     },
   },
@@ -332,10 +332,10 @@ export default function MetricDetailPage() {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 16 }}>
         <ShieldAlert size={40} style={{ color: "#e11d48" }} />
-        <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 700, color: "#f1f5f9" }}>Metric not found</h2>
-        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)" }}>The metric "{id}" does not exist.</p>
+        <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 700, color: "#f1f5f9" }}>Page not found</h2>
+        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)" }}>This page does not exist.</p>
         <button onClick={() => router.push("/")} style={{ padding: "8px 20px", borderRadius: 12, background: "linear-gradient(135deg, #0ea5e9, #8b5cf6)", color: "#fff", border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-          Back to Dashboard
+          Back to My Shop
         </button>
       </div>
     );
@@ -372,7 +372,7 @@ export default function MetricDetailPage() {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       {/* Header */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -404,14 +404,14 @@ export default function MetricDetailPage() {
             </div>
             <div>
               <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{config.title}</h1>
-              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", margin: 0 }}>Detailed analytics & breakdown</p>
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", margin: 0 }}>Full details</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "28px 32px" }}>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15 }}>
 
           {/* Hero value + description */}
@@ -425,7 +425,7 @@ export default function MetricDetailPage() {
               }}
             >
               <div style={{ position: "absolute", top: -20, right: -20, width: 80, height: 80, borderRadius: "50%", background: `radial-gradient(circle, rgba(${accent.rgb},0.18) 0%, transparent 70%)`, pointerEvents: "none" }} />
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 8 }}>Current Value</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 8 }}>Right Now</p>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
                 <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 48, fontWeight: 800, color: "#f1f5f9", lineHeight: 1 }}>{displayValue}</span>
                 <span style={{ fontSize: 16, fontWeight: 600, color: accent.color, marginBottom: 6 }}>{config.unit}</span>
@@ -438,7 +438,7 @@ export default function MetricDetailPage() {
                   <TrendIcon size={12} style={{ color: accent.color }} strokeWidth={2.5} />
                   <span style={{ fontSize: 11, fontWeight: 600, color: accent.color }}>Live</span>
                 </div>
-                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)" }}>Computed from {products.length} products & {insights.length} insights</span>
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)" }}>From {products.length} items & {insights.length} tips</span>
               </div>
             </motion.div>
 
@@ -448,7 +448,7 @@ export default function MetricDetailPage() {
               transition={{ duration: 0.2, delay: 0.05 }}
               style={{ ...glass, borderRadius: 22, padding: 28 }}
             >
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 12 }}>About This Metric</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 12 }}>What This Means</p>
               <p style={{ fontSize: 13, lineHeight: 1.7, color: "rgba(255,255,255,0.65)" }}>{config.description}</p>
             </motion.div>
           </div>
@@ -463,7 +463,7 @@ export default function MetricDetailPage() {
               style={{ ...glass, borderRadius: 22, padding: 24, perspective: "1000px" }}
               {...chartPerspectiveHover}
             >
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 16 }}>Distribution</p>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 16 }}>Spread</p>
               <div style={{ height: 260 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   {config.id === "ai-confidence" ? (
@@ -558,7 +558,7 @@ export default function MetricDetailPage() {
             transition={{ duration: 0.2, delay: 0.125 }}
             style={{ ...glass, borderRadius: 22, padding: 24 }}
           >
-            <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 16 }}>Business Insights</p>
+            <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 16 }}>Smart Tips</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {metricInsights.map((item, i) => {
                 const IIcon = item.icon;

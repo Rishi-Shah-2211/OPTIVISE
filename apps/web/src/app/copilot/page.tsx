@@ -20,27 +20,27 @@ const glass: React.CSSProperties = {
 };
 
 const SUGGESTED = [
-  { Icon: AlertTriangle, text: "Which SKUs are at risk of stockout this week?",            color: "#e11d48" },
-  { Icon: Package,       text: "Show me the top overstocked products right now",            color: "#d97706" },
-  { Icon: TrendingDown,  text: "How can I reduce inventory holding costs by 20%?",         color: "#7c3aed" },
-  { Icon: Clock,         text: "Which suppliers have the longest lead times?",              color: "#059669" },
-  { Icon: Target,        text: "What's the optimal reorder quantity for critical items?",   color: "#0284c7" },
-  { Icon: Globe,         text: "Compare supplier reliability across regions",               color: "#d97706" },
+  { Icon: AlertTriangle, text: "Which items will finish this week?",                  color: "#e11d48" },
+  { Icon: Package,       text: "Which items do I have too much of?",                  color: "#d97706" },
+  { Icon: TrendingDown,  text: "Where is my money stuck in extra stock?",            color: "#7c3aed" },
+  { Icon: Clock,         text: "Which items take longest to get delivered?",         color: "#059669" },
+  { Icon: Target,        text: "How much should I order of my fast-selling items?",  color: "#0284c7" },
+  { Icon: Globe,         text: "Which of my suppliers are the most reliable?",        color: "#d97706" },
 ];
 
 const FOLLOW_UP_MAP: { keywords: string[]; chips: string[] }[] = [
-  { keywords: ["stockout", "risk", "out of stock", "deplete"],
-    chips: ["Which suppliers can expedite delivery?", "Show reorder recommendations", "What's the financial impact?"] },
-  { keywords: ["overstock", "excess", "surplus", "too much"],
-    chips: ["How can I liquidate excess inventory?", "Which items have declining demand?", "Show holding cost breakdown"] },
-  { keywords: ["lead time", "delivery", "shipping", "transit"],
-    chips: ["Compare lead times by region", "Which suppliers are fastest?", "How can I reduce lead times?"] },
-  { keywords: ["cost", "saving", "reduce", "holding", "expense"],
-    chips: ["Show top cost drivers", "What's the ROI of faster turnover?", "Compare warehouse efficiency"] },
-  { keywords: ["supplier", "reliability", "region", "source"],
-    chips: ["Rank suppliers by on-time rate", "Show regional risk exposure", "Which suppliers need review?"] },
-  { keywords: ["reorder", "quantity", "optimal", "order"],
-    chips: ["Show safety stock levels", "What are current reorder points?", "Suggest order schedule"] },
+  { keywords: ["finish", "risk", "out of stock", "khatam", "low", "stockout"],
+    chips: ["Which supplier can deliver fast?", "How much should I order?", "How much sale will I lose?"] },
+  { keywords: ["overstock", "extra", "too much", "surplus", "zyada"],
+    chips: ["How do I clear extra stock?", "Which items are selling slow?", "How much money is stuck?"] },
+  { keywords: ["lead time", "delivery", "deliver", "shipping", "der"],
+    chips: ["Which supplier is fastest?", "How can I get stock sooner?", "Which items take longest?"] },
+  { keywords: ["cost", "saving", "reduce", "money", "paisa", "kharcha"],
+    chips: ["Where am I losing money?", "Which items waste money?", "How do I save the most?"] },
+  { keywords: ["supplier", "reliable", "region", "source", "dukaan"],
+    chips: ["Which supplier is most reliable?", "Who delivers late?", "Which supplier should I change?"] },
+  { keywords: ["reorder", "quantity", "how much", "order", "kitna"],
+    chips: ["What is my safe stock level?", "When should I reorder?", "Suggest an order list"] },
 ];
 
 function getFollowUps(content: string): string[] {
@@ -168,10 +168,10 @@ function WelcomeState({ onPrompt }: { onPrompt: (t: string) => void }) {
       </motion.div>
 
       <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 20, fontWeight: 700, color: "#f1f5f9", marginBottom: 6, textAlign: "center" }}>
-        Optivise Copilot
+        Shop Helper
       </h2>
       <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)", marginBottom: 28, textAlign: "center", maxWidth: 300, lineHeight: 1.6 }}>
-        Ask me anything about your supply chain. I have full context of your products and AI insights.
+        Ask me anything about your shop. I know all your items and stock. Type in Hindi or English — anything works.
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, width: "100%", maxWidth: 480 }}>
@@ -246,7 +246,7 @@ export default function CopilotPage() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       {/* Header */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -260,8 +260,8 @@ export default function CopilotPage() {
             <Sparkles size={13} style={{ color: "#0284c7" }} strokeWidth={2} />
           </div>
           <div>
-            <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>AI Copilot</h1>
-            <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", margin: 0 }}>Supply chain intelligence · Powered by Groq</p>
+            <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>AI Helper</h1>
+            <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", margin: 0 }}>Your shop's smart assistant</p>
           </div>
         </div>
 
@@ -280,7 +280,7 @@ export default function CopilotPage() {
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: "24px 32px" }}>
+      <div ref={scrollRef} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "24px 32px" }}>
         {messages.length === 0 ? (
           <WelcomeState onPrompt={send} />
         ) : (
@@ -317,7 +317,7 @@ export default function CopilotPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input); } }}
-            placeholder="Ask about your supply chain..."
+            placeholder="Ask about your shop..."
             rows={1}
             style={{
               flex: 1, resize: "none", background: "transparent", border: "none", outline: "none",

@@ -16,10 +16,10 @@ import {
 import { QueryProvider } from "@/providers/QueryProvider";
 
 const NAV_ITEMS = [
-  { href: "/",          label: "Dashboard",  Icon: LayoutDashboard },
-  { href: "/insights",  label: "Insights",   Icon: Lightbulb       },
-  { href: "/simulator", label: "Simulator",  Icon: FlaskConical    },
-  { href: "/copilot",   label: "Copilot",    Icon: Zap             },
+  { href: "/",          label: "My Shop",    Icon: LayoutDashboard },
+  { href: "/insights",  label: "Smart Tips", Icon: Lightbulb       },
+  { href: "/simulator", label: "What-If",    Icon: FlaskConical    },
+  { href: "/copilot",   label: "AI Helper",  Icon: Zap             },
   { href: "/settings",  label: "Settings",   Icon: Settings        },
 ];
 
@@ -88,8 +88,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Optivise — Supply Chain Intelligence</title>
-        <meta name="description" content="AI-powered supply chain decision intelligence platform" />
+        <title>Optivise — Simple Stock Helper for Your Shop</title>
+        <meta name="description" content="A simple app that tells a shopkeeper what to buy, how much, and when — so items never finish and money never gets stuck." />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -100,7 +100,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <MotionConfig reducedMotion="user">
           <QueryProvider>
-            <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+            <div style={{ display: "flex", height: "100dvh", minHeight: "100dvh", overflow: "hidden" }}>
             {/* Sidebar */}
             <aside style={{
               width: 220,
@@ -136,7 +136,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* Nav */}
               <nav style={{ flex: 1, overflowY: "auto", padding: "16px 12px", display: "flex", flexDirection: "column", gap: 2 }}>
                 <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "rgba(255,255,255,0.42)", padding: "0 12px", marginBottom: 8 }}>
-                  Platform
+                  Menu
                 </p>
                 {NAV_ITEMS.map((item) => (
                   <NavItem
@@ -152,18 +152,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* Footer */}
               <div style={{ padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.12)", flexShrink: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.42)" }}>System</span>
+                  <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.42)" }}>Status</span>
                   <LiveClock />
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", boxShadow: "0 0 6px rgba(16,185,129,0.5)", animation: "pulse-slow 1s ease-in-out infinite" }} />
-                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.48)" }}>All systems operational</span>
+                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.48)" }}>Everything is working</span>
                 </div>
               </div>
             </aside>
 
             {/* Main */}
-            <main style={{ flex: 1, overflowY: "auto", minWidth: 0 }}>
+            <main style={{ flex: 1, minWidth: 0, minHeight: 0, overflow: "hidden" }}>
               {children}
             </main>
             </div>
