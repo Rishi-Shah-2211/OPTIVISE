@@ -69,9 +69,10 @@ function InsightRow({ insight, index }: { insight: Insight; index: number }) {
       exit={{ opacity: 0, y: -4 }}
       transition={{ delay: index * 0.0175, duration: 0.14 }}
       style={{
-        ...glass, borderRadius: 18, padding: 20, position: "relative",
+        ...glass, borderRadius: 28, padding: 20, position: "relative",
         overflow: "hidden", transition: "box-shadow 0.2s ease, transform 0.15s ease",
       }}
+      className="card-lift shimmer-card"
       onMouseEnter={(e) => {
         const el = e.currentTarget as HTMLDivElement;
         el.style.boxShadow = `0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05)`;
@@ -204,7 +205,7 @@ export default function InsightsPage() {
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
           <div>
-            <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>Smart Tips</h1>
+            <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 22, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>Smart Tips</h1>
             <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)", marginTop: 4 }}>
               {insights.length} helpful tips for your shop
             </p>
@@ -212,13 +213,7 @@ export default function InsightsPage() {
           <button
             onClick={() => refetch()}
             disabled={isFetching}
-            style={{
-              display: "flex", alignItems: "center", gap: 6, padding: "7px 14px",
-              borderRadius: 10, fontSize: 12, fontWeight: 500,
-              background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.12)",
-              color: "#f1f5f9", cursor: isFetching ? "not-allowed" : "pointer",
-              boxShadow: "0 1px 4px rgba(0,0,0,0.06)", opacity: isFetching ? 0.6 : 1,
-            }}
+            className="btn-ghost !py-2 !text-[11px] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <motion.div animate={isFetching ? { rotate: 360 } : { rotate: 0 }} transition={isFetching ? { duration: 0.4, repeat: Infinity, ease: "linear" } : {}}>
               <RefreshCw size={13} />
@@ -235,15 +230,7 @@ export default function InsightsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search tips..."
-              style={{
-                width: "100%", paddingLeft: 36, paddingRight: 12, paddingTop: 9, paddingBottom: 9,
-                borderRadius: 12, fontSize: 13, outline: "none",
-                background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.12)",
-                color: "#f1f5f9", boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
-                transition: "border-color 0.15s ease, box-shadow 0.15s ease",
-              }}
-              onFocus={(e) => { e.target.style.borderColor = "rgba(14,165,233,0.4)"; e.target.style.boxShadow = "0 0 0 3px rgba(14,165,233,0.08)"; }}
-              onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.12)"; e.target.style.boxShadow = "0 1px 4px rgba(0,0,0,0.2)"; }}
+              className="input-premium !pl-9 !py-2"
             />
           </div>
 

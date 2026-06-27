@@ -39,10 +39,10 @@ export function InsightCard({ insight, index }: { insight: Insight; index: numbe
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.125 + index * 0.03, duration: 0.175 }}
-      className="group shimmer-card"
+      className="group shimmer-card card-lift rounded-[1.4rem] transition-all duration-300"
       style={{
-        display: "flex", gap: 12, padding: "12px 14px", borderRadius: 16, marginBottom: 6,
-        cursor: "default", transition: "all 0.18s ease",
+        display: "flex", gap: 12, padding: "12px 14px", marginBottom: 6,
+        cursor: "default",
         background: "transparent", border: "1px solid transparent",
       }}
       onMouseEnter={(e) => {

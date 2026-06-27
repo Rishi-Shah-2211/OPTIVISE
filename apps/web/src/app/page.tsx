@@ -15,15 +15,11 @@ import { SkeletonMetricCard, SkeletonInsightCard } from "@/components/dashboard/
 import { EmptyState, ErrorState } from "@/components/dashboard/EmptyState";
 import { tooltipStyle as chartTooltip, axisTickStyle, axisProps, gridProps, animationProps, chartContainerGlass, chartPerspectiveHover } from "@/components/charts/chartTheme";
 import { useTilt } from "@/lib/ui/useTilt";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 import type { Product } from "@/types/dashboard";
 
-const glass: React.CSSProperties = {
-  background: "rgba(255,255,255,0.09)",
-  backdropFilter: "blur(20px) saturate(180%)",
-  WebkitBackdropFilter: "blur(20px) saturate(180%)",
-  border: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 4px 16px rgba(0,0,0,0.30), 0 1px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)",
-};
+const glassPanel = "glass-panel card-lift shimmer-card rounded-[1.75rem] border border-white/12";
 
 function LoadRealDataButton({ onComplete }: { onComplete: () => void }) {
   const [state, setState] = useStateImport<"idle" | "loading" | "success" | "error">("idle");
@@ -97,49 +93,32 @@ function DashboardHeader({ isLoading, isRefreshing, lastUpdated, onRefetch }: {
   const spinning = isLoading || isRefreshing;
 
   return (
-    <div style={{
-      display: "flex", alignItems: "center", justifyContent: "space-between",
-      padding: "0 32px", height: 60, borderBottom: "1px solid rgba(255,255,255,0.12)",
-      background: "rgba(26,31,46,0.85)", backdropFilter: "blur(20px)",
-      WebkitBackdropFilter: "blur(20px)", flexShrink: 0, position: "sticky", top: 0, zIndex: 10,
-    }}>
+    <div className="sticky top-0 z-10 flex h-[60px] shrink-0 items-center justify-between border-b border-white/12 bg-[rgba(26,31,46,0.85)] px-8 backdrop-blur-xl">
       <div>
-        <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>
-          My Shop
-        </h1>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
-          <motion.div
-            style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", boxShadow: "0 0 6px rgba(16,185,129,0.5)" }}
-            animate={{ opacity: [1, 0.3, 1] }}
-            transition={{ duration: 1, repeat: Infinity }}
-          />
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.45)" }}>
+        <h1 className="font-serif m-0 text-[15px] font-bold text-slate-100">My Shop</h1>
+        <div className="mt-0.5 flex items-center gap-1.5">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
+          </span>
+          <span className="text-[11px] text-white/45">
             Live
             {lastUpdated && !spinning && (
-              <span style={{ marginLeft: 6, color: "rgba(255,255,255,0.3)" }}>
+              <span className="ml-1.5 text-white/30">
                 · Updated {lastUpdated.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}
               </span>
             )}
-            {spinning && <span style={{ marginLeft: 6, color: "#0ea5e9" }}>· Refreshing...</span>}
+            {spinning && <span className="ml-1.5 text-sky-400">· Refreshing...</span>}
           </span>
         </div>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div className="flex items-center gap-2.5">
         <LoadRealDataButton onComplete={onRefetch} />
         <button
           onClick={onRefetch}
           disabled={spinning}
-          style={{
-            display: "flex", alignItems: "center", gap: 6, padding: "6px 14px",
-            borderRadius: 10, fontSize: 12, fontWeight: 500, cursor: spinning ? "not-allowed" : "pointer",
-            background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.12)",
-            color: "rgba(255,255,255,0.6)", transition: "all 0.15s ease",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
-            opacity: spinning ? 0.6 : 1,
-          }}
-          onMouseEnter={(e) => { if (!spinning) { const el = e.currentTarget as HTMLButtonElement; el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.22)"; el.style.borderColor = "rgba(255,255,255,0.20)"; } }}
-          onMouseLeave={(e) => { const el = e.currentTarget as HTMLButtonElement; el.style.boxShadow = "0 1px 4px rgba(0,0,0,0.2)"; el.style.borderColor = "rgba(255,255,255,0.12)"; }}
+          className="btn-ghost !py-2 !text-[11px] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <motion.div
             animate={spinning ? { rotate: 360 } : { rotate: 0 }}
@@ -149,22 +128,10 @@ function DashboardHeader({ isLoading, isRefreshing, lastUpdated, onRefetch }: {
           </motion.div>
           Refresh
         </button>
-
-        <button
-          onClick={() => router.push("/copilot")}
-          style={{
-            display: "flex", alignItems: "center", gap: 7, padding: "6px 14px",
-            borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
-            background: "linear-gradient(135deg, rgba(14,165,233,0.14), rgba(139,92,246,0.12))",
-            border: "1px solid rgba(14,165,233,0.3)", color: "#0ea5e9",
-            transition: "all 0.15s ease", boxShadow: "0 1px 4px rgba(14,165,233,0.15)",
-          }}
-          onMouseEnter={(e) => { const el = e.currentTarget as HTMLButtonElement; el.style.background = "linear-gradient(135deg, rgba(14,165,233,0.22), rgba(139,92,246,0.18))"; el.style.boxShadow = "0 4px 16px rgba(14,165,233,0.25)"; }}
-          onMouseLeave={(e) => { const el = e.currentTarget as HTMLButtonElement; el.style.background = "linear-gradient(135deg, rgba(14,165,233,0.14), rgba(139,92,246,0.12))"; el.style.boxShadow = "0 1px 4px rgba(14,165,233,0.15)"; }}
-        >
+        <MagneticButton onClick={() => router.push("/copilot")} className="btn-premium !py-2 !text-[12px]">
           <Sparkles size={12} strokeWidth={2} />
           AI Helper
-        </button>
+        </MagneticButton>
       </div>
     </div>
   );
@@ -172,10 +139,10 @@ function DashboardHeader({ isLoading, isRefreshing, lastUpdated, onRefetch }: {
 
 function SectionHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+    <div className="mb-4 flex items-center justify-between">
       <div>
-        <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{title}</h2>
-        {subtitle && <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 2 }}>{subtitle}</p>}
+        <h2 className="font-serif m-0 text-sm font-bold text-slate-100">{title}</h2>
+        {subtitle && <p className="mt-0.5 text-[11px] text-white/42">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -187,13 +154,7 @@ function ViewAllLink({ label, href }: { label: string; href: string }) {
   return (
     <button
       onClick={() => router.push(href)}
-      style={{
-        display: "flex", alignItems: "center", gap: 4, fontSize: 11, fontWeight: 500,
-        color: "#0ea5e9", cursor: "pointer", background: "none", border: "none", padding: 0,
-        transition: "opacity 0.15s ease",
-      }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = "0.7"; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = "1"; }}
+      className="link-sweep flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[11px] font-medium text-sky-400"
     >
       {label}
       <ChevronRight size={12} strokeWidth={2.5} />
@@ -264,14 +225,7 @@ function CopilotTeaser() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
       onClick={() => router.push("/copilot")}
-      style={{
-        marginTop: 12, padding: 14, borderRadius: 16, cursor: "pointer",
-        background: "linear-gradient(135deg, rgba(14,165,233,0.08), rgba(139,92,246,0.06))",
-        border: "1px solid rgba(14,165,233,0.15)",
-        transition: "all 0.2s ease",
-      }}
-      onMouseEnter={(e) => { const el = e.currentTarget as HTMLDivElement; el.style.background = "linear-gradient(135deg, rgba(14,165,233,0.14), rgba(139,92,246,0.10))"; el.style.boxShadow = "0 4px 16px rgba(14,165,233,0.15)"; }}
-      onMouseLeave={(e) => { const el = e.currentTarget as HTMLDivElement; el.style.background = "linear-gradient(135deg, rgba(14,165,233,0.08), rgba(139,92,246,0.06))"; el.style.boxShadow = "none"; }}
+      className="card-lift mt-3 cursor-pointer rounded-[1.4rem] border border-sky-400/15 bg-gradient-to-br from-sky-500/8 to-violet-500/6 p-3.5 transition-shadow duration-300 hover:shadow-[0_4px_16px_rgba(14,165,233,0.15)]"
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <Sparkles size={14} style={{ color: "#0ea5e9" }} strokeWidth={1.8} />
@@ -297,12 +251,12 @@ function CategoryChart({ data }: { data: { name: string; inventory: number; dema
       onMouseLeave={tilt.onMouseLeave}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="shimmer-card chart-depth"
+      className="shimmer-card chart-depth card-lift"
       style={{ ...chartContainerGlass, perspective: "1000px", rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformPerspective: 1000 }}
       {...chartPerspectiveHover}
     >
       <div style={{ marginBottom: 18 }}>
-        <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>
+        <p className="font-serif m-0 text-sm font-bold text-slate-100">
           Stock by Type
         </p>
         <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 3 }}>
@@ -353,12 +307,12 @@ function DemandPressureChart({ data }: { data: { name: string; pressure: number;
       onMouseLeave={tilt.onMouseLeave}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="shimmer-card chart-depth"
+      className="shimmer-card chart-depth card-lift"
       style={{ ...chartContainerGlass, perspective: "1000px", rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformPerspective: 1000 }}
       {...chartPerspectiveHover}
     >
       <div style={{ marginBottom: 18 }}>
-        <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>
+        <p className="font-serif m-0 text-sm font-bold text-slate-100">
           Selling Fast
         </p>
         <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 3 }}>
@@ -403,12 +357,12 @@ function RegionDonutChart({ data }: { data: { name: string; value: number; avgRe
       onMouseLeave={tilt.onMouseLeave}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="shimmer-card chart-depth"
+      className="shimmer-card chart-depth card-lift"
       style={{ ...chartContainerGlass, display: "flex", flexDirection: "column", perspective: "1000px", rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformPerspective: 1000 }}
       {...chartPerspectiveHover}
     >
       <div style={{ marginBottom: 12 }}>
-        <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>
+        <p className="font-serif m-0 text-sm font-bold text-slate-100">
           Your Suppliers
         </p>
         <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", marginTop: 3 }}>
@@ -431,7 +385,7 @@ function RegionDonutChart({ data }: { data: { name: string; value: number; avgRe
           position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
           textAlign: "center", pointerEvents: "none",
         }}>
-          <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{total}</p>
+          <p className="font-serif m-0 text-[22px] font-bold text-slate-100">{total}</p>
           <p style={{ fontSize: 10, color: "rgba(255,255,255,0.42)", margin: 0 }}>products</p>
         </div>
       </div>
@@ -505,75 +459,84 @@ export default function DashboardPage() {
     <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       <DashboardHeader isLoading={isLoading} isRefreshing={isRefreshing} lastUpdated={lastUpdated} onRefetch={refetch} />
 
-      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "28px 32px" }}>
+      <div className="min-h-0 flex-1 overflow-y-auto px-8 py-7">
         <AnimatePresence mode="wait">
           {isError ? (
             <ErrorState key="error" message={errorMessage} onRetry={refetch} />
           ) : (
             <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 
-              {/* KPI Grid */}
-              <section style={{ marginBottom: 28 }}>
-                <SectionHeader
-                  title="Quick Numbers"
-                  subtitle="Updated live from all your items"
-                />
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
-                  {isLoading
-                    ? Array.from({ length: 6 }, (_, i) => <SkeletonMetricCard key={i} index={i} />)
-                    : metricCards.map((card, idx) => <MetricCard key={card.id} config={card} index={idx} />)}
-                </div>
-              </section>
-
-              {/* Analytics — asymmetric premium layout */}
-              {!isLoading && products.length > 0 && (
-                <section style={{ marginBottom: 28 }}>
+              <Reveal>
+                <section className="mb-7">
                   <SectionHeader
-                    title="Your Shop at a Glance"
-                    subtitle="How your items and suppliers are doing"
+                    title="Quick Numbers"
+                    subtitle="Updated live from all your items"
                   />
-                  <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 16, marginBottom: 16 }}>
-                    <CategoryChart data={categoryData} />
-                    <RegionDonutChart data={regionData} />
-                  </div>
-                  <DemandPressureChart data={demandPressureData} />
+                  <Stagger className="grid grid-cols-3 gap-4">
+                    {isLoading
+                      ? Array.from({ length: 6 }, (_, i) => (
+                          <StaggerItem key={i}><SkeletonMetricCard index={i} /></StaggerItem>
+                        ))
+                      : metricCards.map((card, idx) => (
+                          <StaggerItem key={card.id}><MetricCard config={card} index={idx} /></StaggerItem>
+                        ))}
+                  </Stagger>
                 </section>
+              </Reveal>
+
+              {!isLoading && products.length > 0 && (
+                <Reveal delay={0.1}>
+                  <section className="mb-7">
+                    <SectionHeader
+                      title="Your Shop at a Glance"
+                      subtitle="How your items and suppliers are doing"
+                    />
+                    <div className="mb-4 grid grid-cols-[1.4fr_1fr] gap-4">
+                      <CategoryChart data={categoryData} />
+                      <RegionDonutChart data={regionData} />
+                    </div>
+                    <DemandPressureChart data={demandPressureData} />
+                  </section>
+                </Reveal>
               )}
 
-              {/* Bottom grid */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: 20 }}>
-                <section>
-                  <SectionHeader
-                    title="Smart Tips"
-                    subtitle={`${insights.length} tip${insights.length !== 1 ? "s" : ""}`}
-                    action={<ViewAllLink label="View all" href="/insights" />}
-                  />
-                  <div style={{ ...glass, borderRadius: 20, padding: 12 }}>
-                    {isLoading
-                      ? Array.from({ length: 3 }, (_, i) => <SkeletonInsightCard key={i} index={i} />)
-                      : insights.length === 0
-                        ? <EmptyState title="No tips yet" description="Load sample data to see helpful tips." />
-                        : insights.slice(0, 5).map((ins, idx) => (
-                            <InsightCard key={ins.id ?? `insight-${idx}`} insight={ins} index={idx} />
-                          ))
-                    }
-                  </div>
-                </section>
+              <div className="grid grid-cols-[1fr_360px] gap-5">
+                <Reveal delay={0.15}>
+                  <section>
+                    <SectionHeader
+                      title="Smart Tips"
+                      subtitle={`${insights.length} tip${insights.length !== 1 ? "s" : ""}`}
+                      action={<ViewAllLink label="View all" href="/insights" />}
+                    />
+                    <div className={`${glassPanel} p-3`}>
+                      {isLoading
+                        ? Array.from({ length: 3 }, (_, i) => <SkeletonInsightCard key={i} index={i} />)
+                        : insights.length === 0
+                          ? <EmptyState title="No tips yet" description="Load sample data to see helpful tips." />
+                          : insights.slice(0, 5).map((ins, idx) => (
+                              <InsightCard key={ins.id ?? `insight-${idx}`} insight={ins} index={idx} />
+                            ))
+                      }
+                    </div>
+                  </section>
+                </Reveal>
 
-                <section>
-                  <SectionHeader
-                    title="Top Sellers"
-                    subtitle="Your fastest-selling items"
-                    action={<ViewAllLink label="Open" href="/simulator" />}
-                  />
-                  <div style={{ ...glass, borderRadius: 20, overflow: "hidden" }}>
-                    {isLoading
-                      ? <div style={{ padding: 12 }}>{Array.from({ length: 4 }, (_, i) => <SkeletonInsightCard key={i} index={i} />)}</div>
-                      : <ProductsTable products={products} />
-                    }
-                  </div>
-                  <CopilotTeaser />
-                </section>
+                <Reveal delay={0.2}>
+                  <section>
+                    <SectionHeader
+                      title="Top Sellers"
+                      subtitle="Your fastest-selling items"
+                      action={<ViewAllLink label="Open" href="/simulator" />}
+                    />
+                    <div className={`${glassPanel} overflow-hidden`}>
+                      {isLoading
+                        ? <div className="p-3">{Array.from({ length: 4 }, (_, i) => <SkeletonInsightCard key={i} index={i} />)}</div>
+                        : <ProductsTable products={products} />
+                      }
+                    </div>
+                    <CopilotTeaser />
+                  </section>
+                </Reveal>
               </div>
 
             </motion.div>

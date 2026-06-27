@@ -154,7 +154,7 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
       }}
       ref={cardRef}
       onClick={() => router.push(`/dashboard/${config.id}`)}
-      className="group shimmer-card glass-noise"
+      className="group shimmer-card glass-noise card-lift"
       style={{
         position: "relative",
         rotateX,
@@ -162,7 +162,7 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
         transformPerspective: 900,
         transformStyle: "preserve-3d",
         overflow: "hidden",
-        borderRadius: 22,
+        borderRadius: 28,
         padding: 20,
         display: "flex",
         flexDirection: "column",
@@ -268,7 +268,7 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
           <span
             ref={counterRef as React.Ref<HTMLSpanElement>}
             style={{
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "var(--font-fraunces), ui-serif, serif",
               fontSize: 32,
               fontWeight: 700,
               color: "#f8fbff",

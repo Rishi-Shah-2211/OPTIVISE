@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import type { Product } from "@/types/dashboard";
 import { runScenario, type ScenarioResult } from "@/lib/simulation/engine";
+import { glassCard } from "@/components/layout/PageHeader";
 
 const glass: React.CSSProperties = {
   background: "rgba(255,255,255,0.09)",
@@ -70,12 +71,12 @@ function SliderControl({ label, value, onChange, min, max, color, format, step =
   const pct = ((value - min) / (max - min)) * 100;
   const clamp = (v: number) => Math.max(min, Math.min(max, v));
   return (
-    <div style={{ ...glass, borderRadius: 16, padding: "16px 18px" }}>
+    <div className={`${glassCard} p-[16px_18px]`}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
         <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>{label}</span>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <StepButton direction="minus" color={color} onClick={() => onChange(clamp(value - step))} />
-          <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 700, color, minWidth: 48, textAlign: "center" }}>{format ? format(value) : value.toLocaleString()}</span>
+          <span style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 18, fontWeight: 700, color, minWidth: 48, textAlign: "center" }}>{format ? format(value) : value.toLocaleString()}</span>
           <StepButton direction="plus" color={color} onClick={() => onChange(clamp(value + step))} />
         </div>
       </div>
@@ -162,7 +163,7 @@ export default function SimulatorPage() {
           <FlaskConical size={13} style={{ color: "#059669" }} strokeWidth={2} />
         </div>
         <div>
-          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>What-If Tool</h1>
+          <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>What-If Tool</h1>
           <p style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", margin: 0 }}>See what happens before you buy</p>
         </div>
       </div>
@@ -221,17 +222,7 @@ export default function SimulatorPage() {
                 <motion.button
                   onClick={runSim}
                   disabled={isRunning}
-                  whileHover={!isRunning ? { scale: 1.02, boxShadow: "0 8px 24px rgba(5,150,105,0.25)" } : {}}
-                  whileTap={!isRunning ? { scale: 0.98 } : {}}
-                  style={{
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                    padding: "14px 0", borderRadius: 16, fontSize: 14, fontWeight: 700,
-                    background: isRunning ? "rgba(255,255,255,0.08)" : "linear-gradient(135deg, rgba(5,150,105,0.15), rgba(2,132,199,0.12))",
-                    border: isRunning ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(5,150,105,0.35)",
-                    color: isRunning ? "rgba(255,255,255,0.3)" : "#059669",
-                    cursor: isRunning ? "not-allowed" : "pointer",
-                    transition: "all 0.2s ease",
-                  }}
+                  className="btn-premium w-full !py-3.5 !text-sm disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isRunning
                     ? <><motion.div animate={{ rotate: 360 }} transition={{ duration: 0.4, repeat: Infinity, ease: "linear" }}><div style={{ width: 16, height: 16, borderRadius: "50%", border: "2px solid rgba(0,0,0,0.12)", borderTopColor: "#059669" }} /></motion.div> Checking...</>
@@ -265,7 +256,7 @@ export default function SimulatorPage() {
                       <div style={{ ...glass, borderRadius: 20, padding: 20, background: rs.bg, border: `1px solid ${rs.border}` }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                           <AlertTriangle size={16} style={{ color: rs.color }} strokeWidth={2} />
-                          <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: rs.color }}>{rs.label}</span>
+                          <span style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: rs.color }}>{rs.label}</span>
                         </div>
                         <p style={{ fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,0.7)" }}>{result.recommendation}</p>
                       </div>
@@ -284,14 +275,14 @@ export default function SimulatorPage() {
                           <s.Icon size={13} style={{ color: "rgba(255,255,255,0.48)" }} strokeWidth={2} />
                           <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.48)" }}>{s.label}</span>
                         </div>
-                        <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 20, fontWeight: 700, color: s.color }}>{s.value}</p>
+                        <p style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 20, fontWeight: 700, color: s.color }}>{s.value}</p>
                       </div>
                     ))}
                   </div>
 
                   {/* Insights */}
                   <div style={{ ...glass, borderRadius: 20, padding: 20 }}>
-                    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 13, fontWeight: 700, color: "#f1f5f9", marginBottom: 14 }}>What This Means</p>
+                    <p style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 13, fontWeight: 700, color: "#f1f5f9", marginBottom: 14 }}>What This Means</p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                       {result.insights.map((ins, i) => {
                         const InsIcon = ins.type === "warn" ? AlertTriangle : ins.type === "ok" ? CheckCircle2 : Lightbulb;
@@ -314,7 +305,7 @@ export default function SimulatorPage() {
                   <div style={{ ...glass, borderRadius: 20, padding: 20, background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.18)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                       <Lightbulb size={14} style={{ color: "#7c3aed" }} strokeWidth={1.8} />
-                      <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>Best Move</p>
+                      <p style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>Best Move</p>
                     </div>
                     <p style={{ fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,0.7)" }}>{result.optimization}</p>
                   </div>
@@ -325,7 +316,7 @@ export default function SimulatorPage() {
                   <div style={{ width: 64, height: 64, borderRadius: 20, background: "rgba(5,150,105,0.08)", border: "1px solid rgba(5,150,105,0.18)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <FlaskConical size={26} style={{ color: "#059669" }} strokeWidth={1.5} />
                   </div>
-                  <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", textAlign: "center" }}>Ready to Check</h3>
+                  <h3 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", textAlign: "center" }}>Ready to Check</h3>
                   <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)", textAlign: "center", maxWidth: 280, lineHeight: 1.5 }}>
                     Pick an item, set how much sells, how much you have, and delivery days — then tap See Result.
                   </p>

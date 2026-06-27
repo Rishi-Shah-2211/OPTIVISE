@@ -315,7 +315,7 @@ function StatCard({ label, value, accent, icon: IconEl }: { label: string; value
         </div>
         <span style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", fontWeight: 500 }}>{label}</span>
       </div>
-      <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{value}</p>
+      <p style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 28, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{value}</p>
     </motion.div>
   );
 }
@@ -332,7 +332,7 @@ export default function MetricDetailPage() {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 16 }}>
         <ShieldAlert size={40} style={{ color: "#e11d48" }} />
-        <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 700, color: "#f1f5f9" }}>Page not found</h2>
+        <h2 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 18, fontWeight: 700, color: "#f1f5f9" }}>Page not found</h2>
         <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)" }}>This page does not exist.</p>
         <button onClick={() => router.push("/")} style={{ padding: "8px 20px", borderRadius: 12, background: "linear-gradient(135deg, #0ea5e9, #8b5cf6)", color: "#fff", border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
           Back to My Shop
@@ -403,7 +403,7 @@ export default function MetricDetailPage() {
               <Icon size={15} style={{ color: accent.color }} strokeWidth={2} />
             </div>
             <div>
-              <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{config.title}</h1>
+              <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>{config.title}</h1>
               <p style={{ fontSize: 11, color: "rgba(255,255,255,0.60)", margin: 0 }}>Full details</p>
             </div>
           </div>
@@ -427,7 +427,7 @@ export default function MetricDetailPage() {
               <div style={{ position: "absolute", top: -20, right: -20, width: 80, height: 80, borderRadius: "50%", background: `radial-gradient(circle, rgba(${accent.rgb},0.18) 0%, transparent 70%)`, pointerEvents: "none" }} />
               <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.48)", marginBottom: 8 }}>Right Now</p>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
-                <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 48, fontWeight: 800, color: "#f1f5f9", lineHeight: 1 }}>{displayValue}</span>
+                <span style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 48, fontWeight: 800, color: "#f1f5f9", lineHeight: 1 }}>{displayValue}</span>
                 <span style={{ fontSize: 16, fontWeight: 600, color: accent.color, marginBottom: 6 }}>{config.unit}</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 12 }}>

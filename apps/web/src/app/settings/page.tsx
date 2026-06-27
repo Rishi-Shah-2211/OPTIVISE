@@ -279,21 +279,14 @@ export default function SettingsPage() {
         flexShrink: 0,
       }}>
         <div>
-          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>Settings</h1>
+          <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>Settings</h1>
           <p style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", margin: 0 }}>Manage your shop settings</p>
         </div>
 
         <motion.button
           onClick={handleSave}
           whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-          style={{
-            display: "flex", alignItems: "center", gap: 6, padding: "7px 16px",
-            borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer",
-            background: saved ? "rgba(16,185,129,0.12)" : "linear-gradient(135deg, rgba(14,165,233,0.14), rgba(139,92,246,0.12))",
-            border: saved ? "1px solid rgba(16,185,129,0.3)" : "1px solid rgba(14,165,233,0.3)",
-            color: saved ? "#10b981" : "#0ea5e9", transition: "all 0.2s ease",
-            boxShadow: saved ? "0 2px 10px rgba(16,185,129,0.15)" : "0 2px 10px rgba(14,165,233,0.12)",
-          }}
+          className={`${saved ? "btn-ghost !text-emerald-400" : "btn-premium"} !py-2 !text-[13px]`}
         >
           <AnimatePresence mode="wait">
             {saved
@@ -463,7 +456,7 @@ export default function SettingsPage() {
                             </div>
                             <span style={{ fontSize: 11, color: "rgba(255,255,255,0.48)" }}>{c.label}</span>
                           </div>
-                          <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 24, fontWeight: 700, color: c.color }}>{c.value}</p>
+                          <p style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 24, fontWeight: 700, color: c.color }}>{c.value}</p>
                         </div>
                       );
                     })}

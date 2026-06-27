@@ -167,7 +167,7 @@ function WelcomeState({ onPrompt }: { onPrompt: (t: string) => void }) {
         <Sparkles size={26} style={{ color: "#0284c7" }} strokeWidth={1.5} />
       </motion.div>
 
-      <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 20, fontWeight: 700, color: "#f1f5f9", marginBottom: 6, textAlign: "center" }}>
+      <h2 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 20, fontWeight: 700, color: "#f1f5f9", marginBottom: 6, textAlign: "center" }}>
         Shop Helper
       </h2>
       <p style={{ fontSize: 13, color: "rgba(255,255,255,0.60)", marginBottom: 28, textAlign: "center", maxWidth: 300, lineHeight: 1.6 }}>
@@ -260,19 +260,13 @@ export default function CopilotPage() {
             <Sparkles size={13} style={{ color: "#0284c7" }} strokeWidth={2} />
           </div>
           <div>
-            <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>AI Helper</h1>
+            <h1 style={{ fontFamily: "var(--font-fraunces), ui-serif, serif", fontSize: 15, fontWeight: 700, color: "#f1f5f9", margin: 0 }}>AI Helper</h1>
             <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", margin: 0 }}>Your shop's smart assistant</p>
           </div>
         </div>
 
         {messages.length > 0 && (
-          <button onClick={() => setMessages([])}
-            style={{
-              display: "flex", alignItems: "center", gap: 6, padding: "6px 12px",
-              borderRadius: 10, fontSize: 12, fontWeight: 500,
-              background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.12)",
-              color: "#f1f5f9", cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-            }}>
+          <button onClick={() => setMessages([])} className="btn-ghost !py-2 !text-[11px]">
             <RotateCcw size={12} strokeWidth={2} />
             New Chat
           </button>
