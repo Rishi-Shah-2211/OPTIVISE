@@ -45,7 +45,16 @@ body {
 
 *:where(:not(body)) {
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+}
+
+/* Charts/cards must never trap the wheel — let scroll pass to the page */
+.recharts-wrapper,
+.recharts-responsive-container,
+.recharts-surface,
+.shimmer-card,
+.glass-noise {
+  touch-action: pan-y;
+  overscroll-behavior: auto;
 }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
