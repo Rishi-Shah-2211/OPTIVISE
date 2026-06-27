@@ -15,6 +15,7 @@ import {
   Activity,
   LogOut,
   Package,
+  ClipboardList,
 } from "lucide-react";
 import { QueryProvider } from "@/providers/QueryProvider";
 
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
   { href: "/items",     label: "My Items",   Icon: Package         },
   { href: "/insights",  label: "Smart Tips", Icon: Lightbulb       },
   { href: "/simulator", label: "What-If",    Icon: FlaskConical    },
+  { href: "/orders",    label: "Order List", Icon: ClipboardList   },
   { href: "/copilot",   label: "AI Helper",  Icon: Zap             },
   { href: "/settings",  label: "Settings",   Icon: Settings        },
 ];

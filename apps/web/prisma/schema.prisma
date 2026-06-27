@@ -86,3 +86,15 @@ model Insight {
 
   @@index([userId])
 }
+
+model SupplierRate {
+  id           String   @id @default(uuid())
+  userId       String
+  supplierId   String?
+  supplierName String
+  itemName     String
+  rate         Float
+  createdAt    DateTime @default(now())
+
+  @@index([userId, itemName])
+}

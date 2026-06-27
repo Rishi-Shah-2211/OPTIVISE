@@ -84,6 +84,7 @@ export async function POST() {
 
     // 2. Clear existing data (in correct FK order)
     await prisma.$transaction([
+      prisma.supplierRate.deleteMany({ where: { userId } }),
       prisma.insight.deleteMany({ where: { userId } }),
       prisma.product.deleteMany({ where: { userId } }), // cascades demand + inventory
       prisma.supplier.deleteMany({ where: { userId } }),
@@ -212,6 +213,28 @@ export async function POST() {
       await prisma.insight.createMany({ data: insightData.map((i) => ({ ...i, userId })) });
     }
     console.log(`[LoadRealData] Generated ${insightData.length} insights`);
+
+    // 8. Supplier rates — each item quoted by 2-3 suppliers (for rate compare)
+    const supplierEntries = Array.from(supplierMap.entries()); // [name, id]
+    const rateData: { userId: string; supplierId: string; supplierName: string; itemName: string; rate: number }[] = [];
+    if (supplierEntries.length > 0) {
+      for (let i = 0; i < perturbedRows.length; i++) {
+        const base = perturbedRows[i].price || 10;
+        const r = seededRandom(i * 131 + runtimeSeed);
+        const count = 2 + Math.floor(r() * 2); // 2-3 suppliers
+        const picked = new Set<number>();
+        for (let k = 0; k < count; k++) {
+          const idx = Math.floor(r() * supplierEntries.length);
+          if (picked.has(idx)) continue;
+          picked.add(idx);
+          const [name, id] = supplierEntries[idx];
+          const rate = parseFloat((base * (0.85 + r() * 0.3)).toFixed(2));
+          rateData.push({ userId, supplierId: id, supplierName: name, itemName: rows[i].name, rate });
+        }
+      }
+      if (rateData.length > 0) await prisma.supplierRate.createMany({ data: rateData });
+    }
+    console.log(`[LoadRealData] Generated ${rateData.length} supplier rates`);
 
     const elapsed = Date.now() - startTime;
     console.log(`[LoadRealData] Completed in ${elapsed}ms`);
