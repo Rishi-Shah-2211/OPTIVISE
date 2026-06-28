@@ -14,7 +14,7 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="sticky top-0 z-10 flex h-[60px] shrink-0 items-center justify-between border-b border-[#3e4636]/12 bg-[rgba(255,250,241,0.82)] px-8 backdrop-blur-xl">
+    <div className="sticky top-0 z-10 flex h-[60px] shrink-0 items-center justify-between shadow-[0_12px_28px_-20px_rgba(27,47,40,0.5)] bg-[rgba(255,250,241,0.82)] px-8 backdrop-blur-xl">
       <div className="flex items-center gap-2.5">
         {icon}
         <div>

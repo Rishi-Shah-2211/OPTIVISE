@@ -33,7 +33,7 @@ function TopNav() {
     href === "/" ? pathname === "/" || pathname.startsWith("/dashboard") : pathname.startsWith(href);
 
   return (
-    <header className="z-20 flex h-[58px] shrink-0 items-center gap-4 border-b border-[#3e4636]/12 bg-[rgba(255,250,241,0.92)] px-6">
+    <header className="z-20 flex h-[58px] shrink-0 items-center gap-4 shadow-[0_12px_28px_-20px_rgba(27,47,40,0.5)] bg-[rgba(255,250,241,0.92)] px-6">
       {/* Logo */}
       <div className="flex shrink-0 items-center gap-2.5">
         <div className="flex h-8 w-8 items-center justify-center rounded-[10px] border border-[#1f7a5c]/30 bg-gradient-to-br from-[#256a52]/22 to-[#256a52]/8 shadow-[0_2px_8px_rgba(31,122,92,0.25)]">

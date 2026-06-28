@@ -163,8 +163,9 @@ select option { background: #fffaf1; color: #1b1d1b; }
   box-shadow: 0 4px 16px rgba(27, 47, 40, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
-/* Smoother scrolling: keep aurora static (constant blob animation = scroll jank) */
-.aurora-blob { animation: none !important; }
+/* Smoother scrolling: drop the heavy blurred aurora (fixed element + big blur
+   = recomposite on every scroll frame). The warm body::before glow stays. */
+.aurora { display: none !important; }
 
 /* Magnify the whole app one notch for readability */
 body { zoom: 1.05; }

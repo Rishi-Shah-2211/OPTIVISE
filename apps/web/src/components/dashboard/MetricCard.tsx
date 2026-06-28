@@ -154,7 +154,7 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
       }}
       ref={cardRef}
       onClick={() => router.push(`/dashboard/${config.id}`)}
-      className="group shimmer-card glass-noise card-lift"
+      className="group shimmer-card card-lift"
       style={{
         position: "relative",
         rotateX,
