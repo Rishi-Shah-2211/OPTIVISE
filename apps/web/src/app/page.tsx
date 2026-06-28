@@ -459,7 +459,7 @@ export default function DashboardPage() {
     <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       <DashboardHeader isLoading={isLoading} isRefreshing={isRefreshing} lastUpdated={lastUpdated} onRefetch={refetch} />
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-8 py-7">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5 md:px-8 md:py-7">
         <AnimatePresence mode="wait">
           {isError ? (
             <ErrorState key="error" message={errorMessage} onRetry={refetch} />
@@ -472,7 +472,7 @@ export default function DashboardPage() {
                     title="Quick Numbers"
                     subtitle="Updated live from all your items"
                   />
-                  <Stagger className="grid grid-cols-3 gap-4">
+                  <Stagger className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {isLoading
                       ? Array.from({ length: 6 }, (_, i) => (
                           <StaggerItem key={i}><SkeletonMetricCard index={i} /></StaggerItem>
@@ -491,7 +491,7 @@ export default function DashboardPage() {
                       title="Your Shop at a Glance"
                       subtitle="How your items and suppliers are doing"
                     />
-                    <div className="mb-4 grid grid-cols-[1.4fr_1fr] gap-4">
+                    <div className="mb-4 grid grid-cols-1 md:grid-cols-[1.4fr_1fr] gap-4">
                       <CategoryChart data={categoryData} />
                       <RegionDonutChart data={regionData} />
                     </div>
@@ -500,7 +500,7 @@ export default function DashboardPage() {
                 </Reveal>
               )}
 
-              <div className="grid grid-cols-[1fr_360px] gap-5">
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-5">
                 <Reveal delay={0.15}>
                   <section>
                     <SectionHeader

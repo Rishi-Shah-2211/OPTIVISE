@@ -57,7 +57,7 @@ function TopNav() {
               }`}
             >
               <Icon size={15} strokeWidth={active ? 2.2 : 1.8} className={active ? "text-[#1f7a5c]" : ""} />
-              {label}
+              <span className="hidden lg:inline">{label}</span>
             </Link>
           );
         })}

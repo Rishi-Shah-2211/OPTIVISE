@@ -209,6 +209,18 @@ body { zoom: 1.05; }
 
 button:active:not(:disabled) { transform: scale(0.98); }
 
+/* Page content padding (used by pages that set className page-body/page-header) */
+.page-body { padding: 24px 32px; }
+
+/* ── Phone optimisation ── */
+@media (max-width: 640px) {
+  body { zoom: 1; } /* magnify hurts small screens */
+  .page-header { padding-left: 16px !important; padding-right: 16px !important; }
+  .page-body { padding: 16px !important; }
+  /* generic header bars on pages that use inline 0 32px padding */
+  [style*="0 32px"] { padding-left: 16px !important; padding-right: 16px !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   .aurora-blob { animation: none !important; }
