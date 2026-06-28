@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { MotionConfig } from "framer-motion";
 import { Geist, Geist_Mono, Fraunces, Instrument_Serif } from "next/font/google";
 import {
-  LayoutDashboard, Lightbulb, FlaskConical, Settings, Zap, Activity,
+  LayoutDashboard, FlaskConical, Settings, Zap, Activity,
   LogOut, Package, ClipboardList, Truck,
 } from "lucide-react";
 import { QueryProvider } from "@/providers/QueryProvider";
@@ -19,7 +19,6 @@ const instrumentSerif = Instrument_Serif({ variable: "--font-instrument", subset
 const NAV_ITEMS = [
   { href: "/",          label: "My Shop",    Icon: LayoutDashboard },
   { href: "/items",     label: "My Items",   Icon: Package         },
-  { href: "/insights",  label: "Smart Tips", Icon: Lightbulb       },
   { href: "/simulator", label: "What-If",    Icon: FlaskConical    },
   { href: "/orders",    label: "Order List", Icon: ClipboardList   },
   { href: "/suppliers", label: "Suppliers",  Icon: Truck           },
