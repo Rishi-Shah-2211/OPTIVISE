@@ -169,6 +169,13 @@ select option { background: #fffaf1; color: #1b1d1b; }
 /* Magnify the whole app one notch for readability */
 body { zoom: 1.05; }
 
+/* Kill backdrop-filter app-wide — it is the #1 cause of scroll jank (each frosted
+   surface is its own compositor pass). On the cream theme the look barely changes. */
+*, *::before, *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 /* Structural utilities kept from Optivise */
 .shimmer-card { position: relative; overflow: hidden; }
 .shimmer-card::after {
