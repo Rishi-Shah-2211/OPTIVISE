@@ -154,6 +154,21 @@ select option { background: #fffaf1; color: #1b1d1b; }
 @keyframes fade { 0% { opacity: 0; } 100% { opacity: 1; } }
 .fade { animation: fade 0.7s var(--ease-silk) both; }
 
+/* Glass panel surface (cream) */
+.glass-panel {
+  background: rgba(255, 250, 241, 0.82);
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  border: 1px solid rgba(62, 70, 54, 0.14);
+  box-shadow: 0 4px 16px rgba(27, 47, 40, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+/* Smoother scrolling: keep aurora static (constant blob animation = scroll jank) */
+.aurora-blob { animation: none !important; }
+
+/* Magnify the whole app one notch for readability */
+body { zoom: 1.05; }
+
 /* Structural utilities kept from Optivise */
 .shimmer-card { position: relative; overflow: hidden; }
 .shimmer-card::after {

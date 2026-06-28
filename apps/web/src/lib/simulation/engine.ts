@@ -12,7 +12,7 @@ export interface ScenarioInsight {
 
 export interface ScenarioInput {
   name: string;
-  demand: number; // units sold per day
+  demand: number; // units sold per MONTH
   inventory: number; // units currently in stock
   leadTime: number; // days for a new order to arrive
 }
@@ -35,10 +35,13 @@ const STOCKOUT_PENALTY = 48;
 export function runScenario(input: ScenarioInput): ScenarioResult {
   const { name, demand, inventory, leadTime } = input;
 
-  const daysStock = demand > 0 ? Math.floor(inventory / demand) : 999;
+  // demand is per MONTH; convert to per-day for "how long will stock last" maths
+  const dailyDemand = demand > 0 ? demand / 30 : 0;
+
+  const daysStock = dailyDemand > 0 ? Math.floor(inventory / dailyDemand) : 999;
   const stockoutRisk = daysStock < leadTime;
   const criticalRisk = daysStock < leadTime * 0.5;
-  const overstockRatio = inventory / (demand || 1);
+  const overstockRatio = inventory / (demand || 1); // months of stock on hand
   const overstock = overstockRatio > 3;
   const pressure = Math.min((demand / (inventory || 1)) * 100, 100);
 
@@ -52,16 +55,16 @@ export function runScenario(input: ScenarioInput): ScenarioResult {
   let costDirection: "save" | "loss" = "save";
 
   if (stockoutRisk) {
-    const unmetDemand = (leadTime - daysStock) * demand;
-    costImpact = unmetDemand * STOCKOUT_PENALTY;
+    const unmetUnits = Math.max(0, leadTime - daysStock) * dailyDemand;
+    costImpact = unmetUnits * STOCKOUT_PENALTY;
     costDirection = "loss";
   } else if (overstock) {
-    const excessUnits = inventory - demand * 60;
+    const excessUnits = inventory - demand * 2; // keep ~2 months as healthy
     const holdingCost = Math.max(0, excessUnits) * AVG_UNIT_COST * (AVG_HOLDING_RATE / 12);
     costImpact = holdingCost;
     costDirection = excessUnits > 0 ? "loss" : "save";
   } else {
-    const safetyStock = demand * leadTime * 1.5;
+    const safetyStock = dailyDemand * leadTime * 1.5;
     const savedUnits = Math.max(0, safetyStock - inventory);
     costImpact = savedUnits * AVG_UNIT_COST * (AVG_HOLDING_RATE / 12);
     costDirection = "save";
@@ -91,17 +94,17 @@ export function runScenario(input: ScenarioInput): ScenarioResult {
     insights.push({ type: "info", text: `This item sells very fast (${Math.round(pressure)}% of your stock each month). Keep extra so it never finishes.` });
 
   const recommendation =
-    riskLevel === "critical" ? `${name} needs action today. Order at least ${leadTime * demand * 2} units right away. If you don't, you could lose about ₹${Math.round(costImpact).toLocaleString()} in sales.`
-    : riskLevel === "high"   ? `Order ${name} in the next 1–2 days. It will finish before the next delivery comes. Order at least ${Math.round(demand * leadTime * 1.3)} units.`
-    : riskLevel === "medium" ? `Keep an eye on ${name}. Stock is a bit thin — maybe order ${Math.round(demand * 7)} units in the next 5 days.`
-    : overstock              ? `Order less ${name} next time — about ${Math.round(inventory - demand * 45)} units fewer. A small discount can help clear the extra stock.`
+    riskLevel === "critical" ? `${name} needs action today. Order at least ${Math.max(1, Math.round(dailyDemand * leadTime * 2))} units right away. If you don't, you could lose about ₹${Math.round(costImpact).toLocaleString()} in sales.`
+    : riskLevel === "high"   ? `Order ${name} in the next 1–2 days. It will finish before the next delivery comes. Order at least ${Math.max(1, Math.round(dailyDemand * leadTime * 1.3))} units.`
+    : riskLevel === "medium" ? `Keep an eye on ${name}. Stock is a bit thin — maybe order ${Math.max(1, Math.round(dailyDemand * 7))} units in the next 5 days.`
+    : overstock              ? `Order less ${name} next time — about ${Math.max(1, Math.round(inventory - demand * 1.5))} units fewer. A small discount can help clear the extra stock.`
     : `${name} stock is just right. No need to do anything now. Check again in ${Math.max(7, Math.round(daysStock / 4))} days.`;
 
   const optimization =
-    riskLevel === "critical" ? `Set a reminder to reorder at ${Math.round(demand * leadTime * 1.8)} units (about ${Math.round(leadTime * 1.8)} days of stock) so this doesn't happen again.`
-    : riskLevel === "high"   ? `Keep a safe level of about ${Math.round(demand * (leadTime + 7))} units for this item, so it never runs out.`
-    : overstock              ? `Best amount to order at this selling rate: about ${Math.round(demand * 30)} units a month (30 days of stock). Saves around ${Math.round(AVG_HOLDING_RATE * 100 * 0.4)}% of idle-money cost.`
-    : `A good order size for you is about ${Math.round(demand * leadTime * 1.25)} units. Keep ordering like this to stay smooth.`;
+    riskLevel === "critical" ? `Set a reminder to reorder when stock falls to ${Math.max(1, Math.round(dailyDemand * leadTime * 1.5))} units (about ${Math.round(leadTime * 1.5)} days of cover) so this doesn't happen again.`
+    : riskLevel === "high"   ? `Keep a safe level of about ${Math.max(1, Math.round(dailyDemand * (leadTime + 7)))} units for this item, so it never runs out.`
+    : overstock              ? `Best amount to order at this selling rate: about ${Math.max(1, Math.round(demand))} units a month (one month of stock). Saves around ${Math.round(AVG_HOLDING_RATE * 100 * 0.4)}% of idle-money cost.`
+    : `A good order size for you is about ${Math.max(1, Math.round(dailyDemand * leadTime * 1.25))} units. Keep ordering like this to stay smooth.`;
 
   return {
     riskLevel,

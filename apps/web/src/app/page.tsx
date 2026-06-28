@@ -95,7 +95,7 @@ function DashboardHeader({ isLoading, isRefreshing, lastUpdated, onRefetch }: {
   return (
     <div className="sticky top-0 z-10 flex h-[60px] shrink-0 items-center justify-between border-b border-[#3e4636]/12 bg-[rgba(255,250,241,0.82)] px-8 backdrop-blur-xl">
       <div>
-        <h1 className="font-serif m-0 text-[15px] font-bold text-slate-100">My Shop</h1>
+        <h1 className="font-serif m-0 text-[15px] font-bold text-[#1b1d1b]">My Shop</h1>
         <div className="mt-0.5 flex items-center gap-1.5">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1f7a5c] opacity-60" />
@@ -141,7 +141,7 @@ function SectionHeader({ title, subtitle, action }: { title: string; subtitle?: 
   return (
     <div className="mb-4 flex items-center justify-between">
       <div>
-        <h2 className="font-serif m-0 text-sm font-bold text-slate-100">{title}</h2>
+        <h2 className="font-serif m-0 text-sm font-bold text-[#1b1d1b]">{title}</h2>
         {subtitle && <p className="mt-0.5 text-[11px] text-[#1b1d1b]/42">{subtitle}</p>}
       </div>
       {action}
@@ -256,7 +256,7 @@ function CategoryChart({ data }: { data: { name: string; inventory: number; dema
       {...chartPerspectiveHover}
     >
       <div style={{ marginBottom: 18 }}>
-        <p className="font-serif m-0 text-sm font-bold text-slate-100">
+        <p className="font-serif m-0 text-sm font-bold text-[#1b1d1b]">
           Stock by Type
         </p>
         <p style={{ fontSize: 11, color: "rgba(50,64,54,0.42)", marginTop: 3 }}>
@@ -312,7 +312,7 @@ function DemandPressureChart({ data }: { data: { name: string; pressure: number;
       {...chartPerspectiveHover}
     >
       <div style={{ marginBottom: 18 }}>
-        <p className="font-serif m-0 text-sm font-bold text-slate-100">
+        <p className="font-serif m-0 text-sm font-bold text-[#1b1d1b]">
           Selling Fast
         </p>
         <p style={{ fontSize: 11, color: "rgba(50,64,54,0.42)", marginTop: 3 }}>
@@ -362,7 +362,7 @@ function RegionDonutChart({ data }: { data: { name: string; value: number; avgRe
       {...chartPerspectiveHover}
     >
       <div style={{ marginBottom: 12 }}>
-        <p className="font-serif m-0 text-sm font-bold text-slate-100">
+        <p className="font-serif m-0 text-sm font-bold text-[#1b1d1b]">
           Your Suppliers
         </p>
         <p style={{ fontSize: 11, color: "rgba(50,64,54,0.42)", marginTop: 3 }}>
@@ -385,7 +385,7 @@ function RegionDonutChart({ data }: { data: { name: string; value: number; avgRe
           position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
           textAlign: "center", pointerEvents: "none",
         }}>
-          <p className="font-serif m-0 text-[22px] font-bold text-slate-100">{total}</p>
+          <p className="font-serif m-0 text-[22px] font-bold text-[#1b1d1b]">{total}</p>
           <p style={{ fontSize: 10, color: "rgba(50,64,54,0.42)", margin: 0 }}>products</p>
         </div>
       </div>

@@ -172,8 +172,8 @@ export function MetricCard({ config, index }: { config: MetricCardConfig; index:
           radial-gradient(circle at top right, ${a.halo} 0%, transparent 34%),
           linear-gradient(155deg, rgba(62,70,54,0.14) 0%, ${a.bgTint} 42%, rgba(245,239,226,0.72) 100%)
         `,
-        backdropFilter: "blur(20px) saturate(180%)",
-        WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        backdropFilter: "blur(10px) saturate(150%)",
+        WebkitBackdropFilter: "blur(10px) saturate(150%)",
         border: "1px solid rgba(62,70,54,0.14)",
         boxShadow: "0 4px 20px rgba(0,0,0,0.22), 0 1px 4px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,250,241,0.45)",
         transition: "box-shadow 0.22s ease, border-color 0.22s ease",

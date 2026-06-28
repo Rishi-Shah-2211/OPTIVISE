@@ -40,8 +40,8 @@ export const staggeredAnimationProps = (index: number) => ({
 /* ── Chart container wrapper style ── */
 export const chartContainerGlass: CSSProperties = {
   background: "rgba(255,250,241,0.7)",
-  backdropFilter: "blur(20px) saturate(180%)",
-  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+  backdropFilter: "blur(10px) saturate(150%)",
+  WebkitBackdropFilter: "blur(10px) saturate(150%)",
   border: "1px solid rgba(62,70,54,0.14)",
   borderRadius: 28,
   boxShadow:

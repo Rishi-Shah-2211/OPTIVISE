@@ -106,6 +106,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const pathname = usePathname();
   const [navHover, setNavHover] = useState<string | null>(null);
 
+  // Enter fullscreen on the user's first interaction (browsers block auto-fullscreen
+  // without a gesture). User can leave anytime with Esc / browser controls.
+  useEffect(() => {
+    const goFs = () => {
+      const el = document.documentElement;
+      if (!document.fullscreenElement && el.requestFullscreen) {
+        el.requestFullscreen().catch(() => {});
+      }
+      window.removeEventListener("pointerdown", goFs);
+      window.removeEventListener("keydown", goFs);
+    };
+    window.addEventListener("pointerdown", goFs);
+    window.addEventListener("keydown", goFs);
+    return () => {
+      window.removeEventListener("pointerdown", goFs);
+      window.removeEventListener("keydown", goFs);
+    };
+  }, []);
+
   return (
     <html
       lang="en"
@@ -137,7 +156,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <Activity size={13} className="text-[#1f7a5c]" strokeWidth={2.2} />
                   </div>
                   <div className="leading-none">
-                    <span className="font-serif text-[15px] font-bold tracking-tight text-slate-100">
+                    <span className="font-serif text-[15px] font-bold tracking-tight text-[#1b1d1b]">
                       Optivise
                     </span>
                     <p className="font-editorial mt-0.5 text-[10px] text-[#1b1d1b]/40">your shop, optimized</p>

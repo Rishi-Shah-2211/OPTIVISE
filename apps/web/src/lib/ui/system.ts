@@ -58,8 +58,8 @@ export const motion = {
 /* ── Glass surfaces ── */
 export const glass: CSSProperties = {
   background: "rgba(255,255,255,0.09)",
-  backdropFilter: "blur(20px) saturate(180%)",
-  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+  backdropFilter: "blur(10px) saturate(150%)",
+  WebkitBackdropFilter: "blur(10px) saturate(150%)",
   border: "1px solid rgba(255,255,255,0.12)",
   boxShadow: shadows.raised,
   borderRadius: radius.xl,

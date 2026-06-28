@@ -11,8 +11,8 @@ import {
 
 const glass: React.CSSProperties = {
   background: "rgba(255,250,241,0.82)",
-  backdropFilter: "blur(20px) saturate(180%)",
-  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+  backdropFilter: "blur(10px) saturate(150%)",
+  WebkitBackdropFilter: "blur(10px) saturate(150%)",
   border: "1px solid rgba(62,70,54,0.14)",
   boxShadow: "0 4px 16px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,250,241,0.45)",
 };
@@ -171,8 +171,8 @@ function SelectInput({ value, onChange, options }: { value: string; onChange: (v
                 position: "fixed", top: pos.top, left: pos.left, width: pos.width, zIndex: 9999,
                 borderRadius: 14, overflow: "hidden",
                 background: "rgba(255,250,241,0.96)",
-                backdropFilter: "blur(20px) saturate(180%)",
-                WebkitBackdropFilter: "blur(20px) saturate(180%)",
+                backdropFilter: "blur(10px) saturate(150%)",
+                WebkitBackdropFilter: "blur(10px) saturate(150%)",
                 border: "1px solid rgba(62,70,54,0.14)",
                 boxShadow: "0 8px 32px rgba(0,0,0,0.30), 0 2px 8px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,250,241,0.4)",
                 padding: "4px",

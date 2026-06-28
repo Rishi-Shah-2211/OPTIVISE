@@ -16,8 +16,8 @@ import type { Product, Insight } from "@/types/dashboard";
 
 const glass: React.CSSProperties = {
   background: "rgba(50,64,54,0.75)",
-  backdropFilter: "blur(20px) saturate(180%)",
-  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+  backdropFilter: "blur(10px) saturate(150%)",
+  WebkitBackdropFilter: "blur(10px) saturate(150%)",
   border: "1px solid rgba(50,64,54,0.9)",
   boxShadow: "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04), inset 0 1px 0 rgba(50,64,54,0.95)",
 };

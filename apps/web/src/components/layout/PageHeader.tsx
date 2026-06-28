@@ -18,7 +18,7 @@ export function PageHeader({
       <div className="flex items-center gap-2.5">
         {icon}
         <div>
-          <h1 className="font-serif m-0 text-[15px] font-bold text-slate-100">{title}</h1>
+          <h1 className="font-serif m-0 text-[15px] font-bold text-[#1b1d1b]">{title}</h1>
           {subtitle && <p className="m-0 text-[11px] text-[#1b1d1b]/60">{subtitle}</p>}
         </div>
       </div>

@@ -15,8 +15,8 @@ import { glassCard } from "@/components/layout/PageHeader";
 
 const glass: React.CSSProperties = {
   background: "rgba(255,250,241,0.82)",
-  backdropFilter: "blur(20px) saturate(180%)",
-  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+  backdropFilter: "blur(10px) saturate(150%)",
+  WebkitBackdropFilter: "blur(10px) saturate(150%)",
   border: "1px solid rgba(62,70,54,0.14)",
   boxShadow: "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,250,241,0.45)",
 };
@@ -215,7 +215,7 @@ export default function SimulatorPage() {
 
             {selectedProduct && (
               <>
-                <SliderControl label="Sells Per Day" value={demand} onChange={(v) => { setDemand(v); setResult(null); }} min={0} max={2000} color="#154f3d" />
+                <SliderControl label="Sells a Month" value={demand} onChange={(v) => { setDemand(v); setResult(null); }} min={0} max={2000} color="#154f3d" />
                 <SliderControl label="In Stock Now" value={inventory} onChange={(v) => { setInventory(v); setResult(null); }} min={0} max={10000} color="#154f3d" />
                 <SliderControl label="Days to Arrive" value={leadTime} onChange={(v) => { setLeadTime(v); setResult(null); }} min={1} max={90} color="#a8551f" format={(v) => `${v}d`} />
 

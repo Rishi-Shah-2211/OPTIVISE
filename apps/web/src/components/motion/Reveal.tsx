@@ -23,8 +23,7 @@ export const Reveal = forwardRef<HTMLDivElement, RevealProps>(function Reveal(
     <motion.div
       ref={ref}
       initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once, amount: 0.2 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={transition}
       {...rest}
     >
@@ -42,8 +41,7 @@ export function Stagger({ gap = 0.08, delay = 0, children, ...rest }: StaggerPro
   return (
     <motion.div
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.15 }}
+      animate="show"
       variants={{
         hidden: {},
         show: {

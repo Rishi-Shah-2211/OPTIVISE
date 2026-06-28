@@ -14,7 +14,7 @@ export function Topbar() {
           className="inline-flex items-center gap-2 rounded-xl border border-[#3e4636]/10 bg-[#fffaf1]/5 px-3 py-2 transition-all duration-300 hover:bg-[#fffaf1]/10"
           aria-label="User profile"
         >
-          <UserCircle2 size={18} className="text-zinc-200" aria-hidden="true" />
+          <UserCircle2 size={18} className="text-[#324036]" aria-hidden="true" />
         </button>
       </div>
     </header>

@@ -27,8 +27,8 @@ const ACCENT_MAP: Record<string, { color: string; rgb: string; light: string; gr
 
 const glass: React.CSSProperties = {
   background: "rgba(255,250,241,0.82)",
-  backdropFilter: "blur(20px) saturate(180%)",
-  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+  backdropFilter: "blur(10px) saturate(150%)",
+  WebkitBackdropFilter: "blur(10px) saturate(150%)",
   border: "1px solid rgba(62,70,54,0.14)",
   boxShadow: "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,250,241,0.45)",
 };

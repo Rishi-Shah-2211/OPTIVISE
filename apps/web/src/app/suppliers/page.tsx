@@ -3,11 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Truck, MapPin, Package, Clock, BadgeCheck } from "lucide-react";
+import { useTilt } from "@/lib/ui/useTilt";
 
 const glass: React.CSSProperties = {
   background: "rgba(255,250,241,0.82)",
-  backdropFilter: "blur(20px) saturate(180%)",
-  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+  backdropFilter: "blur(10px) saturate(150%)",
+  WebkitBackdropFilter: "blur(10px) saturate(150%)",
   border: "1px solid rgba(62,70,54,0.14)",
   boxShadow: "0 4px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,250,241,0.45)",
 };
@@ -52,7 +53,28 @@ export default function SuppliersPage() {
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
             {suppliers.map((s, i) => (
-              <motion.div key={s.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="shimmer-card" style={{ ...glass, borderRadius: 18, padding: 20 }}>
+              <SupplierCard key={s.id} s={s} i={i} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SupplierCard({ s, i }: { s: Supplier; i: number }) {
+  const tilt = useTilt(6);
+  return (
+    <motion.div
+      ref={tilt.ref}
+      onMouseMove={tilt.onMouseMove}
+      onMouseLeave={tilt.onMouseLeave}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: i * 0.04 }}
+      className="card-lift"
+      style={{ ...glass, borderRadius: 18, padding: 20, rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformPerspective: 800 }}
+    >
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <div style={{ width: 38, height: 38, borderRadius: 12, background: "rgba(200,106,51,0.12)", border: "1px solid rgba(200,106,51,0.22)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -90,11 +112,6 @@ export default function SuppliersPage() {
                     </div>
                   </div>
                 )}
-              </motion.div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    </motion.div>
   );
 }
