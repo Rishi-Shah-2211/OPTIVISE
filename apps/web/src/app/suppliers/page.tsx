@@ -16,12 +16,14 @@ const input: React.CSSProperties = {
   background: "rgba(255,250,241,0.6)", border: "1px solid rgba(62,70,54,0.18)", color: "#1b1d1b",
 };
 
+interface RateInfo { itemName: string; rate: number; }
 interface Supplier {
   id: string; name: string; region: string; reliability: number;
-  itemCount: number; avgLeadTime: number; quoteCount: number; topItems: string[];
+  itemCount: number; avgLeadTime: number; rates: RateInfo[];
 }
-interface Form { id?: string; name: string; region: string; reliability: string; }
-const EMPTY: Form = { name: "", region: "Local Mandi", reliability: "90" };
+interface RateRow { itemName: string; rate: string; }
+interface Form { id?: string; name: string; region: string; reliability: string; rates: RateRow[]; }
+const EMPTY: Form = { name: "", region: "Local Mandi", reliability: "90", rates: [{ itemName: "", rate: "" }] };
 
 async function fetchSuppliers(): Promise<Supplier[]> {
   const res = await fetch("/api/suppliers");
@@ -46,7 +48,10 @@ export default function SuppliersPage() {
     await fetch("/api/suppliers", {
       method: form.id ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: form.id, name: form.name, region: form.region, reliability: Number(form.reliability) || 90 }),
+      body: JSON.stringify({
+        id: form.id, name: form.name, region: form.region, reliability: Number(form.reliability) || 90,
+        rates: form.rates.map((r) => ({ itemName: r.itemName, rate: Number(r.rate) || 0 })),
+      }),
     });
     setSaving(false);
     setForm(null);
@@ -85,7 +90,7 @@ export default function SuppliersPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
             {suppliers.map((s, i) => (
               <SupplierCard key={s.id} s={s} i={i}
-                onEdit={() => setForm({ id: s.id, name: s.name, region: s.region, reliability: String(s.reliability) })}
+                onEdit={() => setForm({ id: s.id, name: s.name, region: s.region, reliability: String(s.reliability), rates: s.rates.length ? s.rates.map((r) => ({ itemName: r.itemName, rate: String(r.rate) })) : [{ itemName: "", rate: "" }] })}
                 onDelete={() => remove(s.id)} />
             ))}
           </div>
@@ -106,6 +111,27 @@ export default function SuppliersPage() {
                 <Field label="Supplier name"><input style={input} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Sharma Wholesale" /></Field>
                 <Field label="Where they are"><input style={input} value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} placeholder="e.g. Local Mandi" /></Field>
                 <Field label="How reliable (%)"><input style={input} type="number" min={0} max={100} value={form.reliability} onChange={(e) => setForm({ ...form, reliability: e.target.value })} /></Field>
+
+                <div>
+                  <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(50,64,54,0.55)", marginBottom: 6 }}>Items they supply & rate (₹)</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {form.rates.map((r, idx) => (
+                      <div key={idx} style={{ display: "flex", gap: 8 }}>
+                        <input style={{ ...input, flex: 1 }} placeholder="Item (e.g. Rice)" value={r.itemName}
+                          onChange={(e) => setForm({ ...form, rates: form.rates.map((x, j) => j === idx ? { ...x, itemName: e.target.value } : x) })} />
+                        <input style={{ ...input, width: 84 }} type="number" placeholder="₹" value={r.rate}
+                          onChange={(e) => setForm({ ...form, rates: form.rates.map((x, j) => j === idx ? { ...x, rate: e.target.value } : x) })} />
+                        <button onClick={() => setForm({ ...form, rates: form.rates.filter((_, j) => j !== idx) })}
+                          style={{ background: "rgba(192,73,47,0.1)", border: "1px solid rgba(192,73,47,0.2)", borderRadius: 9, color: "#c0492f", cursor: "pointer", padding: "0 9px", flexShrink: 0 }}><X size={14} /></button>
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={() => setForm({ ...form, rates: [...form.rates, { itemName: "", rate: "" }] })}
+                    style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 5, fontSize: 12, fontWeight: 600, color: "#1f7a5c", background: "rgba(31,122,92,0.08)", border: "1px solid rgba(31,122,92,0.2)", borderRadius: 9, padding: "6px 11px", cursor: "pointer" }}>
+                    <Plus size={13} /> Add item
+                  </button>
+                </div>
+
                 <button onClick={save} disabled={saving} className="btn-premium" style={{ marginTop: 6, width: "100%", justifyContent: "center" }}>
                   {saving ? <Loader2 size={16} className="animate-spin" /> : <><Check size={15} strokeWidth={2.5} /> {form.id ? "Save Changes" : "Add Supplier"}</>}
                 </button>
@@ -167,13 +193,17 @@ function SupplierCard({ s, i, onEdit, onDelete }: { s: Supplier; i: number; onEd
         </div>
       </div>
 
-      {s.topItems.length > 0 && (
+      {s.rates.length > 0 && (
         <div style={{ marginBottom: 14 }}>
-          <p style={{ fontSize: 10, color: "rgba(50,64,54,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>Top items supplied</p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {s.topItems.map((it, k) => (
-              <span key={k} style={{ fontSize: 11, padding: "3px 9px", borderRadius: 999, background: "rgba(255,250,241,0.7)", color: "rgba(50,64,54,0.7)" }}>{it}</span>
+          <p style={{ fontSize: 10, color: "rgba(50,64,54,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>Items & rates</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {s.rates.slice(0, 5).map((r, k) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12 }}>
+                <span style={{ color: "rgba(50,64,54,0.72)" }}>{r.itemName}</span>
+                <span style={{ fontWeight: 700, color: "#1f7a5c" }}>₹{r.rate}</span>
+              </div>
             ))}
+            {s.rates.length > 5 && <span style={{ fontSize: 11, color: "rgba(50,64,54,0.4)" }}>+{s.rates.length - 5} more</span>}
           </div>
         </div>
       )}

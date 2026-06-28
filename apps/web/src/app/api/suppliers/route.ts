@@ -17,29 +17,27 @@ export async function GET() {
       },
     });
 
-    const rates = await prisma.supplierRate.findMany({ where: { userId } });
-    const rateBySupplier = new Map<string, number[]>();
+    const rates = await prisma.supplierRate.findMany({ where: { userId }, orderBy: { itemName: "asc" } });
+    const ratesBySupplier = new Map<string, { itemName: string; rate: number }[]>();
     for (const r of rates) {
       if (!r.supplierId) continue;
-      const arr = rateBySupplier.get(r.supplierId) ?? [];
-      arr.push(r.rate);
-      rateBySupplier.set(r.supplierId, arr);
+      const arr = ratesBySupplier.get(r.supplierId) ?? [];
+      arr.push({ itemName: r.itemName, rate: r.rate });
+      ratesBySupplier.set(r.supplierId, arr);
     }
 
     const data = suppliers.map((s) => {
       const leadTimes = s.products.map((p) => p.leadTime);
       const avgLead = leadTimes.length ? Math.round(leadTimes.reduce((a, b) => a + b, 0) / leadTimes.length) : 0;
-      const topItems = [...s.products].sort((a, b) => b.demand - a.demand).slice(0, 3).map((p) => p.name);
-      const quotes = rateBySupplier.get(s.id) ?? [];
+      const supplierRates = ratesBySupplier.get(s.id) ?? [];
       return {
         id: s.id,
         name: s.name,
         region: s.region,
         reliability: Math.round(s.reliability * 100),
-        itemCount: s._count.products,
+        itemCount: supplierRates.length || s._count.products,
         avgLeadTime: avgLead,
-        quoteCount: quotes.length,
-        topItems,
+        rates: supplierRates,
       };
     }).sort((a, b) => b.reliability - a.reliability);
 
@@ -57,6 +55,23 @@ function relFromPercent(v: unknown): number {
   return Math.max(0, Math.min(1, n > 1 ? n / 100 : n));
 }
 
+// Clean the item+rate rows sent from the form
+function cleanRates(raw: unknown): { itemName: string; rate: number }[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((r) => ({ itemName: String(r?.itemName ?? "").trim(), rate: Math.max(0, Number(r?.rate) || 0) }))
+    .filter((r) => r.itemName.length > 0);
+}
+
+async function saveRates(userId: string, supplierId: string, supplierName: string, rows: { itemName: string; rate: number }[]) {
+  await prisma.supplierRate.deleteMany({ where: { userId, supplierId } });
+  if (rows.length > 0) {
+    await prisma.supplierRate.createMany({
+      data: rows.map((r) => ({ userId, supplierId, supplierName, itemName: r.itemName, rate: r.rate })),
+    });
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const userId = await getUserId();
@@ -71,6 +86,7 @@ export async function POST(req: NextRequest) {
         userId,
       },
     });
+    await saveRates(userId, supplier.id, supplier.name, cleanRates(b.rates));
     return NextResponse.json({ success: true, data: supplier });
   } catch (e) {
     console.error("Create supplier error:", e);
@@ -94,6 +110,9 @@ export async function PATCH(req: NextRequest) {
         reliability: b.reliability != null ? relFromPercent(b.reliability) : existing.reliability,
       },
     });
+    if (Array.isArray(b.rates)) {
+      await saveRates(userId, supplier.id, supplier.name, cleanRates(b.rates));
+    }
     return NextResponse.json({ success: true, data: supplier });
   } catch (e) {
     console.error("Update supplier error:", e);
@@ -110,6 +129,7 @@ export async function DELETE(req: NextRequest) {
     if (!id) return NextResponse.json({ error: "Supplier id is needed" }, { status: 400 });
     const result = await prisma.supplier.deleteMany({ where: { id, userId } });
     if (result.count === 0) return NextResponse.json({ error: "Supplier not found" }, { status: 404 });
+    await prisma.supplierRate.deleteMany({ where: { userId, supplierId: id } });
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error("Delete supplier error:", e);
